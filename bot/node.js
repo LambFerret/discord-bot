@@ -6,7 +6,7 @@ var fs = require('fs');
 var util = require('util');
 const axios = require('axios');
 const cheerio = require('cheerio');
-
+let isStarted = false;
 const cslog = function (d) { //
   let c;
   if (typeof d === 'object') {
@@ -28,7 +28,11 @@ client.on('messageCreate', (msg) => {
   if (msg.content.includes("자하라")) {
     msg.channel.send({ embeds: [embededMsg()] })
   }
-  setInterval(() => reminder(msg), 3600000);
+  if (!isStarted && msg.content.includes("스타또")) {
+    isStarted = !isStarted
+    reminder(msg)
+    setInterval(() => reminder(msg), 3600000);
+  }
 
 });
 
@@ -40,9 +44,7 @@ client.on('channelPinsUpdate', pin => {
 
 function reminder(msg) {
   const d = new Date()
-  if (d.getHours()%3 == 0 && d.getMinutes() === 0 ) {
-  // if (d.getHours() === 1) {
-    // cslog("?")
+  if (d.getHours()%3 == 0) {
     msg.channel.send('새로운 피드 있나 확인하기! : ' + config.instagram)
   }
 }
