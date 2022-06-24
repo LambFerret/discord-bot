@@ -44,7 +44,7 @@ client.on('channelPinsUpdate', pin => {
 
 function reminder(msg) {
   const d = new Date()
-  if (d.getHours()%3 == 0) {
+  if (d.getHours()%3 == 0 && d.getHours()>11) {
     msg.channel.send('새로운 피드 있나 확인하기! : ' + config.instagram)
   }
 }
