@@ -34,6 +34,10 @@ client.on('messageCreate', (msg) => {
     setInterval(() => reminder(msg), 3600000);
   }
 
+  if (isStarted && msg.content.includes("알람") && msg.content.includes("그만")) {
+    isStarted = !isStarted
+  }
+
 });
 
 client.on('channelPinsUpdate', pin => {
@@ -57,7 +61,7 @@ const embededMsg = () => new MessageEmbed()
   .setThumbnail(config.thumbnailURL)
   .addFields(
     { name: '트위터', value: config.twitter, inline: true },
-    { name: '트위치(오픈예정)', value: config.twitch, inline: true },
+    { name: '트위치 8시 방송', value: config.twitch, inline: true },
     { name: '유튜브(오픈예정)', value: config.youtube, inline: true },
   )
   .setImage('https://pbs.twimg.com/media/FUuURq_aAAAoZ9G?format=jpg&name=small')
