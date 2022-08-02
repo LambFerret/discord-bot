@@ -5,5 +5,8 @@
     "twitter": "https://mobile.twitter.com/dyangyi",
     "twitch": "https://www.twitch.tv/dyangyi",
     "youtube": "https://www.youtube.com/channel/UCDZzqeIgqBXdozX08CpTGlA",
-    "thumbnailURL":"https://static-cdn.jtvnw.net/jtv_user_pictures/511b0639-9b36-4a3f-b83a-703b845c6f11-profile_image-70x70.png"
+    "thumbnailURL":"https://static-cdn.jtvnw.net/jtv_user_pictures/511b0639-9b36-4a3f-b83a-703b845c6f11-profile_image-70x70.png",
+    "twitchClientID" : "4f0dkwr6ykwtyb5kqulxsse2wn1cqr",
+    "twitchEndpoint": "http://localhost",
+    "mongoUrl" : "mongodb+srv://lamb:S9ttLUkMy5Af76Ys@cluster0.nozuy.mongodb.net/?retryWrites=true&w=majority"
 }
