@@ -3,12 +3,21 @@ import { embededMsg, offlineMsg } from "./MessageFormat"
 
 class MessageCommand {
     prefix: string
+    isTemp: boolean
     api: ExternalApi
     constructor() {
         this.prefix = '조교쨩'
         this.api = new ExternalApi()
+        this.isTemp = true
     }
 
+    isbooleanchange = () => {
+        this.isTemp = !this.isTemp
+    }
+    boolcheck = () => {
+        console.log(this.isTemp);
+        
+    }
     isStartWithPrefix = (message: string) => {
         if (message.startsWith(this.prefix)) {
             return true
