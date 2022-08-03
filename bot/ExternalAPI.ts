@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { LiveStreamInfoType } from './LiveStreamInfoType';
+import { LiveStreamInfoType } from './model/LiveStreamInfoType';
 
 class ExternalApi {
     token:() => Promise<any>

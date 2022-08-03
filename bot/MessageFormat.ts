@@ -1,4 +1,4 @@
-import { LiveStreamInfoType } from "./LiveStreamInfoType";
+import { LiveStreamInfoType } from "./model/LiveStreamInfoType";
 import { EmbedBuilder } from 'discord.js';
 
 export const embededMsg = (data: LiveStreamInfoType) => new EmbedBuilder()

@@ -1,5 +1,5 @@
 import { Collection } from "mongodb";
-import { StreamerInfo } from "./StreamerType";
+import { StreamerInfo } from "../model/StreamerType";
 import { MongoClient } from "mongodb";
 import { CONFIG } from "./Config";
 const uri = CONFIG.mongo as string;

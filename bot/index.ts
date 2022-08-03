@@ -1,6 +1,6 @@
 import { MessageCommand } from './MessageCommand';
 import { embededMsg } from './MessageFormat';
-import { CONFIG } from "./Config";
+import { CONFIG } from "./config/Config";
 import {ExternalApi} from './ExternalAPI'
 import { Client, Message, GatewayIntentBits, EmbedBuilder } from "discord.js";
 // import { saveStreamer } from './mongoConnect';
