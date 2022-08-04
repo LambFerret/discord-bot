@@ -44,14 +44,12 @@ export default class DiscordBot {
     if (!this.command.isStartWithPrefix(content)) return;
     const message = content.split(' ')
     
-    if (content[1]==='status') {
+    if (message[1]==='status') {
       msg.channel.send(`
-        현재 접속중 hostname : ${os.hostname()}
-        현재 시각 : ${new Date()}
-        세부 사항 : {
-          ${util.inspect(os.constants)}
-        }
+        현재 접속중 hostname : ${os.hostname()} \n`
+        +`현재 시각 : ${new Date()}
       `)
+      return;
     }
 
     if (content.includes("저장")) {
