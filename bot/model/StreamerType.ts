@@ -1,6 +1,6 @@
 export type StreamerInfo = {
     streamerName: string,
-    streamerNowPlaying?:string,
+    streamerNowPlaying?: string,
     isStream: boolean,
     createChannel: string,
     createdUser: string,

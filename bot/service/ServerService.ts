@@ -7,7 +7,7 @@ export default class ServerService {
         this.serverRepository = new ServerRepository();
     }
 
-    createGuild(info:Guild) {
+    createGuild(info: Guild) {
         const server: ServerInfo = {
             name: info.name,
             id: info.id,
@@ -19,7 +19,7 @@ export default class ServerService {
         this.serverRepository.createServer(server);
     }
 
-    deleteGuild(guildId:string) {
+    deleteGuild(guildId: string) {
         this.serverRepository.deleteServer(guildId);
     }
 

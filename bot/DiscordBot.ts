@@ -4,26 +4,22 @@ import { ExternalApi } from './ExternalAPI'
 import { Client, Message, GatewayIntentBits, Guild } from "discord.js";
 import ServerService from './service/ServerService';
 import StreamerService from './service/StreamerService';
-import { userNotExistMsg } from './MessageFormat';
-
 
 export default class DiscordBot {
 
   serverService: ServerService;
   streamerService: StreamerService;
   command: MessageCommand;
-  api: ExternalApi;
   client: Client;
 
   constructor() {
     this.streamerService = new StreamerService();
     this.serverService = new ServerService();
     this.command = new MessageCommand();
-    this.api = new ExternalApi();
     this.client = new Client({
       intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent]
     });
-    this.client.login(CONFIG.TOKEN);
+    this.client.login(CONFIG.DISCORD_BOT_TOKEN);
     this.client.once('ready', this.botReady)
     this.client.on('guildCreate', this.clientInit)
     this.client.on('guildDelete', this.serverClosed)
@@ -51,16 +47,10 @@ export default class DiscordBot {
     if (content.includes("저장")) {
     }
 
-    if (message[1] === '로드') {
-      console.log(message);
-
-      const result = await this.command.sendLiveInfo(message[2])
-        .catch(error => userNotExistMsg());
+    if (message[2].includes('방송')) {
+      const result = await this.command.sendStreamInfo(message[1]);
       msg.channel.send({ embeds: [result] })
-
     }
-
-
   }
 }
 
@@ -70,16 +60,9 @@ export default class DiscordBot {
 //   reminder(msg)
 //   setInterval(() => reminder(msg), 3600000);
 // }
-
-// if (isStarted && content.includes("알람") && content.includes("그만")) {
-//   isStarted = !isStarted
+// function reminder(msg: Message) {
+//   const d = new Date()
+//   if (d.getHours() == 20) {
+//     msg.channel.send('댱이 트위치 방송중! : ' + CONFIG.twitch)
+//   }
 // }
-
-// });
-
-function reminder(msg: Message) {
-  const d = new Date()
-  if (d.getHours() == 20) {
-    msg.channel.send('댱이 트위치 방송중! : ' + CONFIG.twitch)
-  }
-}
