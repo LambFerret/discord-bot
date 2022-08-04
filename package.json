@@ -4,7 +4,7 @@
   "description": "",
   "main": "node.js",
   "scripts": {
-    "start": "nodemon ./bot/index.ts",
+    "start": "nodemon ./index.ts",
     "m": "pm2 monit",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

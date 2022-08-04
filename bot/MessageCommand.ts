@@ -1,5 +1,5 @@
 import { ExternalApi } from "./ExternalAPI"
-import { embededMsg, offlineMsg } from "./MessageFormat"
+import { StreamerInfoMsg, userNotExistMsg } from "./MessageFormat"
 
 class MessageCommand {
     prefix: string
@@ -16,7 +16,7 @@ class MessageCommand {
     }
     boolcheck = () => {
         console.log(this.isTemp);
-        
+
     }
     isStartWithPrefix = (message: string) => {
         if (message.startsWith(this.prefix)) {
@@ -29,22 +29,18 @@ class MessageCommand {
     }
 
     sendSimpleInfo = () => {
-
     }
 
     saveStreamerInfo = () => {
-
-
     }
-    temp = () => {console.log("test");
-    }
-    sendLiveInfo = async (streamer:string) => {
-        const info = await this.api.getLiveInfo(streamer);
-        if (info == undefined) {
-            return offlineMsg()
-        } else {
-            return embededMsg(info)
-        }
+
+    sendLiveInfo = async (streamer: string) => {
+        const streamerInfo = await this.api.getStreamerInfo(streamer);
+        const liveInfo = await this.api.getLiveInfo(streamerInfo.broadcaster_login)
+        const image = liveInfo.thumbnail_url == undefined ? null : liveInfo.thumbnail_url
+        console.log(image);
+
+        return StreamerInfoMsg(streamerInfo, image)
     }
 
 }

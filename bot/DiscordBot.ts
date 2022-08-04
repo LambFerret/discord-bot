@@ -3,16 +3,20 @@ import { CONFIG } from "./config/Config";
 import { ExternalApi } from './ExternalAPI'
 import { Client, Message, GatewayIntentBits, Guild } from "discord.js";
 import ServerService from './service/ServerService';
+import StreamerService from './service/StreamerService';
+import { userNotExistMsg } from './MessageFormat';
 
 
 export default class DiscordBot {
 
   serverService: ServerService;
+  streamerService: StreamerService;
   command: MessageCommand;
   api: ExternalApi;
   client: Client;
 
   constructor() {
+    this.streamerService = new StreamerService();
     this.serverService = new ServerService();
     this.command = new MessageCommand();
     this.api = new ExternalApi();
@@ -20,19 +24,22 @@ export default class DiscordBot {
       intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent]
     });
     this.client.login(CONFIG.TOKEN);
-    this.client.once('ready',this.botReady)
+    this.client.once('ready', this.botReady)
     this.client.on('guildCreate', this.clientInit)
+    this.client.on('guildDelete', this.serverClosed)
     this.client.on('messageCreate', this.clientMessage)
   }
 
-  botReady =  () => {
+  botReady = () => {
     console.log("연결")
   }
 
-  clientInit = async (info:Guild) => {
-    this.serverService.createServer(info)
-    console.log(info);
-    console.log('서버인포');
+  clientInit = (info: Guild) => {
+    this.serverService.createGuild(info)
+  }
+
+  serverClosed = (info: Guild) => {
+    this.serverService.deleteGuild(info.id)
   }
 
   clientMessage = async (msg: Message) => {
@@ -45,9 +52,15 @@ export default class DiscordBot {
     }
 
     if (message[1] === '로드') {
-      const result = await this.command.sendLiveInfo(message[2]);
+      console.log(message);
+
+      const result = await this.command.sendLiveInfo(message[2])
+        .catch(error => userNotExistMsg());
       msg.channel.send({ embeds: [result] })
+
     }
+
+
   }
 }
 

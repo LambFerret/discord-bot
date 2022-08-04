@@ -7,7 +7,7 @@ export default class ServerService {
         this.serverRepository = new ServerRepository();
     }
 
-    createServer(info:Guild) {
+    createGuild(info:Guild) {
         const server: ServerInfo = {
             name: info.name,
             id: info.id,
@@ -16,9 +16,11 @@ export default class ServerService {
             prifix: '조교쨩',
             status: 'INIT'
         }
-        this.serverRepository.createServerInfo(server);
-
+        this.serverRepository.createServer(server);
     }
 
+    deleteGuild(guildId:string) {
+        this.serverRepository.deleteServer(guildId);
+    }
 
 }

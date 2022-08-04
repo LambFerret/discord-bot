@@ -7,11 +7,10 @@ export default class ServerRepository {
         this.collection = client.collection("Server")
     }
 
-    createServerInfo = (info: ServerInfo) => {
-        this.collection.insertOne(info);
-    }
+    createServer = (info: ServerInfo) => this.collection.insertOne(info);
 
-
+    deleteServer = (guildId:string) => this.collection.deleteOne({id:guildId})
+    
 
 }
 

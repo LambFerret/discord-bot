@@ -1,6 +1,6 @@
 import axios from 'axios';
+import { LiveStreamerInfoType } from './model/LiveStreamerInfoType';
 import { LiveStreamInfoType } from './model/LiveStreamInfoType';
-
 class ExternalApi {
     token:() => Promise<any>
     constructor() {
@@ -22,13 +22,15 @@ class ExternalApi {
      * @returns 
      */
     getLiveInfo = async (streamer: string) => {
+        const url = encodeURI("https://api.twitch.tv/helix/streams?user_login=" + streamer)
         return await axios({
-            url: "https://api.twitch.tv/helix/streams?user_login=" + streamer,
+            url: url,
             method: 'get',
             headers: {
                 'Client-Id': '4f0dkwr6ykwtyb5kqulxsse2wn1cqr',
                 'Authorization': 'Bearer ' + await this.token()
-            }
+            },
+            
         }).then(v => v.data.data[0] as LiveStreamInfoType);
     }
 
@@ -37,14 +39,15 @@ class ExternalApi {
     * 뷰카운트, 설립일
     */
     getStreamerInfo = async (streamer: string) => {
+        const url = encodeURI("https://api.twitch.tv/helix/search/channels?first=1&query=" + streamer)
         return await axios({
-            url: "https://api.twitch.tv/helix/users?login=" + streamer,
+            url: url,
             method: 'get',
             headers: {
                 'Client-Id': '4f0dkwr6ykwtyb5kqulxsse2wn1cqr',
-                'Authorization': 'Bearer ' + this.token
+                'Authorization': 'Bearer ' + await this.token()
             }
-        }).then(v => v.data)
+        }).then(v => v.data.data[0] as LiveStreamerInfoType)
     }
 }
 
