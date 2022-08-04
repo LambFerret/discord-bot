@@ -1,9 +1,10 @@
 import { MessageCommand } from './MessageCommand';
 import { CONFIG } from "./config/Config";
-import { ExternalApi } from './ExternalAPI'
+import * as os from 'os';
 import { Client, Message, GatewayIntentBits, Guild } from "discord.js";
 import ServerService from './service/ServerService';
 import StreamerService from './service/StreamerService';
+import util from 'util';
 
 export default class DiscordBot {
 
@@ -42,7 +43,16 @@ export default class DiscordBot {
     const content = msg.content
     if (!this.command.isStartWithPrefix(content)) return;
     const message = content.split(' ')
-    // DB 작업
+    
+    if (content[1]==='status') {
+      msg.channel.send(`
+        현재 접속중 hostname : ${os.hostname()}
+        현재 시각 : ${new Date()}
+        세부 사항 : {
+          ${util.inspect(os.constants)}
+        }
+      `)
+    }
 
     if (content.includes("저장")) {
     }
