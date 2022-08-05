@@ -26,6 +26,10 @@ export default class DiscordBot {
     this.client.on('messageCreate', this.clientMessage)
   }
 
+  getGuildId = async () => {
+    
+  }
+
   botReady = () => {
     console.log("연결")
   }
@@ -39,9 +43,19 @@ export default class DiscordBot {
   }
 
   clientMessage = async (msg: Message) => {
-    const content = msg.content
-    if (!this.command.isStartWithPrefix(content)) return;
-    const message = content.split(' ')
+    if (!await this.command.isStartWithPrefix(msg))return;
+    const message = msg.content.split(' ')
+
+    if (message.length == 1) {
+      msg.channel.send('불렀느냐!');
+      return;
+    }
+
+    if (message[1]==='말투') {
+      this.command.changePrefix(msg.guildId, message[2])
+      msg.channel.send(`접두사가 바뀌었다! \n`+`앞으로 날 부를땐 <<${message[2]}>> 하고 말하거라!`);
+
+    }
 
     if (message[1] === 'status') {
       msg.channel.send(`

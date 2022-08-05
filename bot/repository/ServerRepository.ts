@@ -11,17 +11,34 @@ export default class ServerRepository {
 
     deleteServer = (guildId: string) => this.collection.deleteOne({ id: guildId })
 
-    findSerer = (guildId: string) => this.collection.findOne({ id: guildId })
+    findServer = (guildId: string) => this.collection.findOne({ id: guildId })
 
-    updateServer = (guildId: string, streamerId: ObjectId) =>
-        this.collection.updateOne(
-            { id: guildId },
-            {
-                $push: {
-                    subscribedStreamer: streamerId
-                }
+    updateServerPrefix = (guildId: string, prefix: string) =>
+    this.collection.updateOne(
+        { id: guildId },
+        {
+            $set: {
+                prefix: prefix
             }
-        )
+        }
+    )
 
+    updateServerStreamer = (guildId: string, streamerId: ObjectId, isPush:boolean) => {
+        const update = isPush
+        ? 
+        {
+            $push: {
+                subscribedStreamer: streamerId
+            }
+        }
+        :
+        {
+            $pull: {
+                subscribedStreamer: streamerId
+            }
+        }
+    
+        return this.collection.updateOne({ id: guildId },update)
+        }
 }
 

@@ -6,6 +6,6 @@ export type ServerInfo = {
     id: string,
     createdDate: Date,
     subscribedStreamer: Array<ObjectId>
-    prifix: string,
+    prefix: string,
     status: string
 }
