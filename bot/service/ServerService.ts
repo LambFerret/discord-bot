@@ -1,4 +1,5 @@
 import { Guild } from "discord.js";
+import { ObjectId } from "mongodb";
 import { ServerInfo } from "../model/ServerType";
 import ServerRepository from "../repository/ServerRepository";
 export default class ServerService {
@@ -21,6 +22,11 @@ export default class ServerService {
 
     deleteGuild(guildId: string) {
         this.serverRepository.deleteServer(guildId);
+    }
+
+    addStreamerToGuild(guildId:string|null, streamerId:ObjectId) {
+        if (guildId==null) return;
+        this.serverRepository.updateServer(guildId, streamerId)
     }
 
 }

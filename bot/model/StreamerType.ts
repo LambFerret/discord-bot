@@ -1,9 +1,14 @@
+import { ObjectId } from "mongodb"
+
 export type StreamerInfo = {
+    _id?: ObjectId,
+    streamerLogin: string,
     streamerName: string,
     streamerNowPlaying?: string,
     isStream: boolean,
-    createChannel: string,
-    createdUser: string,
+    createdGuild: string | null,
+    createdUserId: string,
+    createdUserName: string,
     createdDate: Date,
     modifiedDate: Date,
     url: UrlString,

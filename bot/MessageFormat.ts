@@ -21,3 +21,9 @@ export const streamerOfflineInfoMsg = (data: LiveStreamerInfoType) =>
 
 export const userNotExistMsg = () =>
   new EmbedBuilder().setTitle('존재하지 않는 아이디다!')
+
+export const streamerSaveMsg = (name: string) => {
+  return new EmbedBuilder()
+    .setTitle(name + '을 이 채널에 저장했다!')
+    
+}

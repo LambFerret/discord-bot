@@ -4,7 +4,6 @@ import * as os from 'os';
 import { Client, Message, GatewayIntentBits, Guild } from "discord.js";
 import ServerService from './service/ServerService';
 import StreamerService from './service/StreamerService';
-import util from 'util';
 
 export default class DiscordBot {
 
@@ -43,16 +42,25 @@ export default class DiscordBot {
     const content = msg.content
     if (!this.command.isStartWithPrefix(content)) return;
     const message = content.split(' ')
-    
-    if (message[1]==='status') {
+
+    if (message[1] === 'status') {
       msg.channel.send(`
         현재 접속중 hostname : ${os.hostname()} \n`
-        +`현재 시각 : ${new Date()}
+        + `현재 시각 : ${new Date()}
       `)
       return;
     }
 
-    if (content.includes("저장")) {
+    if (message[2].includes("저장")) {
+      try {
+        const result = await this.command.saveStreamerInfo(message[1], msg);
+        msg.channel.send({ embeds: [result] })
+      } catch (err) {
+        msg.channel.send("에러다!")
+        console.log(err);
+        
+
+      }
     }
 
     if (message[2].includes('방송')) {

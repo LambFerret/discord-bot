@@ -32,7 +32,7 @@ class ExternalApi {
     }
 
     getStreamerInfo = async (streamer: string) => {
-        const url = encodeURI(CONFIG.TWITCH_API_GATEWAY + "search/channels?first=3&query=" + streamer)
+        const url = encodeURI(CONFIG.TWITCH_API_GATEWAY + "search/channels?first=2&query=" + streamer)
         return await axios({
             url: url,
             method: 'get',
@@ -40,7 +40,10 @@ class ExternalApi {
                 'Client-Id': CONFIG.TWITCH_CLIENT_ID,
                 'Authorization': 'Bearer ' + await this.token
             }
-        }).then(v => v.data.data[0] as LiveStreamerInfoType)
+        }).then(v => {
+            if (v.data.data[0].game_name === '') return undefined
+            return v.data.data[0] as LiveStreamerInfoType
+        })
     }
 }
 export { ExternalApi };
