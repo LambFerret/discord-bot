@@ -27,7 +27,7 @@ export default class DiscordBot {
   }
 
   getGuildId = async () => {
-
+    
   }
 
   botReady = () => {
@@ -43,7 +43,7 @@ export default class DiscordBot {
   }
 
   clientMessage = async (msg: Message) => {
-    if (!await this.command.isStartWithPrefix(msg)) return;
+    if (!await this.command.isStartWithPrefix(msg))return;
     const message = msg.content.split(' ')
 
     if (message.length == 1) {
@@ -51,9 +51,9 @@ export default class DiscordBot {
       return;
     }
 
-    if (message[1] === '말투') {
+    if (message[1]==='말투') {
       this.command.changePrefix(msg.guildId, message[2])
-      msg.channel.send(`접두사가 바뀌었다! \n` + `앞으로 날 부를땐 <<${message[2]}>> 하고 말하거라!`);
+      msg.channel.send(`접두사가 바뀌었다! \n`+`앞으로 날 부를땐 <<${message[2]}>> 하고 말하거라!`);
 
     }
 
@@ -72,7 +72,7 @@ export default class DiscordBot {
       } catch (err) {
         msg.channel.send("에러다!")
         console.log(err);
-
+        
 
       }
     }
