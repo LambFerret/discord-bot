@@ -78,10 +78,10 @@ export const introduceBot = (name: string, myName: string) => {
       {
         "name": `\`${myName} status \``,
         "value": `핑 확인!`
-      },{
-        "name": `\`${myName} 입장권 \``,
-        "value": `현 채널에 입장 대사를 적습니다!`
-      },
+      }, {
+      "name": `\`${myName} 입장권 \``,
+      "value": `현 채널에 입장 대사를 적습니다!`
+    },
     )
     .addFields(
       {
@@ -98,11 +98,16 @@ export const introduceBot = (name: string, myName: string) => {
       {
         "name": `\`${myName} 말투 앞 <내용> \``,
         "value": `내이름을 설정해줍니다!`
-      },{
+      },
+      {
         "name": `\`${myName} 말투 뒤 <내용> \``,
         "value": `내말투를 설정해줍니다!`
       },
-       
+      {
+        "name": `\`${myName} 방송감지 켜기|끄기 \``,
+        "value": `데쟝님의 방송을 감지합니다!`
+      },
+
     )
     .addFields({ name: 'Version', value: '1.0', inline: true })
     .setThumbnail('https://your-image-url.com/thumbnail.jpg')

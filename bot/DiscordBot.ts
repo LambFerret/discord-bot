@@ -89,7 +89,7 @@ export default class DiscordBot {
   }
 
   searchStreamer = async (msg: Message) => {
-    const a = await this.command.sendStreamInfo(msg.guildId as string, "woowakgood")
+    const a = await this.command.sendStreamInfo(msg.guildId as string, "clnmipff")
     if (a !== undefined) {
       this.sayEmbed(msg, a)
     } else {
