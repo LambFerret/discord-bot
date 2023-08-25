@@ -1,7 +1,7 @@
 import { MessageCommand } from './MessageCommand';
 import { CONFIG } from "./config/Config";
 import * as os from 'os';
-import { Client, Message, GatewayIntentBits, Guild, MessageReaction, User, PartialUser, PartialMessageReaction, Role, Partials, ActivityType } from "discord.js";
+import { Client, Message, GatewayIntentBits, Guild, MessageReaction, User, PartialUser, PartialMessageReaction, Role, Partials, ActivityType, EmbedBuilder } from "discord.js";
 import ServerService from './service/ServerService';
 import StreamerService from './service/StreamerService';
 import { UserType } from './model/UserType';
@@ -303,9 +303,9 @@ export default class DiscordBot {
     return msg.channel.send(toSay);
   }
 
-  sayEmbed = async (msg: Message, context: any) => {
+  sayEmbed = async (msg: Message, context: EmbedBuilder) => {
     const postfix = await this.serverService.getGuildPostfix(msg.guildId as string);
-    context.data.footer = { text: " ..." + postfix }
+    context.setFooter({ text: " ..." + postfix })
     console.log(context);
 
     return msg.channel.send({ embeds: [context] });
