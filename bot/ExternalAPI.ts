@@ -2,6 +2,7 @@ import axios from 'axios';
 import { CONFIG } from './config/Config';
 import { LiveStreamerInfoType } from './model/LiveStreamerInfoType';
 import { LiveStreamInfoType } from './model/LiveStreamInfoType';
+
 class ExternalApi {
     token: Promise<string>
     constructor() {
@@ -45,5 +46,9 @@ class ExternalApi {
             return v.data.data[0] as LiveStreamerInfoType
         })
     }
+
+    subscribeToWebhook = async () => {
+    }
+
 }
 export { ExternalApi };

@@ -31,22 +31,28 @@ class MessageCommand {
         }
     }
 
-    sendStreamInfo = async (streamer: string) => {
+    sendStreamInfo = async (guildId: string, streamer: string) => {
+        const previousLiveInfo = await this.serverService.getStreamLiveInfo(guildId)
+        if (previousLiveInfo == null) return undefined;
         const streamerInfo = await this.api.getStreamerInfo(streamer);
         console.log(streamerInfo);
         if (streamerInfo == undefined) {
-            return userNotExistMsg()
+            console.log("user not exist");
+            return;
         }
         const liveInfo = await this.api.getLiveInfo(streamerInfo.broadcaster_login)
         console.log(liveInfo);
 
-        if (!streamerInfo.is_live) return streamerOfflineInfoMsg(streamerInfo)
-        return streamerLiveInfoMsg(streamerInfo, liveInfo.thumbnail_url)
+        if (previousLiveInfo !== streamerInfo.is_live && streamerInfo.is_live) {
+            this.serverService.updateStreamLive(guildId, streamerInfo.is_live)
+            return streamerLiveInfoMsg(streamerInfo, liveInfo.thumbnail_url)
+        } else {
+            this.serverService.updateStreamLive(guildId, streamerInfo.is_live)
+            return;
+        }
     }
 
     introduceBot = (name: string, myName :string) => introduceBot(name, myName)
-    
-
 
 }
 

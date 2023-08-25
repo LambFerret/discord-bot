@@ -9,6 +9,8 @@ export type ServerInfo = {
     postfix: string,
     status: string,
     entrance : Entrance,
+    isStreamLive : boolean,
+    isDetecting : boolean,
 }
 
 export type Entrance = {

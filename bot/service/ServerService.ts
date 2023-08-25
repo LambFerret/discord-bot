@@ -15,6 +15,14 @@ export default class ServerService {
         return await this.serverRepository.checkIdInfo(guildId, userId)
     }
 
+    async getStreamLiveInfo(guildId: string) : Promise<boolean | null> {
+        return await this.serverRepository.checkStreamLive(guildId)
+    }
+
+    async updateStreamLive(guildId: string, isLive: boolean) {
+        this.serverRepository.updateStreamLive(guildId, isLive)
+    }
+
  
     updateModeratorId(guildId: string, userId: string[]) {
         this.serverRepository.updateModerators(guildId, userId)
@@ -54,6 +62,10 @@ export default class ServerService {
 
     async updateGuildEntranceRole(guildId: string, role: string) {
         this.serverRepository.updateGuildEntranceRole(guildId, role)
+    }
+
+    async updateStreamDetecting(guildId: string, isDetecting: boolean) {
+        this.serverRepository.updateStreamDetecting(guildId, isDetecting)
     }
 
 }

@@ -1,12 +1,13 @@
 import { MessageCommand } from './MessageCommand';
 import { CONFIG } from "./config/Config";
 import * as os from 'os';
-import { Client, Message, GatewayIntentBits, Guild, MessageReaction, User, PartialUser, PartialMessageReaction, Role, Partials } from "discord.js";
+import { Client, Message, GatewayIntentBits, Guild, MessageReaction, User, PartialUser, PartialMessageReaction, Role, Partials, ActivityType } from "discord.js";
 import ServerService from './service/ServerService';
 import StreamerService from './service/StreamerService';
 import { UserType } from './model/UserType';
 import { Entrance } from './model/ServerType';
 import { showEntranceInfo } from './MessageFormat';
+import { ExternalApi } from './ExternalAPI';
 
 export default class DiscordBot {
 
@@ -21,7 +22,11 @@ export default class DiscordBot {
     this.command = new MessageCommand();
     this.client = new Client({
       intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMessageReactions],
-      partials: [Partials.Message, Partials.Reaction, Partials.User]
+      partials: [Partials.Message, Partials.Reaction, Partials.User],
+      presence: {
+        activities: [{ name: '쟌코봇설명서 ', type: ActivityType.Listening }],
+        status: 'online'
+      }
     });
     this.client.login(CONFIG.DISCORD_BOT_TOKEN);
     this.client.once('ready', this.botReady)
@@ -29,14 +34,6 @@ export default class DiscordBot {
     // this.client.on('guildDelete', this.serverClosed)
     this.client.on('messageCreate', this.clientMessage)
     this.client.on('messageReactionAdd', this.handleReactionAdd)
-  }
-
-  sendStreamerIsOnNotification(streamerName: string) {
-    const guild = this.client.guilds.cache.get("your-guild-id"); // Replace with your guild ID
-    const channel = guild?.channels.cache.get("your-channel-id"); // Replace with your channel ID
-    // if (channel?.isText()) {
-    //   channel.send(`${streamerName} is now streaming!`);
-    // }
   }
 
   clientInit = (info: Guild) => {
@@ -89,6 +86,15 @@ export default class DiscordBot {
 
   botReady = () => {
     console.log("연결")
+  }
+
+  makeInterval = (msg: Message) => {
+    setInterval(() => {
+      const a = this.command.sendStreamInfo(msg.guildId as string, "jisanjun")
+      if (a !== undefined) {
+        this.sayEmbed(msg, a)
+      }
+    }, 60000)
   }
 
   clientMessage = async (msg: Message) => {
@@ -212,7 +218,6 @@ export default class DiscordBot {
     if (message[1] === 'status') {
       const ping = this.client.ws.ping;
       this.say(msg, `
-        현재 접속중 hostname : ${os.hostname()} \n
         현재 시각 : ${new Date()} \n 
         핑 : ${ping}ms
       `)
@@ -236,9 +241,26 @@ export default class DiscordBot {
   }
 
   moderatorMessage = (msg: Message, message: string[]): boolean => {
+    if (message[1] === '방송감지') {
+      if (message[2] === '켜기') {
+        this.serverService.updateStreamDetecting(msg.guildId as string, true);
+        this.makeInterval(msg);
+        this.say(msg, "데쟝님의 방송을 감지합니다!")
+        return false;
+      } else if (message[2] === '끄기') {
+        this.serverService.updateStreamDetecting(msg.guildId as string, false);
+        this.say(msg, "데쟝님의 방송을 감지하지 않습니다!")
+        return false;
+      } else {
+        this.say(msg, "켜기 로 켜거나 끄기 로 끄세요!")
+        return false;
+      }
+    }
+
     if (message[1] === '말투') {
       if (!message[3]) {
         this.say(msg, "뭔가 이상합니다! 잔코봇설명서 를 다시 봐주세요!")
+        return false;
       }
       if (message[2] === '앞') {
         this.serverService.updateGuildPrefix(msg.guildId as string, message[3], true)

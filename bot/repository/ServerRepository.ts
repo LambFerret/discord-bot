@@ -8,10 +8,9 @@ import { UserType } from "../model/UserType";
 export default class ServerRepository {
 
     dbPath = (): string => {
-        if (!fss.existsSync(__dirname + "../../db/")) fss.mkdirSync(__dirname + "../../db/");
-        return path.join(__dirname + "../../db/");
+        if (!fss.existsSync(__dirname + "/../../db/")) fss.mkdirSync(__dirname + "/../../db/");
+        return path.join(__dirname + "/../../db/");
     }
-
 
     createNewServer = async (info: Guild) => {
         const entrance : Entrance = {
@@ -31,6 +30,8 @@ export default class ServerRepository {
             postfix: '삐삐리뽀',
             status: 'INIT',
             entrance : entrance,
+            isStreamLive : false,
+            isDetecting : false,
         }
         await this.writeJsonAsFile(server);
         return server;
@@ -44,6 +45,12 @@ export default class ServerRepository {
     saveEntranceMessageId = async (guildId: string, messageId: string) => {
         const info = await this.readJsonFromFile(guildId);
         info.entrance.messageId = messageId;
+        await this.writeJsonAsFile(info);
+    }
+
+    updateStreamDetecting = async (guildId: string, isDetecting: boolean) => {
+        const info = await this.readJsonFromFile(guildId);
+        info.isDetecting = isDetecting;
         await this.writeJsonAsFile(info);
     }
 
@@ -74,6 +81,19 @@ export default class ServerRepository {
     updateGuildEntranceRole = async (guildId: string, role: string) => {
         const info = await this.readJsonFromFile(guildId);
         info.entrance.role = role;
+        await this.writeJsonAsFile(info);
+    }
+
+    checkStreamLive = async (guildId: string) => {
+        const info = await this.readJsonFromFile(guildId);
+
+        if (info.isDetecting) return info.isStreamLive;
+        else return null;
+    }
+
+    updateStreamLive = async (guildId: string, isLive: boolean) => {
+        const info = await this.readJsonFromFile(guildId);
+        info.isStreamLive = isLive;
         await this.writeJsonAsFile(info);
     }
 
