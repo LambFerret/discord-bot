@@ -1,7 +1,6 @@
 import { Guild } from "discord.js";
-import { ObjectId } from "mongodb";
-import { ServerInfo } from "../model/ServerType";
 import ServerRepository from "../repository/ServerRepository";
+import { UserType } from "../model/UserType";
 export default class ServerService {
     serverRepository: ServerRepository;
     constructor() {
@@ -9,37 +8,52 @@ export default class ServerService {
     }
 
     createGuild(info: Guild) {
-        const server: ServerInfo = {
-            name: info.name,
-            id: info.id,
-            createdDate: info.joinedAt,
-            subscribedStreamer: [],
-            prefix: '조교쨩',
-            status: 'INIT'
-        }
-        this.serverRepository.createServer(server);
+        return this.serverRepository.createNewServer(info);
     }
 
-    deleteGuild(guildId: string) {
-        this.serverRepository.deleteServer(guildId);
+    getUserInfo = async (guildId: string, userId: string): Promise<UserType> => {
+        return await this.serverRepository.checkIdInfo(guildId, userId)
     }
 
-    async findGuild(guildId: string) {
-        return await this.serverRepository.findServer(guildId) as ServerInfo
+ 
+    updateModeratorId(guildId: string, userId: string[]) {
+        this.serverRepository.updateModerators(guildId, userId)
     }
 
-    updateGuildPrefix(guildId:string, prefix:string) {
-        this.serverRepository.updateServerPrefix(guildId, prefix)
+    updateBotMaker(guildId: string, botMaker: string) {
+        this.serverRepository.updateBotMaker(guildId, botMaker)
     }
 
-    addStreamerToGuild(guildId:string|null, streamerId:ObjectId) {
-        if (guildId==null) return;
-        this.serverRepository.updateServerStreamer(guildId, streamerId, true)
+    async getGuildPrefix(guildId: string): Promise<string> {
+        return await this.serverRepository.getServerPrefix(guildId)
     }
-    
-    popStreamerFromGuild(guildId:string|null, streamerId:ObjectId) {
-        if (guildId==null) return;
-        this.serverRepository.updateServerStreamer(guildId, streamerId, false)
+
+    async getGuildPostfix(guildId: string): Promise<string> {
+        return await this.serverRepository.getServerPostfix(guildId)
+    }
+
+    async updateGuildPrefix(guildId: string, postfix: string, isPrefix: boolean) {
+        this.serverRepository.updateServerPrefix(guildId, postfix, isPrefix)
+    }
+
+    async getEntraceInfo(guildId: string) {
+        return await this.serverRepository.getEntranceInfo(guildId)
+    }
+
+    async saveEntranceMessageId(guildId: string, messageId: string) {
+        this.serverRepository.saveEntranceMessageId(guildId, messageId)
+    }
+
+    async updateGuildEntranceQuote(guildId: string, quote: string) {
+        this.serverRepository.updateGuildEntranceQuote(guildId, quote)
+    }
+
+    async updateGuildEntranceEmoji(guildId: string, emoji: string) {
+        this.serverRepository.updateGuildEntranceEmoji(guildId, emoji)
+    }
+
+    async updateGuildEntranceRole(guildId: string, role: string) {
+        this.serverRepository.updateGuildEntranceRole(guildId, role)
     }
 
 }

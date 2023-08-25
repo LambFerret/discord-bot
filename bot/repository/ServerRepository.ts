@@ -1,44 +1,142 @@
-import { Collection, ObjectId } from 'mongodb'
-import { client } from '../config/MongoConnect'
-import { ServerInfo } from '../model/ServerType'
+import { ServerInfo, Entrance } from "../model/ServerType";
+import { Guild } from "discord.js";
+import fs from 'fs/promises';
+import * as fss from 'fs';
+import path from 'path';
+import { UserType } from "../model/UserType";
+
 export default class ServerRepository {
-    collection: Collection
-    constructor() {
-        this.collection = client.collection("Server")
+
+    dbPath = (): string => {
+        if (!fss.existsSync(__dirname + "../../db/")) fss.mkdirSync(__dirname + "../../db/");
+        return path.join(__dirname + "../../db/");
     }
 
-    createServer = (info: ServerInfo) => this.collection.insertOne(info);
 
-    deleteServer = (guildId: string) => this.collection.deleteOne({ id: guildId })
-
-    findServer = (guildId: string) => this.collection.findOne({ id: guildId })
-
-    updateServerPrefix = (guildId: string, prefix: string) =>
-        this.collection.updateOne(
-            { id: guildId },
-            {
-                $set: {
-                    prefix: prefix
-                }
-            }
-        )
-
-    updateServerStreamer = (guildId: string, streamerId: ObjectId, isPush: boolean) => {
-        const update = isPush
-            ?
-            {
-                $push: {
-                    subscribedStreamer: streamerId
-                }
-            }
-            :
-            {
-                $pull: {
-                    subscribedStreamer: streamerId
-                }
-            }
-
-        return this.collection.updateOne({ id: guildId }, update)
+    createNewServer = async (info: Guild) => {
+        const entrance : Entrance = {
+            quote : "토끼 클릭으로 입장해요!",
+            messageId : "",
+            emoji : "🐰",
+            role : ""
+        }
+        const server: ServerInfo = {
+            name: info.name,
+            id: info.id,
+            createdDate: info.joinedAt,
+            OwnerId: info.ownerId,
+            MyId: "",
+            ModeratorId: [],
+            prefix: '쟌코봇치야',
+            postfix: '삐삐리뽀',
+            status: 'INIT',
+            entrance : entrance,
+        }
+        await this.writeJsonAsFile(server);
+        return server;
     }
+
+    getEntranceInfo = async (guildId: string) => {
+        const info = await this.readJsonFromFile(guildId);
+        return info.entrance;
+    }
+
+    saveEntranceMessageId = async (guildId: string, messageId: string) => {
+        const info = await this.readJsonFromFile(guildId);
+        info.entrance.messageId = messageId;
+        await this.writeJsonAsFile(info);
+    }
+
+    updateServerPrefix = async (guildId: string, prefix: string, isPrefix: boolean) => {
+        try {
+            const info = await this.readJsonFromFile(guildId);
+            if (isPrefix) info.prefix = prefix;
+            else info.postfix = prefix;
+            await this.writeJsonAsFile(info);
+            console.log(`Server ${guildId} prefix updated successfully!`);
+        } catch (err) {
+            console.error(`Failed to update server prefix: ${err}`);
+        }
+    }
+
+    updateGuildEntranceQuote = async (guildId: string, quote: string) => {
+        const info = await this.readJsonFromFile(guildId);
+        info.entrance.quote = quote;
+        await this.writeJsonAsFile(info);
+    }
+
+    updateGuildEntranceEmoji = async (guildId: string, emoji: string) => {
+        const info = await this.readJsonFromFile(guildId);
+        info.entrance.emoji = emoji;
+        await this.writeJsonAsFile(info);
+    }
+
+    updateGuildEntranceRole = async (guildId: string, role: string) => {
+        const info = await this.readJsonFromFile(guildId);
+        info.entrance.role = role;
+        await this.writeJsonAsFile(info);
+    }
+
+
+    checkIdInfo = async (guildId: string, id: string): Promise<UserType> => {
+        const info = await this.readJsonFromFile(guildId);
+        switch (id) {
+            case info.OwnerId:
+                return UserType.Owner
+
+            case info.MyId:
+                return UserType.BotMaker
+            default: {
+                if (info.ModeratorId.includes(id)) {
+                    return UserType.Moderator
+                } else {
+                    return UserType.Normal
+
+                }
+            }
+        }
+    }
+
+    updateModerators = async (guildId: string, moderator: string[]) => {
+        const info = await this.readJsonFromFile(guildId);
+        if (!moderator) info.ModeratorId = moderator;
+        await this.writeJsonAsFile(info);
+    }
+
+    updateBotMaker = async (guildId: string, botMaker: string) => {
+        const info = await this.readJsonFromFile(guildId);
+        info.MyId = botMaker;
+        await this.writeJsonAsFile(info);
+    }
+
+    getServerPrefix = async (guildId: string): Promise<string> => (await this.readJsonFromFile(guildId)).prefix;
+    getServerPostfix = async (guildId: string): Promise<string> => (await this.readJsonFromFile(guildId)).postfix;
+
+    writeJsonAsFile = async (info: ServerInfo) => {
+        try {
+            const filePath = path.join(this.dbPath(), `${info.id}.json`);
+            await fs.writeFile(filePath, JSON.stringify(info, null, 2));
+            console.log(`Server ${info.id} created successfully!`);
+        } catch (err) {
+            console.error(`Failed to create server: ${err}`);
+        }
+    }
+
+    readJsonFromFile = async (id: string): Promise<ServerInfo> => {
+        try {
+            const filePath = path.join(this.dbPath(), `${id}.json`);
+            const data = await fs.readFile(filePath, 'utf-8');
+            return JSON.parse(data) as ServerInfo;
+        } catch (err) {
+            console.log(`Failed to read JSON from file: ${err}`);
+            throw err; 
+
+        }
+    }
+
+    updateServerStreamer = (guildId: string) => {
+
+    }
+
 }
 

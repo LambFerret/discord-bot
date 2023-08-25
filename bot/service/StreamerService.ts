@@ -1,13 +1,13 @@
 import { Guild, Message } from "discord.js";
 import { LiveStreamerInfoType } from "../model/LiveStreamerInfoType";
 import { StreamerInfo } from "../model/StreamerType";
-import StreamerRepository from "../repository/StreamerRepository";
+// import StreamerRepository from "../repository/StreamerRepository";
 
 export default class StreamerService {
-    streamerRepository: StreamerRepository;
-    constructor() {
-        this.streamerRepository = new StreamerRepository();
-    }
+    // streamerRepository: StreamerRepository;
+    // constructor() {
+    //     this.streamerRepository = new StreamerRepository();
+    // }
 
     saveStreamer = async (info: LiveStreamerInfoType, msg: Message) => {
         const url = {
@@ -27,6 +27,6 @@ export default class StreamerService {
             isConfirmed: false
         }
         if (info.is_live) saveInfo.streamerNowPlaying = info.game_name;
-        return await this.streamerRepository.createStreamer(saveInfo)
+        // return await this.streamerRepository.createStreamer(saveInfo)
     }
 }

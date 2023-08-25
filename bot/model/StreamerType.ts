@@ -16,8 +16,8 @@ export type StreamerInfo = {
 }
 
 export type UrlString = {
-    youtube?: string,
     twitch: string,
+    youtube?: string,
     instagram?: string,
     thumbnail?: string,
 }

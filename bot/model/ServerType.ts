@@ -1,11 +1,19 @@
-import { ObjectId } from "mongodb"
-
 export type ServerInfo = {
-    _id?: ObjectId,
     name: string,
     id: string,
     createdDate: Date,
-    subscribedStreamer: Array<ObjectId>
+    OwnerId: string,
+    MyId: string,
+    ModeratorId: Array<string>,
     prefix: string,
-    status: string
+    postfix: string,
+    status: string,
+    entrance : Entrance,
+}
+
+export type Entrance = {
+    quote : string,
+    messageId : string,
+    emoji : string,
+    role: string,
 }
