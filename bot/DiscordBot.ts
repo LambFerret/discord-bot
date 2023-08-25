@@ -89,10 +89,13 @@ export default class DiscordBot {
   }
 
   makeInterval = (msg: Message) => {
+    console.log("makeInterval");
     setInterval(() => {
       const a = this.command.sendStreamInfo(msg.guildId as string, "jisanjun")
       if (a !== undefined) {
         this.sayEmbed(msg, a)
+      } else {
+        console.log("interval undefined");
       }
     }, 60000)
   }
