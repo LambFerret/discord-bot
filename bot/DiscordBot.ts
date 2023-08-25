@@ -303,11 +303,12 @@ export default class DiscordBot {
     return msg.channel.send(toSay);
   }
 
-  sayEmbed = async (msg: Message, context: EmbedBuilder) => {
+  sayEmbed = async (msg: Message, context: any) => {
     const postfix = await this.serverService.getGuildPostfix(msg.guildId as string);
-    context.setFooter({ text: " ..." + postfix })
+    const embed = context as EmbedBuilder;
+    embed.setFooter({ text: " ..." + postfix })
     console.log(context);
 
-    return msg.channel.send({ embeds: [context] });
+    return msg.channel.send({ embeds: [embed] });
   }
 }
