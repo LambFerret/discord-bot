@@ -88,16 +88,19 @@ export default class DiscordBot {
     console.log("연결")
   }
 
+  searchStreamer = async (msg: Message) => {
+    const a = await this.command.sendStreamInfo(msg.guildId as string, "woowakgood")
+    if (a !== undefined) {
+      this.sayEmbed(msg, a)
+    } else {
+      console.log("interval undefined");
+    }
+  }
+
   makeInterval = (msg: Message) => {
     console.log("makeInterval");
-    setInterval(() => {
-      const a = this.command.sendStreamInfo(msg.guildId as string, "jisanjun")
-      if (a !== undefined) {
-        this.sayEmbed(msg, a)
-      } else {
-        console.log("interval undefined");
-      }
-    }, 60000)
+    this.searchStreamer(msg);
+    setInterval(() => this.searchStreamer(msg), 60000)
   }
 
   clientMessage = async (msg: Message) => {

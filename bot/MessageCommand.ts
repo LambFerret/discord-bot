@@ -1,4 +1,4 @@
-import { Guild, Message } from "discord.js"
+import { EmbedBuilder, Guild, Message } from "discord.js"
 import { ExternalApi } from "./ExternalAPI"
 import {
     streamerLiveInfoMsg, streamerOfflineInfoMsg,
@@ -31,7 +31,7 @@ class MessageCommand {
         }
     }
 
-    sendStreamInfo = async (guildId: string, streamer: string) => {
+    sendStreamInfo = async (guildId: string, streamer: string): Promise<EmbedBuilder | undefined> => {
         const previousLiveInfo = await this.serverService.getStreamLiveInfo(guildId)
         if (previousLiveInfo == null) return undefined;
         const streamerInfo = await this.api.getStreamerInfo(streamer);
@@ -52,7 +52,7 @@ class MessageCommand {
         }
     }
 
-    introduceBot = (name: string, myName :string) => introduceBot(name, myName)
+    introduceBot = (name: string, myName: string) => introduceBot(name, myName)
 
 }
 
