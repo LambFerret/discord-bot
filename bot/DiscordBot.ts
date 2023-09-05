@@ -89,7 +89,7 @@ export default class DiscordBot {
   }
 
   searchStreamer = async (msg: Message) => {
-    const a = await this.command.sendStreamInfo(msg.guildId as string, "clnmipff")
+    const a = await this.command.sendStreamInfo(msg.guildId as string, "nokduro")
     if (a !== undefined) {
       this.sayEmbed(msg, a)
     } else {
@@ -125,7 +125,7 @@ export default class DiscordBot {
         shouldContinue = await this.botMakerMessage(msg, message);
       }
       if (shouldContinue) {
-        shouldContinue = this.moderatorMessage(msg, message);
+        shouldContinue = await this.moderatorMessage(msg, message);
       }
       if (shouldContinue) {
         shouldContinue = this.normalMessage(msg, message);
@@ -137,7 +137,7 @@ export default class DiscordBot {
       shouldContinue = await this.botMakerMessage(msg, message);
 
       if (shouldContinue) {
-        shouldContinue = this.moderatorMessage(msg, message);
+        shouldContinue = await this.moderatorMessage(msg, message);
       }
       if (shouldContinue) {
         shouldContinue = this.normalMessage(msg, message);
@@ -146,7 +146,7 @@ export default class DiscordBot {
 
     // If the user is a Moderator, they can access Moderator and Normal functionalities
     else if (userType === UserType.Moderator) {
-      shouldContinue = this.moderatorMessage(msg, message);
+      shouldContinue = await this.moderatorMessage(msg, message);
 
       if (shouldContinue) {
         shouldContinue = this.normalMessage(msg, message);
@@ -246,15 +246,18 @@ export default class DiscordBot {
     return true;
   }
 
-  moderatorMessage = (msg: Message, message: string[]): boolean => {
+  moderatorMessage = async (msg: Message, message: string[]): Promise<boolean> => {
     if (message[1] === '방송감지') {
+	const guildIdid = msg.guildId as string;
+	const isStreamAlive = await this.serverService.getStreamLiveInfo(guildIdid)
+	console.log("wahtahtathath " + isStreamAlive)
       if (message[2] === '켜기') {
-        this.serverService.updateStreamDetecting(msg.guildId as string, true);
-        this.makeInterval(msg);
+        if (!isStreamAlive) this.makeInterval(msg);
+        this.serverService.updateStreamDetecting(guildIdid, true);
         this.say(msg, "데쟝님의 방송을 감지합니다!")
         return false;
       } else if (message[2] === '끄기') {
-        this.serverService.updateStreamDetecting(msg.guildId as string, false);
+        this.serverService.updateStreamDetecting(guildIdid, false);
         this.say(msg, "데쟝님의 방송을 감지하지 않습니다!")
         return false;
       } else {

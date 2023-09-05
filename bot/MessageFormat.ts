@@ -1,15 +1,15 @@
+
+import { LiveStreamInfoType } from './model/LiveStreamInfoType';
 import { EmbedBuilder } from 'discord.js';
 import { LiveStreamerInfoType } from "./model/LiveStreamerInfoType";
 import { Entrance } from './model/ServerType';
-
-export const streamerLiveInfoMsg = (data: LiveStreamerInfoType, imageurl: string) =>
+export const streamerLiveInfoMsg = (data: LiveStreamInfoType) =>
   new EmbedBuilder()
     .setColor('#0000ff')
-    .setTitle(`${data.display_name}님의 ${data.game_name}방송이다!`)
+    .setTitle(`${data.user_name}님의 ${data.game_name}방송이다!`)
     .setDescription("방제 :" + data.title)
-    .setURL("https://twitch.tv/" + data.broadcaster_login)
-    .setThumbnail(data.thumbnail_url)
-    .setImage(imageurl.replace("-{width}x{height}", ""))
+    .setURL("https://twitch.tv/" + data.user_login)
+    .setThumbnail("https://static-cdn.jtvnw.net/previews-ttv/live_user_clnmipff.jpg")
 
 
 export const streamerOfflineInfoMsg = (data: LiveStreamerInfoType) =>
