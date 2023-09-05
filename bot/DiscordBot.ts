@@ -1,13 +1,10 @@
 import { MessageCommand } from './MessageCommand';
 import { CONFIG } from "./config/Config";
-import * as os from 'os';
 import { Client, Message, GatewayIntentBits, Guild, MessageReaction, User, PartialUser, PartialMessageReaction, Role, Partials, ActivityType, EmbedBuilder } from "discord.js";
 import ServerService from './service/ServerService';
 import StreamerService from './service/StreamerService';
 import { UserType } from './model/UserType';
-import { Entrance } from './model/ServerType';
 import { showEntranceInfo } from './MessageFormat';
-import { ExternalApi } from './ExternalAPI';
 
 export default class DiscordBot {
 
@@ -89,11 +86,11 @@ export default class DiscordBot {
   }
 
   searchStreamer = async (msg: Message) => {
-    const a = await this.command.sendStreamInfo(msg.guildId as string, "nokduro")
+    const a = await this.command.sendStreamInfo(msg.guildId as string, "clnmipff")
     if (a !== undefined) {
       this.sayEmbed(msg, a)
     } else {
-      console.log("interval undefined");
+      console.log("Streamer offline");
     }
   }
 
@@ -248,17 +245,34 @@ export default class DiscordBot {
 
   moderatorMessage = async (msg: Message, message: string[]): Promise<boolean> => {
     if (message[1] === '방송감지') {
-	const guildIdid = msg.guildId as string;
-	const isStreamAlive = await this.serverService.getStreamLiveInfo(guildIdid)
-	console.log("wahtahtathath " + isStreamAlive)
+      const guildIdid = msg.guildId as string;
+      const isStreamAlive = await this.serverService.getStreamLiveInfo(guildIdid)
+      const channel = await this.serverService.getDetectChannel(guildIdid);
       if (message[2] === '켜기') {
-        if (!isStreamAlive) this.makeInterval(msg);
-        this.serverService.updateStreamDetecting(guildIdid, true);
+        if (channel === "" || channel === undefined) {
+          const channelId = msg.channelId;
+          console.log("channel ID : "+channelId);
+          
+          await this.serverService.updateDetectChannel(guildIdid, msg.channelId as string);
+        } else if (channel !== msg.channelId) {
+          this.say(msg, `이미 ${channel} 채널에서 방송을 감지하고 있습니다! 채널 변경 명령어를 사용해주세요!`)
+          return false;
+        }
+        if (!isStreamAlive) {
+          this.makeInterval(msg);
+        }else {
+          console.log("already on");
+        }
+        await this.serverService.updateStreamDetecting(guildIdid, true);
         this.say(msg, "데쟝님의 방송을 감지합니다!")
         return false;
       } else if (message[2] === '끄기') {
-        this.serverService.updateStreamDetecting(guildIdid, false);
+        await this.serverService.updateStreamDetecting(guildIdid, false);
         this.say(msg, "데쟝님의 방송을 감지하지 않습니다!")
+        return false;
+      } else if (message[2] === '채널변경') {
+        await this.serverService.updateDetectChannel(guildIdid, message[3]);
+        this.say(msg, `데쟝님의 방송을 ${message[3]} 채널에서 감지합니다!`)
         return false;
       } else {
         this.say(msg, "켜기 로 켜거나 끄기 로 끄세요!")
@@ -268,7 +282,7 @@ export default class DiscordBot {
 
     if (message[1] === '말투') {
       if (!message[3]) {
-        this.say(msg, "뭔가 이상합니다! 잔코봇설명서 를 다시 봐주세요!")
+        this.say(msg, "뭔가 이상합니다! 쟌코봇설명서 를 다시 봐주세요!")
         return false;
       }
       if (message[2] === '앞') {

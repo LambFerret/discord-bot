@@ -20,7 +20,15 @@ export default class ServerService {
     }
 
     async updateStreamLive(guildId: string, isLive: boolean) {
-        this.serverRepository.updateStreamLive(guildId, isLive)
+        await this.serverRepository.updateStreamLive(guildId, isLive)
+    }
+
+    async updateDetectChannel(guildId: string, channelId: string) {
+        await this.serverRepository.updateDetectChannel(guildId, channelId)
+    }
+
+    async getDetectChannel(guildId: string): Promise<string> {
+        return await this.serverRepository.getDetectChannel(guildId)
     }
 
  

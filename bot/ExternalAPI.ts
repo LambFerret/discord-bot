@@ -31,24 +31,5 @@ class ExternalApi {
             },
         }).then(v => v.data.data[0] as LiveStreamInfoType);
     }
-
-    getStreamerInfo = async (streamer: string) => {
-        const url = encodeURI(CONFIG.TWITCH_API_GATEWAY + "search/channels?first=2&query=" + streamer)
-        return await axios({
-            url: url,
-            method: 'get',
-            headers: {
-                'Client-Id': CONFIG.TWITCH_CLIENT_ID,
-                'Authorization': 'Bearer ' + await this.token
-            }
-        }).then(v => {
-            if (v.data.data[0].game_name === '') return undefined
-            return v.data.data[0] as LiveStreamerInfoType
-        })
-    }
-
-    subscribeToWebhook = async () => {
-    }
-
 }
 export { ExternalApi };

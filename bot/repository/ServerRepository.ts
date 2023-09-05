@@ -13,25 +13,26 @@ export default class ServerRepository {
     }
 
     createNewServer = async (info: Guild) => {
-        const entrance : Entrance = {
-            quote : "토끼 클릭으로 입장해요!",
-            messageId : "",
-            emoji : "🐰",
-            role : ""
+        const entrance: Entrance = {
+            quote: "토끼 클릭으로 입장해요!",
+            messageId: "",
+            emoji: "🐰",
+            role: ""
         }
         const server: ServerInfo = {
             name: info.name,
             id: info.id,
             createdDate: info.joinedAt,
             OwnerId: info.ownerId,
+            detectChannel: "",
             MyId: "",
             ModeratorId: [],
             prefix: '쟌코봇치야',
             postfix: '삐삐리뽀',
             status: 'INIT',
-            entrance : entrance,
-            isStreamLive : false,
-            isDetecting : false,
+            entrance: entrance,
+            isStreamLive: false,
+            isDetecting: false,
         }
         await this.writeJsonAsFile(server);
         return server;
@@ -117,6 +118,13 @@ export default class ServerRepository {
         }
     }
 
+    updateDetectChannel = async (guildId: string, channelId: string) => {
+        const info = await this.readJsonFromFile(guildId);
+        info.detectChannel = channelId;
+        await this.writeJsonAsFile(info);
+    }
+
+
     updateModerators = async (guildId: string, moderator: string[]) => {
         const info = await this.readJsonFromFile(guildId);
         if (!moderator) info.ModeratorId = moderator;
@@ -129,6 +137,7 @@ export default class ServerRepository {
         await this.writeJsonAsFile(info);
     }
 
+    getDetectChannel = async (guildId: string): Promise<string> => (await this.readJsonFromFile(guildId)).detectChannel;
     getServerPrefix = async (guildId: string): Promise<string> => (await this.readJsonFromFile(guildId)).prefix;
     getServerPostfix = async (guildId: string): Promise<string> => (await this.readJsonFromFile(guildId)).postfix;
 
@@ -149,7 +158,7 @@ export default class ServerRepository {
             return JSON.parse(data) as ServerInfo;
         } catch (err) {
             console.log(`Failed to read JSON from file: ${err}`);
-            throw err; 
+            throw err;
 
         }
     }

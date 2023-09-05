@@ -3,6 +3,7 @@ export type ServerInfo = {
     id: string,
     createdDate: Date,
     OwnerId: string,
+    detectChannel : string,
     MyId: string,
     ModeratorId: Array<string>,
     prefix: string,
