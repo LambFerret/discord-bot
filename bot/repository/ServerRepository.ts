@@ -167,5 +167,19 @@ export default class ServerRepository {
 
     }
 
+    initDetecting = async () => {
+        const detectingServers: string[] = [];
+        for (const file of await fs.readdir(this.dbPath())) {
+            const filePath = path.join(this.dbPath(), file + '.json');
+            const data = await fs.readFile(filePath, 'utf-8');
+            const info = JSON.parse(data) as ServerInfo;
+            if (info.isDetecting) {
+                detectingServers.push(file);
+            }
+        }
+
+        return detectingServers;
+    }
+
 }
 

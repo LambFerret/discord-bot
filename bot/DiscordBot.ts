@@ -81,8 +81,12 @@ export default class DiscordBot {
     }
   }
 
-  botReady = () => {
+  botReady = async () => {
     console.log("연결")
+    const lists = await this.serverService.initDetecting();
+    lists.forEach(e => {
+      
+    });
   }
 
   searchStreamer = async (msg: Message) => {
@@ -90,7 +94,7 @@ export default class DiscordBot {
     if (a !== undefined) {
       this.sayEmbed(msg, a)
     } else {
-      console.log("Streamer offline");
+      console.log(Date.now() + "Streamer offline");
     }
   }
 
@@ -251,8 +255,8 @@ export default class DiscordBot {
       if (message[2] === '켜기') {
         if (channel === "" || channel === undefined) {
           const channelId = msg.channelId;
-          console.log("channel ID : "+channelId);
-          
+          console.log("channel ID : " + channelId);
+
           await this.serverService.updateDetectChannel(guildIdid, msg.channelId as string);
         } else if (channel !== msg.channelId) {
           this.say(msg, `이미 ${channel} 채널에서 방송을 감지하고 있습니다! 채널 변경 명령어를 사용해주세요!`)
@@ -260,7 +264,7 @@ export default class DiscordBot {
         }
         if (!isStreamAlive) {
           this.makeInterval(msg);
-        }else {
+        } else {
           console.log("already on");
         }
         await this.serverService.updateStreamDetecting(guildIdid, true);

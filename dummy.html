@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Chat</title>
+    <style>
+        /* Container that holds the chat messages */
+        #chat-container {
+            width: 400px;
+            height: 500px;
+            border: 1px solid #ccc;
+            overflow-y: auto;
+            padding: 10px;
+            margin: 10px;
+        }
+
+        /* Style for a single chat message */
+        .chat-message {
+            padding: 5px;
+            margin: 10px;
+            border-radius: 5px;
+        }
+
+        /* Style for messages from 'Other' */
+        .other {
+            background-color: #f1f1f1;
+        }
+
+        /* Initially hide the stop button */
+        #stop-button {
+            display: none;
+        }
+
+        /* Style for the speaker name */
+        #speaker-name {
+            text-align: center;
+            margin: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="speaker-name">
+        <h1>Unknown</h1>
+    </div>
+    <div id="chat-container">
+        <!-- Chat messages will be added here -->
+    </div>
+    <button id="block-me">차단하기</button>
+
+    <button id="stop-button">끝내기</button>
+</body>
+
+<script>
+    const chatContainer = document.getElementById('chat-container');
+    const stopButton = document.getElementById('stop-button');
+    const blockButton = document.getElementById('block-me');
+    const messages = [
+        '날 차단한거에요?', 
+        '초쟌님', 
+        '실망입니다',
+        '초쟌님?초쟌님?초쟌님?초쟌님?초쟌님?초쟌님?초쟌님?', 
+        '풀어주세요', 
+        '전 잘못한게 없어요', 
+        '보고있어요',
+        '뒤에',
+        '지켜보고있어요',
+        '뭐하세요?',
+        '저에요',
+        '차단하면 제가 못볼줄 아세요?',
+        '제가 그러고싶어서 그러는게 아니에요',
+        '절 이렇게 만드셨잖아요',
+        '전 잘못이 없어요',
+        '뭐드시고 계세요?',
+        '지켜볼게요',
+        '옆에 있어요',
+        '자는 모습이 귀여웠어요',
+        '창문좀 열어주세요',
+
+    ]; // String list
+    let index = 0;
+    let messageCount = 0;
+    let intervalId;
+
+    function addFirstMessage(message) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = 'chat-message other';
+        messageDiv.innerText = message;
+        chatContainer.appendChild(messageDiv);
+    }
+
+    addFirstMessage("내일도 방송켜주세요 ㅠㅠ")
+    addFirstMessage("제발요")
+
+
+    // Function to add a chat message to the chat container
+    function addChatMessage(message) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = 'chat-message other';
+        messageDiv.innerText = message;
+        chatContainer.appendChild(messageDiv);
+
+        // Scroll chat container to the bottom to show the latest message
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+
+        messageCount++;
+
+        ringbell();
+
+        if (messageCount >= 10) {
+            stopButton.style.display = 'block';
+        }
+    }
+
+    // Function to stop the interval
+    function stopChat() {
+        clearInterval(intervalId);
+        window.open('https://www.youtube.com/watch?v=-pczFfMtWrc&pp=ygUW7KO866W066W0IOq3gOyXrOybjOyEnA%3D%3D', '_blank');
+        window.close();
+    }
+
+    // Function that runs every second to update the chat
+    function startInterval() {
+        blockButton.style.display = 'none';
+        intervalId = setInterval(() => {
+            // random of message
+            index = Math.floor(Math.random() * messages.length);
+            addChatMessage(messages[index]);
+        }, 500);
+    }
+    // Add click event to the stop button
+    stopButton.addEventListener('click', stopChat);
+    blockButton.addEventListener('click', startInterval);
+
+    function ringbell() {
+        // Initialize a new Audio object
+        const audio = new Audio("1.mp3");
+        console.log("ring");
+        audio.volume = 0.1;
+        audio.play();
+
+    }
+</script>
+
+</html>

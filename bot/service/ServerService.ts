@@ -76,4 +76,8 @@ export default class ServerService {
         this.serverRepository.updateStreamDetecting(guildId, isDetecting)
     }
 
+    async initDetecting() {
+        return this.serverRepository.initDetecting();
+    }
+
 }

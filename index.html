@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>환영합니다</title>
+    <style>
+        /* Center the table in the middle of the page */
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: black;
+            margin: 0;
+        }
+
+        /* Style the table */
+        table {
+            border-collapse: separate;
+            border-spacing: 10px;
+        }
+
+        /* Style the table cells */
+        td {
+            border: 1px solid black;
+            padding: 50px;
+            text-align: left;
+        }
+    </style>
+</head>
+
+<body>
+    <table>
+        <tr>
+            <td colspan="2">
+                <h1 style="color: white; font-size: 50px;">
+                    초쟌 만을 위한 공포게<br>임!
+                </h1>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" style="text-align: center;">
+                <h2 style="color: blue; font-size: 30px;">
+                    <div style="display: flex; align-items: center;">
+                        <div id="blink-string1" style="display: inline;">&gt;&gt;&gt;&gt;&gt;</div>
+                        <a id="my-link" href="#" style="font-size: larger; margin: 0 10px;">Download</a>
+                        <div id="blink-string2" style="display: inline;">&lt;&lt;&lt;&lt;&lt;</div>
+                    </div>
+                </h2>
+            </td>
+        </tr>
+        <tr>
+            <td style="color: red; font-size: medium;">방송을 할 때 마다 업데이트<br>되는 방식입니다</td>
+            <td style="color: white; font-size: small;">재밌게 해 주시면 기쁠 것<br>같아요</td>
+        </tr>
+    </table>
+</body>
+<script>
+
+    // Get the elements by their IDs
+    const blinkString1 = document.getElementById('blink-string1');
+    const blinkString2 = document.getElementById('blink-string2');
+
+    // Function to toggle visibility
+    function toggleVisibility(element) {
+        if (element.style.visibility === 'hidden') {
+            element.style.visibility = 'visible';
+        } else {
+            element.style.visibility = 'hidden';
+        }
+    }
+
+    // Make the text blink every 500 milliseconds
+    setInterval(() => {
+        toggleVisibility(blinkString1);
+        toggleVisibility(blinkString2);
+    }, 500);
+
+    // Get the <a> element by its ID
+    const link = document.getElementById("my-link");
+
+
+
+    // Add a click event listener
+    link.addEventListener("click", function (event) {
+        // Prevent the default action of navigating to a new page
+        event.preventDefault();
+
+        // Your custom logic here, for example:
+        console.log("Link clicked!");
+        // Open a new tab and navigate to YouTube
+        window.open('https://www.youtube.com/watch?v=-pczFfMtWrc&pp=ygUW7KO866W066W0IOq3gOyXrOybjOyEnA%3D%3D', '_blank');
+
+        // Navigate the current window to /dummy
+        window.location.href = '/solve';
+
+    });
+</script>
+
+</html>
