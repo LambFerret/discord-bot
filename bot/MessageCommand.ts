@@ -29,29 +29,25 @@ class MessageCommand {
             return false
         }
     }
-    
+
     sendStreamInfo = async (guildId: string, streamer: string): Promise<EmbedBuilder | undefined> => {
         const previousLiveInfo = await this.serverService.getStreamLiveInfo(guildId);
-        if (previousLiveInfo == null) return undefined;
-
         const liveInfo = await this.api.getLiveInfo(streamer);
 
-        if (liveInfo == undefined) return undefined;
+        if (!liveInfo && !previousLiveInfo) return undefined;
 
-        if (liveInfo == null && previousLiveInfo) {
+        if (!liveInfo && previousLiveInfo) {
             this.serverService.updateStreamLive(guildId, false);
             return undefined;
         }
 
-       
-        
-
         if (liveInfo.type === 'live' && !previousLiveInfo) {
             this.serverService.updateStreamLive(guildId, true);
             return streamerLiveInfoMsg(liveInfo);
-        } else {
-            return undefined;
         }
+
+        return undefined;
+
     }
 
     introduceBot = (name: string, myName: string) => introduceBot(name, myName)
