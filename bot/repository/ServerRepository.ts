@@ -168,13 +168,13 @@ export default class ServerRepository {
     }
 
     initDetecting = async () => {
-        const detectingServers: string[] = [];
+        const detectingServers: ServerInfo[] = [];
         for (const file of await fs.readdir(this.dbPath())) {
-            const filePath = path.join(this.dbPath(), file + '.json');
+            const filePath = path.join(this.dbPath(), file);
             const data = await fs.readFile(filePath, 'utf-8');
             const info = JSON.parse(data) as ServerInfo;
             if (info.isDetecting) {
-                detectingServers.push(file);
+                detectingServers.push(info);
             }
         }
 

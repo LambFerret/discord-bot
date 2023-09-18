@@ -1,10 +1,11 @@
 import { MessageCommand } from './MessageCommand';
 import { CONFIG } from "./config/Config";
-import { Client, Message, GatewayIntentBits, Guild, MessageReaction, User, PartialUser, PartialMessageReaction, Role, Partials, ActivityType, EmbedBuilder } from "discord.js";
+import { Client, Message, GatewayIntentBits, Guild, MessageReaction, User, PartialUser, PartialMessageReaction, Role, Partials, ActivityType, EmbedBuilder, Channel, GuildTextBasedChannel } from "discord.js";
 import ServerService from './service/ServerService';
 import StreamerService from './service/StreamerService';
 import { UserType } from './model/UserType';
 import { showEntranceInfo } from './MessageFormat';
+import { TextChannel } from 'discord.js';
 
 export default class DiscordBot {
 
@@ -85,37 +86,52 @@ export default class DiscordBot {
     console.log("연결")
     const lists = await this.serverService.initDetecting();
     lists.forEach(e => {
-      
+      let channelId = e.detectChannel;
+      if (e.isDetecting) this.makeIntervalByGuild(channelId);
     });
   }
 
-  searchStreamer = async (msg: Message) => {
-    const a = await this.command.sendStreamInfo(msg.guildId as string, "clnmipff")
+  makeIntervalByGuild = (channelId: string) => {
+    const chan = this.client.channels.cache.get(channelId) as TextChannel
+    console.log("makeInterval when init ");
+    this.searchStreamer(chan);
+    setInterval(() => this.searchStreamer(chan), 60000);
+  }
+
+  makeInterval = (msg: Message) => {
+    console.log("makeInterval");
+    this.searchStreamer(msg.channel as TextChannel);
+    setInterval(() => this.searchStreamer(msg.channel as TextChannel), 60000)
+  }
+
+  searchStreamer = async (chan: TextChannel) => {
+    console.log( "interval in this channel : " + chan.guild.name + " date : " + Date.now());
+    
+    const guildId = chan.guildId;
+    const a = await this.command.sendStreamInfo(guildId, "clnmipff")
     if (a !== undefined) {
-      this.sayEmbed(msg, a)
+      this.sayEmbed(chan, a)
     } else {
       console.log(Date.now() + "Streamer offline");
     }
   }
 
-  makeInterval = (msg: Message) => {
-    console.log("makeInterval");
-    this.searchStreamer(msg);
-    setInterval(() => this.searchStreamer(msg), 60000)
-  }
 
   clientMessage = async (msg: Message) => {
     if (!msg.guildId) return;
     if (msg.content === '쟌코봇설명서') {
       const prefix = await this.serverService.getGuildPrefix(msg.guildId);
       const response = this.command.introduceBot(msg.guild?.name as string, prefix);
-      this.sayEmbed(msg, response);
+      this.sayEmbed(msg.channel as TextChannel, response);
       return;
     }
     if (!await this.command.isStartWithPrefix(msg)) return;
 
     const userType = await this.serverService.getUserInfo(msg.guildId as string, msg.author.id)
     let shouldContinue = true;
+
+    console.log("user said : " + msg.content);
+    
     const message = msg.content.split(" ")
 
     // If the user is an Owner, they can access all functionalities.
@@ -211,7 +227,7 @@ export default class DiscordBot {
         }
       } else {
         const entranceInfo = await this.serverService.getEntraceInfo(msg.guildId as string);
-        this.sayEmbed(msg, showEntranceInfo(entranceInfo));
+        this.sayEmbed(msg.channel as TextChannel, showEntranceInfo(entranceInfo));
       }
       return false;
     }
@@ -327,12 +343,12 @@ export default class DiscordBot {
     return msg.channel.send(toSay);
   }
 
-  sayEmbed = async (msg: Message, context: any) => {
+  sayEmbed = async (msg: TextChannel, context: any) => {
     const postfix = await this.serverService.getGuildPostfix(msg.guildId as string);
     const embed = context as EmbedBuilder;
     embed.setFooter({ text: " ..." + postfix })
     console.log(context);
 
-    return msg.channel.send({ embeds: [embed] });
+    return msg.send({ embeds: [embed] });
   }
 }
