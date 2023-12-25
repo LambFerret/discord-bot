@@ -9,7 +9,7 @@ export const streamerLiveInfoMsg = (data: LiveStreamInfoType) =>
     .setTitle(`${data.user_name}님의 ${data.game_name}방송이다!`)
     .setDescription("방제 :" + data.title)
     .setURL("https://twitch.tv/" + data.user_login)
-    .setThumbnail("https://static-cdn.jtvnw.net/previews-ttv/live_user_clnmipff.jpg")
+   // .setThumbnail("https://static-cdn.jtvnw.net/previews-ttv/live_user_clnmipff.jpg")
 
 
 export const streamerOfflineInfoMsg = (data: LiveStreamerInfoType) =>
