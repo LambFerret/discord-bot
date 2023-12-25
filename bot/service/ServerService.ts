@@ -1,6 +1,7 @@
 import { Guild } from "discord.js";
 import ServerRepository from "../repository/ServerRepository";
 import { UserType } from "../model/UserType";
+import { StreamType } from "../ExternalAPI";
 export default class ServerService {
     serverRepository: ServerRepository;
     constructor() {
@@ -15,12 +16,12 @@ export default class ServerService {
         return await this.serverRepository.checkIdInfo(guildId, userId)
     }
 
-    async getStreamLiveInfo(guildId: string) : Promise<boolean | null> {
-        return await this.serverRepository.checkStreamLive(guildId)
+    async getStreamLiveInfo(guildId: string, type : StreamType) : Promise<boolean | null> {
+        return await this.serverRepository.checkStreamLive(guildId, type)
     }
 
-    async updateStreamLive(guildId: string, isLive: boolean) {
-        await this.serverRepository.updateStreamLive(guildId, isLive)
+    async updateStreamLive(guildId: string, type :StreamType, isLive: boolean) {
+        await this.serverRepository.updateStreamLive(guildId,type, isLive)
     }
 
     async updateDetectChannel(guildId: string, channelId: string) {

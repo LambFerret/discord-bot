@@ -3,14 +3,23 @@ import { EmbedBuilder } from 'discord.js';
 import { LiveStreamerInfoType } from "./model/LiveStreamerInfoType";
 import { LiveStreamInfoType } from "./model/LiveStreamInfoType";
 import { Entrance } from './model/ServerType';
+import { LiveAfreecaInfoType } from './model/LiveAfreecaInfoType';
+import { CONFIG } from './config/Config';
 export const streamerLiveInfoMsg = (data: LiveStreamInfoType) =>
   new EmbedBuilder()
     .setColor('#0000ff')
-    .setTitle(`${data.user_name}님의 ${data.game_name}방송이다!`)
-    .setDescription("방제 :" + data.title)
+    .setTitle(`${data.user_name} 트위치 뱅온!`)
+    .setDescription(data.title)
     .setURL("https://twitch.tv/" + data.user_login)
-   // .setThumbnail("https://static-cdn.jtvnw.net/previews-ttv/live_user_clnmipff.jpg")
+  //  .setThumbnail("https://static-cdn.jtvnw.net/previews-ttv/live_user_"+CONFIG.TWITCH_STREAMER_ID+".jpg")
 
+export const streamerLiveInfoMsgAfreeca = (data: LiveAfreecaInfoType) =>
+new EmbedBuilder()
+    .setColor('#0000ff')
+    .setTitle(`${data.user_nick} 아프리카 뱅온!`)
+    .setDescription(data.broad_title)
+    .setURL("https://play.afreecatv.com/" + data.user_id)
+    .setThumbnail("https://liveimg.afreecatv.com/h/"+data.broad_no+".webp")
 
 export const streamerOfflineInfoMsg = (data: LiveStreamerInfoType) =>
   new EmbedBuilder()

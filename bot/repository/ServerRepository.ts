@@ -4,6 +4,7 @@ import fs from 'fs/promises';
 import * as fss from 'fs';
 import path from 'path';
 import { UserType } from "../model/UserType";
+import { StreamType } from "../ExternalAPI";
 
 export default class ServerRepository {
 
@@ -31,7 +32,8 @@ export default class ServerRepository {
             postfix: '삐삐리뽀',
             status: 'INIT',
             entrance: entrance,
-            isStreamLive: false,
+            isTwitchStreamLive: false,
+            isAfreecaStreamLive: false,
             isDetecting: false,
         }
         await this.writeJsonAsFile(server);
@@ -85,16 +87,31 @@ export default class ServerRepository {
         await this.writeJsonAsFile(info);
     }
 
-    checkStreamLive = async (guildId: string) => {
+    checkStreamLive = async (guildId: string, type: StreamType): Promise<boolean | null> => {
         const info = await this.readJsonFromFile(guildId);
-
-        if (info.isDetecting) return info.isStreamLive;
-        else return null;
+        if (info.isDetecting) {
+            switch (type) {
+                case StreamType.Afreeca:
+                    return info.isAfreecaStreamLive;
+                case StreamType.Twitch:
+                    return info.isTwitchStreamLive;
+                default: return null;
+            }
+        }
+        return null;
     }
 
-    updateStreamLive = async (guildId: string, isLive: boolean) => {
+    updateStreamLive = async (guildId: string, type: StreamType, isLive: boolean) => {
         const info = await this.readJsonFromFile(guildId);
-        info.isStreamLive = isLive;
+        switch (type) {
+            case StreamType.Afreeca:
+                info.isAfreecaStreamLive = isLive;
+                break;
+            case StreamType.Twitch:
+                info.isTwitchStreamLive = isLive;
+                break;
+            default: return;
+        }
         await this.writeJsonAsFile(info);
     }
 

@@ -6,6 +6,7 @@ import StreamerService from './service/StreamerService';
 import { UserType } from './model/UserType';
 import { showEntranceInfo } from './MessageFormat';
 import { TextChannel } from 'discord.js';
+import { StreamType } from './ExternalAPI';
 
 export default class DiscordBot {
 
@@ -102,13 +103,22 @@ export default class DiscordBot {
     console.log("makeInterval");
     this.searchStreamer(msg.channel as TextChannel);
     setInterval(() => this.searchStreamer(msg.channel as TextChannel), 60000)
+    setInterval(() => this.searchStreamerAfreeca(msg.channel as TextChannel), 60000)
   }
 
   searchStreamer = async (chan: TextChannel) => {
-    console.log( "interval in this channel : " + chan.guild.name + " date : " + Date.now());
-    
     const guildId = chan.guildId;
-    const a = await this.command.sendStreamInfo(guildId, "clnmipff")
+    const a = await this.command.sendTwitchStreamInfo(guildId)
+    if (a !== undefined) {
+      this.sayEmbed(chan, a)
+    } else {
+    }
+  }
+
+  searchStreamerAfreeca = async (chan: TextChannel) => {
+    console.log("interval in this channel : " + chan.guild.name + " date : " + Date.now());
+    const guildId = chan.guildId;
+    const a = await this.command.sendAfreecaStreamInfo(guildId)
     if (a !== undefined) {
       this.sayEmbed(chan, a)
     } else {
@@ -131,7 +141,7 @@ export default class DiscordBot {
     let shouldContinue = true;
 
     console.log("user said : " + msg.content);
-    
+
     const message = msg.content.split(" ")
 
     // If the user is an Owner, they can access all functionalities.
@@ -266,7 +276,7 @@ export default class DiscordBot {
   moderatorMessage = async (msg: Message, message: string[]): Promise<boolean> => {
     if (message[1] === '방송감지') {
       const guildIdid = msg.guildId as string;
-      const isStreamAlive = await this.serverService.getStreamLiveInfo(guildIdid)
+      const isStreamAlive = await this.serverService.getStreamLiveInfo(guildIdid, StreamType.Twitch)
       const channel = await this.serverService.getDetectChannel(guildIdid);
       if (message[2] === '켜기') {
         if (channel === "" || channel === undefined) {

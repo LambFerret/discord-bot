@@ -10,7 +10,8 @@ export type ServerInfo = {
     postfix: string,
     status: string,
     entrance : Entrance,
-    isStreamLive : boolean,
+    isTwitchStreamLive : boolean,
+    isAfreecaStreamLive : boolean,
     isDetecting : boolean,
 }
 
