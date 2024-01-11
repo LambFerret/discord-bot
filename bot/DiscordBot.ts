@@ -96,12 +96,16 @@ export default class DiscordBot {
     const chan = this.client.channels.cache.get(channelId) as TextChannel
     console.log("makeInterval when init ");
     this.searchStreamer(chan);
+    this.searchStreamerAfreeca(chan);
     setInterval(() => this.searchStreamer(chan), 60000);
+    setInterval(() => this.searchStreamerAfreeca(chan), 60000);
   }
 
   makeInterval = (msg: Message) => {
     console.log("makeInterval");
     this.searchStreamer(msg.channel as TextChannel);
+    this.searchStreamerAfreeca(msg.channel as TextChannel);
+
     setInterval(() => this.searchStreamer(msg.channel as TextChannel), 60000)
     setInterval(() => this.searchStreamerAfreeca(msg.channel as TextChannel), 60000)
   }

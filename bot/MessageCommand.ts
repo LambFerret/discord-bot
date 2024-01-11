@@ -61,6 +61,10 @@ class MessageCommand {
             return undefined;
         }
 
+        if (!afreecaLiveInfo.isLive && previousLiveInfo) {
+            this.serverService.updateStreamLive(guildId, StreamType.Afreeca, false);
+            return undefined;
+	}
         if (afreecaLiveInfo.isLive && !previousLiveInfo) {
             this.serverService.updateStreamLive(guildId, StreamType.Afreeca, true);
             return streamerLiveInfoMsgAfreeca(afreecaLiveInfo);
