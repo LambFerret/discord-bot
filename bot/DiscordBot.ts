@@ -1,24 +1,37 @@
 import { MessageCommand } from './MessageCommand';
 import { CONFIG } from "./config/Config";
-import { Client, Message, GatewayIntentBits, Guild, MessageReaction, User, PartialUser, PartialMessageReaction, Role, Partials, ActivityType, EmbedBuilder, Channel, GuildTextBasedChannel } from "discord.js";
+import {
+  Client, Message, GatewayIntentBits, Guild, MessageReaction, User,
+  PartialUser, PartialMessageReaction, Role, Partials, ActivityType, EmbedBuilder,
+  Channel, GuildTextBasedChannel, Events, REST, Routes, TextChannel, SlashCommandBuilder, Interaction, BaseInteraction, InteractionResponse
+} from "discord.js";
 import ServerService from './service/ServerService';
 import StreamerService from './service/StreamerService';
 import { UserType } from './model/UserType';
 import { showEntranceInfo } from './MessageFormat';
-import { TextChannel } from 'discord.js';
 import { StreamType } from './ExternalAPI';
+// module.exports = {
+//   data: new SlashCommandBuilder()
+//     .setName('ping')
+//     .setDescription('Replies with pong!'),
+//   async execute(interaction: any) {
+//     await interaction.reply(`This command was run by ${interaction.user.username}, who joined on ${interaction.member.joinedAt}.`);
+//   },
+// };
 
 export default class DiscordBot {
 
   serverService: ServerService;
   streamerService: StreamerService;
   command: MessageCommand;
+  slashCommands: Map<string, (interaction: any) => Promise<void>>;
   client: Client;
 
   constructor() {
     this.streamerService = new StreamerService();
     this.serverService = new ServerService();
     this.command = new MessageCommand();
+    this.slashCommands = new Map();
     this.client = new Client({
       intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMessageReactions],
       partials: [Partials.Message, Partials.Reaction, Partials.User],
@@ -28,11 +41,12 @@ export default class DiscordBot {
       }
     });
     this.client.login(CONFIG.DISCORD_BOT_TOKEN);
-    this.client.once('ready', this.botReady)
-    this.client.on('guildCreate', this.clientInit)
-    this.client.on('guildDelete', this.serverClosed)
-    this.client.on('messageCreate', this.clientMessage)
-    this.client.on('messageReactionAdd', this.handleReactionAdd)
+    this.client.once(Events.ClientReady, this.botReady)
+    this.client.on(Events.GuildCreate, this.clientInit)
+    this.client.on(Events.GuildDelete, this.serverClosed)
+    this.client.on(Events.MessageCreate, this.clientMessage)
+    this.client.on(Events.MessageReactionAdd, this.handleReactionAdd)
+    this.client.on(Events.InteractionCreate, this.handleInteraction)
   }
 
   clientInit = (info: Guild) => {
@@ -42,6 +56,40 @@ export default class DiscordBot {
   getGuildId = async () => {
 
   }
+
+  registerSlashCommand = async (guildId: string) => {
+    const commands = [];
+    const ping = new SlashCommandBuilder()
+      .setName('ping').setDescription('Replies with pong!')
+      .addIntegerOption(option => option.setName('integer').setDescription('A random integer'))
+      .addBooleanOption(option => option.setName('boolean').setDescription('A random boolean'))
+      .setDMPermission(true)
+      .setNameLocalization("ko", "핑")
+    commands.push(ping);
+
+    const executePing = async (interaction: Message) => {
+      await interaction.reply("pong!");
+    }
+
+    this.slashCommands.set('ping', executePing);
+
+    const rest = new REST().setToken(CONFIG.DISCORD_BOT_TOKEN);
+    rest.put(
+      Routes.applicationGuildCommands(CONFIG.DISCORD_BOT_ID, guildId),
+      { body: commands },
+    ).then(() => console.log('Successfully registered application commands.')
+    )
+  }
+
+  handleInteraction = async (interaction: BaseInteraction) => {
+    if (!interaction.isChatInputCommand()) return;
+
+    const { commandName } = interaction;
+    const executeFunction = this.slashCommands.get(commandName);
+    if (!executeFunction) return;
+    executeFunction(interaction);
+  }
+
 
   handleReactionAdd = async (reaction: MessageReaction | PartialMessageReaction, user: User | PartialUser) => {
     if (user.bot) return;
@@ -55,7 +103,7 @@ export default class DiscordBot {
       const a: Message = reaction.message as Message;
       const b: User = user as User;
       if (await this.serverService.getUserInfo(a.guildId as string, b.id) === UserType.Owner) {
-        this.say(a, "쟌님 안녕하세요! \n" + "먼저 <제이름> 입장권한 역할 <역할명> 을 입력해주세요!");
+        this.say(a, "안녕하세요! \n" + "먼저 <제이름> 입장권한 역할 <역할명> 을 입력해주세요!");
       } else {
         this.say(a, "입장역할이 설정되지 않았습니다. 관리자에게 문의해주세요.");
       }
@@ -88,6 +136,8 @@ export default class DiscordBot {
     this.checkDBAndBotServerMatch();
     const lists = await this.serverService.initDetecting();
     lists.forEach(e => {
+      console.log(e.name);
+      this.registerSlashCommand(e.id);
       let channelId = e.detectChannel;
       if (!e.isDeleted && e.isDetecting) this.makeIntervalByGuild(channelId);
     });
@@ -166,6 +216,7 @@ export default class DiscordBot {
     console.log("user said : " + msg.content);
 
     const message = msg.content.split(" ")
+
 
     // If the user is an Owner, they can access all functionalities.
     if (userType === UserType.Owner) {
