@@ -12,6 +12,10 @@ export default class ServerService {
         return this.serverRepository.createNewServer(info);
     }
 
+    deleteGuild(guildId: string) {
+        return this.serverRepository.deleteServer(guildId);
+    }
+
     getUserInfo = async (guildId: string, userId: string): Promise<UserType> => {
         return await this.serverRepository.checkIdInfo(guildId, userId)
     }
@@ -30,6 +34,10 @@ export default class ServerService {
 
     async getDetectChannel(guildId: string): Promise<string> {
         return await this.serverRepository.getDetectChannel(guildId)
+    }
+
+    async getAllGuildId(): Promise<string[]> {
+        return await this.serverRepository.getAllGuildId()
     }
 
  

@@ -35,10 +35,19 @@ export default class ServerRepository {
             isTwitchStreamLive: false,
             isAfreecaStreamLive: false,
             isDetecting: false,
+            isDeleted: false,
         }
         await this.writeJsonAsFile(server);
         return server;
     }
+
+    deleteServer = async (guildId: string) => {
+        const info = await this.readJsonFromFile(guildId);
+        info.isDeleted = true;
+        await this.writeJsonAsFile(info);
+        // and archive it
+        await this.archiveServerFile(guildId);
+    } 
 
     getEntranceInfo = async (guildId: string) => {
         const info = await this.readJsonFromFile(guildId);
@@ -180,6 +189,16 @@ export default class ServerRepository {
         }
     }
 
+    archiveServerFile = async (guildId: string) => {
+        const time = new Date();
+        const info = await this.readJsonFromFile(guildId);
+        const archivePath = path.join(__dirname + "/../../archive/");
+        if (!fss.existsSync(archivePath)) fss.mkdirSync(archivePath);
+        const filePath = path.join(this.dbPath(), `${info.id}.json`);
+        const archiveFilePath = path.join(archivePath, `${info.id}-${time.getFullYear()}-${time.getMonth()}-${time.getDate()}-${time.getHours()}-${time.getMinutes()}-${time.getSeconds()}.json`);
+        await fs.rename(filePath, archiveFilePath);
+    }
+
     updateServerStreamer = (guildId: string) => {
 
     }
@@ -196,6 +215,17 @@ export default class ServerRepository {
         }
 
         return detectingServers;
+    }
+
+    getAllGuildId = async (): Promise<string[]> => {
+        const guilds: string[] = [];
+        for (const file of await fs.readdir(this.dbPath())) {
+            const filePath = path.join(this.dbPath(), file);
+            const data = await fs.readFile(filePath, 'utf-8');
+            const info = JSON.parse(data) as ServerInfo;
+            guilds.push(info.id);
+        }
+        return guilds;
     }
 
 }

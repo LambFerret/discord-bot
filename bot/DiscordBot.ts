@@ -30,7 +30,7 @@ export default class DiscordBot {
     this.client.login(CONFIG.DISCORD_BOT_TOKEN);
     this.client.once('ready', this.botReady)
     this.client.on('guildCreate', this.clientInit)
-    // this.client.on('guildDelete', this.serverClosed)
+    this.client.on('guildDelete', this.serverClosed)
     this.client.on('messageCreate', this.clientMessage)
     this.client.on('messageReactionAdd', this.handleReactionAdd)
   }
@@ -85,11 +85,30 @@ export default class DiscordBot {
 
   botReady = async () => {
     console.log("연결")
+    this.checkDBAndBotServerMatch();
     const lists = await this.serverService.initDetecting();
     lists.forEach(e => {
       let channelId = e.detectChannel;
-      if (e.isDetecting) this.makeIntervalByGuild(channelId);
+      if (!e.isDeleted && e.isDetecting) this.makeIntervalByGuild(channelId);
     });
+  }
+
+  checkDBAndBotServerMatch = async () => {
+    // check DB's all guildId string[] and bot's server that bot is actually in
+    const botGuilds = this.client.guilds.cache.map(guild => guild.id);
+    const dbGuilds = await this.serverService.getAllGuildId();
+
+    // if bot's server is not in DB, create DB
+    botGuilds.forEach(async (guildId) => {
+      if (!dbGuilds.includes(guildId)) {
+        const guild = this.client.guilds.cache.get(guildId) as Guild;
+        this.serverService.createGuild(guild);
+      }
+    })
+  }
+
+  serverClosed = (info: Guild) => {
+    this.serverService.deleteGuild(info.id);
   }
 
   makeIntervalByGuild = (channelId: string) => {
@@ -102,7 +121,7 @@ export default class DiscordBot {
   }
 
   makeInterval = (msg: Message) => {
-    console.log("makeInterval");
+    console.log("makeInterval start");
     this.searchStreamer(msg.channel as TextChannel);
     this.searchStreamerAfreeca(msg.channel as TextChannel);
 
@@ -111,7 +130,7 @@ export default class DiscordBot {
   }
 
   searchStreamer = async (chan: TextChannel) => {
-    const guildId = chan.guildId;
+    const guildId = chan.guild.id;
     const a = await this.command.sendTwitchStreamInfo(guildId)
     if (a !== undefined) {
       this.sayEmbed(chan, a)
@@ -121,7 +140,7 @@ export default class DiscordBot {
 
   searchStreamerAfreeca = async (chan: TextChannel) => {
     console.log("interval in this channel : " + chan.guild.name + " date : " + Date.now());
-    const guildId = chan.guildId;
+    const guildId = chan.guild.id;
     const a = await this.command.sendAfreecaStreamInfo(guildId)
     if (a !== undefined) {
       this.sayEmbed(chan, a)

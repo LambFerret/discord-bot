@@ -13,6 +13,7 @@ export type ServerInfo = {
     isTwitchStreamLive : boolean,
     isAfreecaStreamLive : boolean,
     isDetecting : boolean,
+    isDeleted : boolean,
 }
 
 export type Entrance = {
