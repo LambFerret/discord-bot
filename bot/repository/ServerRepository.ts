@@ -36,6 +36,12 @@ export default class ServerRepository {
             isAfreecaStreamLive: false,
             isDetecting: false,
             isDeleted: false,
+            broadcastInfo: {
+                AfreecaId: "",
+                TwitchId: "",
+                ChzzkId: "",
+                YoutubeId: "",
+            }
         }
         await this.writeJsonAsFile(server);
         return server;
@@ -203,7 +209,7 @@ export default class ServerRepository {
 
     }
 
-    initDetecting = async () => {
+    getAllServers = async () => {
         const detectingServers: ServerInfo[] = [];
         for (const file of await fs.readdir(this.dbPath())) {
             const filePath = path.join(this.dbPath(), file);

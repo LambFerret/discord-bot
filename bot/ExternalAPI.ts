@@ -1,6 +1,5 @@
 import axios from 'axios';
 import { CONFIG } from './config/Config';
-import { LiveStreamerInfoType } from './model/LiveStreamerInfoType';
 import { LiveStreamInfoType } from './model/LiveStreamInfoType';
 import { LiveAfreecaInfoType } from './model/LiveAfreecaInfoType';
 

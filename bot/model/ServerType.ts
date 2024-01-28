@@ -14,6 +14,7 @@ export type ServerInfo = {
     isAfreecaStreamLive : boolean,
     isDetecting : boolean,
     isDeleted : boolean,
+    broadcastInfo : BroadcastInfo,
 }
 
 export type Entrance = {
@@ -21,4 +22,11 @@ export type Entrance = {
     messageId : string,
     emoji : string,
     role: string,
+}
+
+export type BroadcastInfo = {
+    AfreecaId : string,
+    TwitchId : string,
+    ChzzkId : string,
+    YoutubeId : string,
 }

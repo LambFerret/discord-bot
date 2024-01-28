@@ -8,11 +8,11 @@ export default class ServerService {
         this.serverRepository = new ServerRepository();
     }
 
-    createGuild(info: Guild) {
-        return this.serverRepository.createNewServer(info);
+    createServer(info: Guild) {
+        this.serverRepository.createNewServer(info);
     }
 
-    deleteGuild(guildId: string) {
+    deleteServer(guildId: string) {
         return this.serverRepository.deleteServer(guildId);
     }
 
@@ -39,7 +39,6 @@ export default class ServerService {
     async getAllGuildId(): Promise<string[]> {
         return await this.serverRepository.getAllGuildId()
     }
-
  
     updateModeratorId(guildId: string, userId: string[]) {
         this.serverRepository.updateModerators(guildId, userId)
@@ -85,8 +84,7 @@ export default class ServerService {
         this.serverRepository.updateStreamDetecting(guildId, isDetecting)
     }
 
-    async initDetecting() {
-        return this.serverRepository.initDetecting();
+    async getAllServers() {
+        return this.serverRepository.getAllServers();
     }
-
 }

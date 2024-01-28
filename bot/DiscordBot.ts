@@ -6,32 +6,23 @@ import {
   Channel, GuildTextBasedChannel, Events, REST, Routes, TextChannel, SlashCommandBuilder, Interaction, BaseInteraction, InteractionResponse
 } from "discord.js";
 import ServerService from './service/ServerService';
-import StreamerService from './service/StreamerService';
 import { UserType } from './model/UserType';
 import { showEntranceInfo } from './MessageFormat';
 import { StreamType } from './ExternalAPI';
-// module.exports = {
-//   data: new SlashCommandBuilder()
-//     .setName('ping')
-//     .setDescription('Replies with pong!'),
-//   async execute(interaction: any) {
-//     await interaction.reply(`This command was run by ${interaction.user.username}, who joined on ${interaction.member.joinedAt}.`);
-//   },
-// };
+import { BroadcastInfo } from './model/ServerType';
+import SlashCommandService from './service/SlashCommandService';
 
 export default class DiscordBot {
 
   serverService: ServerService;
-  streamerService: StreamerService;
+  slashCommandService: SlashCommandService;
   command: MessageCommand;
-  slashCommands: Map<string, (interaction: any) => Promise<void>>;
   client: Client;
 
   constructor() {
-    this.streamerService = new StreamerService();
     this.serverService = new ServerService();
+    this.slashCommandService = new SlashCommandService();
     this.command = new MessageCommand();
-    this.slashCommands = new Map();
     this.client = new Client({
       intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMessageReactions],
       partials: [Partials.Message, Partials.Reaction, Partials.User],
@@ -40,62 +31,54 @@ export default class DiscordBot {
         status: 'online'
       }
     });
-    this.client.login(CONFIG.DISCORD_BOT_TOKEN);
-    this.client.once(Events.ClientReady, this.botReady)
-    this.client.on(Events.GuildCreate, this.clientInit)
-    this.client.on(Events.GuildDelete, this.serverClosed)
-    this.client.on(Events.MessageCreate, this.clientMessage)
-    this.client.on(Events.MessageReactionAdd, this.handleReactionAdd)
-    this.client.on(Events.InteractionCreate, this.handleInteraction)
+
+    this.addListeners(this.client);
+   }
+
+  addListeners = (client : Client) => {
+    client.login(CONFIG.DISCORD_BOT_TOKEN);
+    client.once(Events.ClientReady, this.initServers)
+    client.on(Events.GuildCreate, (e) => this.serverService.createServer(e))
+    client.on(Events.GuildDelete, (e) => this.serverService.deleteServer(e.id))
+    client.on(Events.MessageCreate, this.clientMessage)
+    client.on(Events.MessageReactionAdd, this.handleReactionAdd)
+    client.on(Events.InteractionCreate, this.slashCommandService.handleInteraction)
   }
 
-  clientInit = (info: Guild) => {
-    this.serverService.createGuild(info)
+  initServers = async () => {
+    console.log("연결")
+    this.checkDBAndBotServerMatch();
+    const lists = await this.serverService.getAllServers();
+    lists.forEach(server => {
+      let serverId = server.id;
+      let channelId = server.detectChannel;
+      
+      console.log(`==== init ${server.name} server ====`);
+
+      console.log("register slash command");
+      this.slashCommandService.registerSlashCommand(serverId);
+
+      console.log("detect channel : " + channelId + " | isDetecting : " + server.isDetecting);
+      if (!server.isDeleted && server.isDetecting) this.makeDetectingIntervalByGuild(channelId);
+
+      console.log("=============================");
+      
+    });
   }
 
-  getGuildId = async () => {
+  checkDBAndBotServerMatch = async () => {
+    const botGuilds = this.client.guilds.cache.map(guild => guild.id);
+    const dbGuilds = await this.serverService.getAllGuildId();
 
+    botGuilds.forEach(async (guildId) => {
+      if (!dbGuilds.includes(guildId)) {
+        const guild = this.client.guilds.cache.get(guildId) as Guild;
+        this.serverService.createServer(guild);
+      }
+    })
   }
-
-  registerSlashCommand = async (guildId: string) => {
-    const commands = [];
-    const ping = new SlashCommandBuilder()
-      .setName('ping').setDescription('Replies with pong!')
-      .addIntegerOption(option => option.setName('integer').setDescription('A random integer'))
-      .addBooleanOption(option => option.setName('boolean').setDescription('A random boolean'))
-      .setDMPermission(true)
-      .setNameLocalization("ko", "핑")
-    commands.push(ping);
-
-    const executePing = async (interaction: Message) => {
-      await interaction.reply("pong!");
-    }
-
-    this.slashCommands.set('ping', executePing);
-
-    const rest = new REST().setToken(CONFIG.DISCORD_BOT_TOKEN);
-    rest.put(
-      Routes.applicationGuildCommands(CONFIG.DISCORD_BOT_ID, guildId),
-      { body: commands },
-    ).then(() => console.log('Successfully registered application commands.')
-    )
-  }
-
-  handleInteraction = async (interaction: BaseInteraction) => {
-    if (!interaction.isChatInputCommand()) return;
-
-    const { commandName } = interaction;
-    const executeFunction = this.slashCommands.get(commandName);
-    if (!executeFunction) return;
-    executeFunction(interaction);
-  }
-
 
   handleReactionAdd = async (reaction: MessageReaction | PartialMessageReaction, user: User | PartialUser) => {
-    if (user.bot) return;
-    if (reaction.partial) await reaction.fetch();
-    if (user.partial) await user.fetch();
-
     const entranceInfo = await this.serverService.getEntraceInfo(reaction.message.guildId as string);
     if (!entranceInfo) return;
 
@@ -131,37 +114,21 @@ export default class DiscordBot {
     }
   }
 
-  botReady = async () => {
-    console.log("연결")
-    this.checkDBAndBotServerMatch();
-    const lists = await this.serverService.initDetecting();
-    lists.forEach(e => {
-      console.log(e.name);
-      this.registerSlashCommand(e.id);
-      let channelId = e.detectChannel;
-      if (!e.isDeleted && e.isDetecting) this.makeIntervalByGuild(channelId);
-    });
+  detectNewPost =async (broadcastInfo : BroadcastInfo) => {
+    if (broadcastInfo.AfreecaId !== "") {
+    }
+
+    if (broadcastInfo.TwitchId !== "") {
+    }
+
+    if (broadcastInfo.ChzzkId !== "") {
+    }
+
+    if (broadcastInfo.YoutubeId !== "") {
+    }
   }
 
-  checkDBAndBotServerMatch = async () => {
-    // check DB's all guildId string[] and bot's server that bot is actually in
-    const botGuilds = this.client.guilds.cache.map(guild => guild.id);
-    const dbGuilds = await this.serverService.getAllGuildId();
-
-    // if bot's server is not in DB, create DB
-    botGuilds.forEach(async (guildId) => {
-      if (!dbGuilds.includes(guildId)) {
-        const guild = this.client.guilds.cache.get(guildId) as Guild;
-        this.serverService.createGuild(guild);
-      }
-    })
-  }
-
-  serverClosed = (info: Guild) => {
-    this.serverService.deleteGuild(info.id);
-  }
-
-  makeIntervalByGuild = (channelId: string) => {
+  makeDetectingIntervalByGuild = (channelId: string) => {
     const chan = this.client.channels.cache.get(channelId) as TextChannel
     console.log("makeInterval when init ");
     this.searchStreamer(chan);
@@ -198,7 +165,6 @@ export default class DiscordBot {
       console.log(Date.now() + "Streamer offline");
     }
   }
-
 
   clientMessage = async (msg: Message) => {
     if (!msg.guildId) return;

@@ -22,7 +22,7 @@ class MessageCommand {
         try {
             prefix = await this.serverService.getGuildPrefix(message.guildId);
         } catch (err) {
-            prefix = (await this.serverService.createGuild(message.guild as Guild)).prefix
+            prefix = (await this.serverService.createServer(message.guild as Guild)).prefix
         }
         if (msg.startsWith(prefix) && !message.author.bot && prefix != '') {
             return true
