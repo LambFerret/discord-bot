@@ -1,0 +1,10 @@
+{
+    "ignore": [
+      "./bot/db/*"
+    ],
+    "watch": [
+      "./bot/"
+    ],
+    "ext": "ts",
+    "exec": "ts-node ./index.ts"
+  }

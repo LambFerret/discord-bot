@@ -10,11 +10,12 @@ export type ServerInfo = {
     postfix: string,
     status: string,
     entrance : Entrance,
-    isTwitchStreamLive : boolean,
-    isAfreecaStreamLive : boolean,
     isDetecting : boolean,
     isDeleted : boolean,
     broadcastInfo : BroadcastInfo,
+    streamingStatus : StreamingStatus,
+    serverDetectInfos : ServerDetectInfos,
+    lastCommunityPostIDs : LastCommunityPostIDs,
 }
 
 export type Entrance = {
@@ -29,4 +30,40 @@ export type BroadcastInfo = {
     TwitchId : string,
     ChzzkId : string,
     YoutubeId : string,
+}
+
+export type StreamingStatus = {
+    isTwitchStreamLive : boolean,
+    isAfreecaStreamLive : boolean,
+    isChzzkStreamLive : boolean,
+    isYoutubeStreamLive : boolean,
+}
+
+export type ServerDetectInfos = {
+    broadcastDetect : {
+        twitch : boolean,
+        afreeca : boolean,
+        chzzk : boolean,
+        youtube : boolean,
+    },
+    newPostDetect : {
+        afreeca : boolean,
+        chzzk : boolean,
+        youtube : boolean,
+    },
+    ownerChatDetect : {
+        afreeca : boolean,
+        chzzk : boolean,
+        youtube : boolean,
+    },
+    elseDetect : {
+        naverCafe : boolean,
+    },
+}
+
+export type LastCommunityPostIDs = {
+    twitchPostId : string,
+    afreecaPostId : string,
+    chzzkPostId : string,
+    youtubePostId : string,
 }

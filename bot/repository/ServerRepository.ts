@@ -5,8 +5,9 @@ import * as fss from 'fs';
 import path from 'path';
 import { UserType } from "../model/UserType";
 import { StreamType } from "../ExternalAPI";
+import { DetectType, DetectPlatform } from "../model/DetectType";
 
-export default class ServerRepository {
+class ServerRepository {
 
     dbPath = (): string => {
         if (!fss.existsSync(__dirname + "/../../db/")) fss.mkdirSync(__dirname + "/../../db/");
@@ -32,8 +33,6 @@ export default class ServerRepository {
             postfix: '삐삐리뽀',
             status: 'INIT',
             entrance: entrance,
-            isTwitchStreamLive: false,
-            isAfreecaStreamLive: false,
             isDetecting: false,
             isDeleted: false,
             broadcastInfo: {
@@ -41,6 +40,39 @@ export default class ServerRepository {
                 TwitchId: "",
                 ChzzkId: "",
                 YoutubeId: "",
+            },
+            streamingStatus: {
+                isTwitchStreamLive: false,
+                isAfreecaStreamLive: false,
+                isChzzkStreamLive: false,
+                isYoutubeStreamLive: false,
+            },
+            lastCommunityPostIDs: {
+                twitchPostId: "",
+                afreecaPostId: "",
+                chzzkPostId: "",
+                youtubePostId: "",
+            },
+            serverDetectInfos: {
+                broadcastDetect: {
+                    twitch: false,
+                    afreeca: false,
+                    chzzk: false,
+                    youtube: false,
+                },
+                newPostDetect: {
+                    afreeca: false,
+                    chzzk: false,
+                    youtube: false,
+                },
+                ownerChatDetect: {
+                    afreeca: false,
+                    chzzk: false,
+                    youtube: false,
+                },
+                elseDetect: {
+                    naverCafe: false,
+                }
             }
         }
         await this.writeJsonAsFile(server);
@@ -53,11 +85,78 @@ export default class ServerRepository {
         await this.writeJsonAsFile(info);
         // and archive it
         await this.archiveServerFile(guildId);
-    } 
+    }
 
     getEntranceInfo = async (guildId: string) => {
         const info = await this.readJsonFromFile(guildId);
         return info.entrance;
+    }
+
+    getDetectInfo = async (guildId: string) => {
+        const info = await this.readJsonFromFile(guildId);
+        return info.serverDetectInfos;
+    }
+
+    updateDetectInfo = async (guildId: string, type : DetectType, platform : DetectPlatform, setActive: boolean) => {
+        const info = await this.readJsonFromFile(guildId);
+        switch (type) {
+            case DetectType.broadcast:
+                switch (platform) {
+                    case DetectPlatform.chzzk:
+                        info.serverDetectInfos.broadcastDetect.chzzk = setActive;
+                        break;
+                    case DetectPlatform.afreeca:
+                        info.serverDetectInfos.broadcastDetect.afreeca = setActive;
+                        break;
+                    case DetectPlatform.youtube:
+                        info.serverDetectInfos.broadcastDetect.youtube = setActive;
+                        break;
+                    case DetectPlatform.twitch:
+                        info.serverDetectInfos.broadcastDetect.twitch = setActive;
+                        break;
+                    default: return;
+                }
+                break;
+            case DetectType.newPost:
+                switch (platform) {
+                    case DetectPlatform.chzzk:
+                        info.serverDetectInfos.newPostDetect.chzzk = setActive;
+                        break;
+                    case DetectPlatform.afreeca:
+                        info.serverDetectInfos.newPostDetect.afreeca = setActive;
+                        break;
+                    case DetectPlatform.youtube:
+                        info.serverDetectInfos.newPostDetect.youtube = setActive;
+                        break;
+                    default: return;
+                }
+                break;
+            case DetectType.ownerChat:
+                switch (platform) {
+                    case DetectPlatform.chzzk:
+                        info.serverDetectInfos.ownerChatDetect.chzzk = setActive;
+                        break;
+                    case DetectPlatform.afreeca:
+                        info.serverDetectInfos.ownerChatDetect.afreeca = setActive;
+                        break;
+                    case DetectPlatform.youtube:
+                        info.serverDetectInfos.ownerChatDetect.youtube = setActive;
+                        break;
+                    default: return;
+                }
+                break;
+            case DetectType.else:
+                switch (platform) {
+                    case DetectPlatform.naverCafe:
+                        info.serverDetectInfos.elseDetect.naverCafe = setActive;
+                        break;
+                    default: return;
+                }
+                break;
+            default: return;
+        }
+        await this.writeJsonAsFile(info);
+
     }
 
     saveEntranceMessageId = async (guildId: string, messageId: string) => {
@@ -107,9 +206,9 @@ export default class ServerRepository {
         if (info.isDetecting) {
             switch (type) {
                 case StreamType.Afreeca:
-                    return info.isAfreecaStreamLive;
+                    return info.streamingStatus.isAfreecaStreamLive;
                 case StreamType.Twitch:
-                    return info.isTwitchStreamLive;
+                    return info.streamingStatus.isTwitchStreamLive;
                 default: return null;
             }
         }
@@ -120,10 +219,10 @@ export default class ServerRepository {
         const info = await this.readJsonFromFile(guildId);
         switch (type) {
             case StreamType.Afreeca:
-                info.isAfreecaStreamLive = isLive;
+                info.streamingStatus.isAfreecaStreamLive = isLive;
                 break;
             case StreamType.Twitch:
-                info.isTwitchStreamLive = isLive;
+                info.streamingStatus.isTwitchStreamLive = isLive;
                 break;
             default: return;
         }
@@ -177,7 +276,7 @@ export default class ServerRepository {
         try {
             const filePath = path.join(this.dbPath(), `${info.id}.json`);
             await fs.writeFile(filePath, JSON.stringify(info, null, 2));
-            console.log(`Server ${info.id} created successfully!`);
+            console.log(`Server ${info.id} save successfully!`);
         } catch (err) {
             console.error(`Failed to create server: ${err}`);
         }
@@ -215,9 +314,7 @@ export default class ServerRepository {
             const filePath = path.join(this.dbPath(), file);
             const data = await fs.readFile(filePath, 'utf-8');
             const info = JSON.parse(data) as ServerInfo;
-            if (info.isDetecting) {
-                detectingServers.push(info);
-            }
+            detectingServers.push(info);
         }
 
         return detectingServers;
@@ -236,3 +333,5 @@ export default class ServerRepository {
 
 }
 
+
+export default new ServerRepository();

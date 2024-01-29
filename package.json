@@ -4,8 +4,8 @@
   "description": "",
   "main": "node.js",
   "scripts": {
-    "start": "nodemon ./index.ts",
-    "prod": "pm2 start ./index.ts",
+    "start": "nodemon ./index.ts --ignore './bot/db/*'",
+    "prod": "pm2 start --name discordbot --interpreter ts-node ./index.ts",
     "m": "pm2 monit",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
