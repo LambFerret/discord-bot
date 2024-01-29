@@ -8,9 +8,9 @@ const {
     TWITCH_CLIENT_SECRET,
     TWITCH_API_GATEWAY,
     DISCORD_BOT_TOKEN,
+    DISCORD_BOT_ID,
     TWITCH_STREAMER_ID,
     AFREECA_STREAMER_ID,
-    DISCORD_BOT_ID,
 } = process.env as {
     [key: string]: string;
 };
@@ -24,5 +24,5 @@ export const CONFIG = {
     DISCORD_BOT_ID : DISCORD_BOT_ID,
     TWITCH_STREAMER_ID: TWITCH_STREAMER_ID,
     AFREECA_STREAMER_ID: AFREECA_STREAMER_ID,
-    봇추가용URL: "https://discord.com/api/oauth2/authorize?client_id=989700084809756692&permissions=8&scope=bot",
+    봇추가용URL: "***",
 }

@@ -4,7 +4,7 @@
   "description": "",
   "main": "node.js",
   "scripts": {
-    "start": "nodemon ./index.ts --ignore './bot/db/*'",
+    "start": "nodemon",
     "prod": "pm2 start --name discordbot --interpreter ts-node ./index.ts",
     "m": "pm2 monit",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -16,15 +16,18 @@
     "@types/body-parser": "^1.19.2",
     "@types/express": "^4.17.17",
     "@types/mongodb": "^4.0.7",
-    "@types/node": "^18.17.9",
+    "@types/node": "^18.19.10",
+    "@types/node-cron": "^3.0.11",
     "ts-node": "^10.9.1",
     "typescript": "^4.9.5"
   },
   "dependencies": {
-    "axios": "^0.27.2",
+    "axios": "^1.6.7",
     "body-parser": "^1.20.2",
-    "discord.js": "^14.1.2",
+    "discord.js": "^14.14.1",
     "dotenv": "^16.0.1",
-    "express": "^4.18.2"
+    "express": "^4.18.2",
+    "node-cron": "^3.0.3",
+    "tslib": "^2.6.2"
   }
 }

@@ -1,27 +1,28 @@
 import { MessageCommand } from './MessageCommand';
 import { CONFIG } from "./config/Config";
 import {
-  Client, Message, GatewayIntentBits, Guild, MessageReaction, User,
-  PartialUser, PartialMessageReaction, Role, Partials, ActivityType, EmbedBuilder,
-  Channel, GuildTextBasedChannel, Events, REST, Routes, TextChannel, SlashCommandBuilder, Interaction, BaseInteraction, InteractionResponse
-} from "discord.js";
+  Client, Message, Guild, MessageReaction, User,
+  PartialUser, PartialMessageReaction, Role, EmbedBuilder,
+  Events, TextChannel} from "discord.js";
 import serverService from './service/ServerService';
 import { UserType } from './model/UserType';
 import { showEntranceInfo } from './MessageFormat';
-import { StreamType } from './ExternalAPI';
 import { BroadcastInfo } from './model/ServerType';
 import SlashCommandService from './service/SlashCommandService';
 import { CustomClient } from './service/CustomClient';
+import AlarmService from './service/AlarmService';
 
 export default class DiscordBot {
 
   slashCommandService: SlashCommandService;
+  alarmService : AlarmService;
   command: MessageCommand;
   client: Client;
 
   constructor() {
     this.client = new CustomClient();
     this.slashCommandService = new SlashCommandService(this.client as CustomClient);
+    this.alarmService = new AlarmService(this.client);
     this.command = new MessageCommand();
 
     this.addListeners(this.client);
@@ -51,6 +52,7 @@ export default class DiscordBot {
       this.slashCommandService.registerSlashCommand(serverId);
 
       console.log("detect channel : " + channelId + " | isDetecting : " + server.isDetecting);
+      // this.alarmService.checkAlarm(serverId); // test code 
       if (!server.isDeleted && server.isDetecting) this.makeDetectingIntervalByGuild(channelId);
 
       console.log("=============================");
@@ -146,8 +148,7 @@ export default class DiscordBot {
     const a = await this.command.sendTwitchStreamInfo(guildId)
     if (a !== undefined) {
       this.sayEmbed(chan, a)
-    } else {
-    }
+    } 
   }
 
   searchStreamerAfreeca = async (chan: TextChannel) => {
@@ -248,8 +249,6 @@ export default class DiscordBot {
     return true;
   }
 
-
-
   botMakerMessage = async (msg: Message, message: string[]): Promise<boolean> => {
 
     if (message[1] === '입장권') {
@@ -268,8 +267,6 @@ export default class DiscordBot {
     }
     return true;
   }
-
-
 
   say = async (msg: Message, context: string, givenPostfix?: string) => {
     const postfix = givenPostfix ? givenPostfix : await serverService.getGuildPostfix(msg.guildId as string);

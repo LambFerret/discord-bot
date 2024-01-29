@@ -67,3 +67,8 @@ export type LastCommunityPostIDs = {
     chzzkPostId : string,
     youtubePostId : string,
 }
+
+export type LiveInfoDTO = {
+    id : string | undefined,
+    isLive : boolean,
+}

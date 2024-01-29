@@ -1,17 +1,14 @@
 import { EmbedBuilder, Guild, Message } from "discord.js"
-import { ExternalApi, StreamType } from "./ExternalAPI"
 import {
-    streamerLiveInfoMsg, introduceBot, streamerLiveInfoMsgAfreeca
+    twitchLiveInfoMsg, introduceBot, afreecaLiveInfoMsg
 } from "./MessageFormat"
 import serverService from "./service/ServerService"
 import { CONFIG } from "./config/Config"
+import { DetectPlatform } from "./model/DetectType"
+import api from "./ExternalAPI"
 
 
 class MessageCommand {
-    api: ExternalApi
-    constructor() {
-        this.api = new ExternalApi()
-    }
 
     isStartWithPrefix = async (message: Message) => {
         if (!message.guildId) return false
@@ -30,50 +27,49 @@ class MessageCommand {
     }
 
     sendTwitchStreamInfo = async (guildId: string): Promise<EmbedBuilder | undefined> => {
-        const previousLiveInfo = await serverService.getStreamLiveInfo(guildId, StreamType.Twitch);
-        const liveInfo = await this.api.getTwitchLiveInfo(CONFIG.TWITCH_STREAMER_ID);
+        const dto = await serverService.getStreamLiveInfo(guildId, DetectPlatform.Twitch);
+        if (dto.id === undefined) return undefined;
+        const previousLiveInfo = dto.isLive;
+        const liveInfo = await api.getTwitchLiveInfo(dto.id);
 
         if (!liveInfo && !previousLiveInfo) return undefined;
 
         if (!liveInfo && previousLiveInfo) {
-            serverService.updateStreamLive(guildId, StreamType.Twitch, false);
+            serverService.updateStreamLive(guildId, DetectPlatform.Twitch, false);
             return undefined;
         }
 
         if (liveInfo.type === 'live' && !previousLiveInfo) {
-            serverService.updateStreamLive(guildId, StreamType.Twitch, true);
-            return streamerLiveInfoMsg(liveInfo);
+            serverService.updateStreamLive(guildId, DetectPlatform.Twitch, true);
+            return twitchLiveInfoMsg(liveInfo);
         }
 
         return undefined;
     }
 
     sendAfreecaStreamInfo = async (guildId: string): Promise<EmbedBuilder | undefined> => {
-        const afreecaLiveInfo = await this.api.getAfreecaLiveInfo(CONFIG.AFREECA_STREAMER_ID);
-        const previousLiveInfo = await serverService.getStreamLiveInfo(guildId, StreamType.Afreeca);
+        const dto = await serverService.getStreamLiveInfo(guildId, DetectPlatform.Afreeca);
+        if (dto.id === undefined) return undefined;
+        const previousLiveInfo = dto.isLive;
+        const afreecaLiveInfo = await api.getAfreecaLiveInfo(dto.id);
 
         if (!afreecaLiveInfo && !previousLiveInfo) return undefined;
 
         if (!afreecaLiveInfo && previousLiveInfo) {
-            serverService.updateStreamLive(guildId, StreamType.Afreeca, false);
+            serverService.updateStreamLive(guildId, DetectPlatform.Afreeca, false);
             return undefined;
         }
 
         if (!afreecaLiveInfo.isLive && previousLiveInfo) {
-            serverService.updateStreamLive(guildId, StreamType.Afreeca, false);
+            serverService.updateStreamLive(guildId, DetectPlatform.Afreeca, false);
             return undefined;
-	}
-        if (afreecaLiveInfo.isLive && !previousLiveInfo) {
-            serverService.updateStreamLive(guildId, StreamType.Afreeca, true);
-            return streamerLiveInfoMsgAfreeca(afreecaLiveInfo);
         }
-
+        if (afreecaLiveInfo.isLive && !previousLiveInfo) {
+            serverService.updateStreamLive(guildId, DetectPlatform.Afreeca, true);
+            return afreecaLiveInfoMsg(afreecaLiveInfo);
+        }
         return undefined;
-
     }
-
-    introduceBot = (name: string, myName: string) => introduceBot(name, myName)
-
 }
 
 export { MessageCommand };

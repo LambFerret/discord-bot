@@ -1,7 +1,7 @@
 export enum DetectType  {
-    broadcast, newPost, ownerChat, else
+    Broadcast, NewPost, OwnerChat, Else
 }
 
 export enum DetectPlatform {
-    chzzk, afreeca, youtube, twitch, naverCafe
+    Chzzk, Afreeca, Youtube, Twitch, NaverCafe
 }

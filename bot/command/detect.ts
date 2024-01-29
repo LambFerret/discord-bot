@@ -19,7 +19,7 @@ export const detect: Command = {
     }
 }
 
-const initialButtons =  (guildId: string): ActionRowBuilder<ButtonBuilder> => {
+const initialButtons = (guildId: string): ActionRowBuilder<ButtonBuilder> => {
     return new ActionRowBuilder<ButtonBuilder>()
         .addComponents(
             makeButton(ButtonName.broadcast, true),
@@ -95,47 +95,47 @@ export const solveDetectButtons: ButtonCommand = {
                 await interaction.update({ content: '뒤로가기를 선택하셨습니다!', components: [initialButtons(guildId)] });
                 return;
             case ButtonName.broadcast_chzzk:
-                await ServerRepository.updateDetectInfo(guildId, DetectType.broadcast, DetectPlatform.chzzk, !info.broadcastDetect.chzzk);
+                await ServerRepository.updateDetectInfo(guildId, interaction.channelId as string, DetectType.Broadcast, DetectPlatform.Chzzk, !info.broadcastDetect.chzzk);
                 await interaction.update({ components: [await broadcastButtons(guildId)] });
                 return;
             case ButtonName.broadcast_afreeca:
-                await ServerRepository.updateDetectInfo(guildId, DetectType.broadcast, DetectPlatform.afreeca, !info.broadcastDetect.afreeca);
+                await ServerRepository.updateDetectInfo(guildId, interaction.channelId as string, DetectType.Broadcast, DetectPlatform.Afreeca, !info.broadcastDetect.afreeca);
                 await interaction.update({ components: [await broadcastButtons(guildId)] });
                 return;
             case ButtonName.broadcast_youtube:
-                await ServerRepository.updateDetectInfo(guildId, DetectType.broadcast, DetectPlatform.youtube, !info.broadcastDetect.youtube);
+                await ServerRepository.updateDetectInfo(guildId, interaction.channelId as string, DetectType.Broadcast, DetectPlatform.Youtube, !info.broadcastDetect.youtube);
                 await interaction.update({ components: [await broadcastButtons(guildId)] });
                 return;
             case ButtonName.broadcast_twitch:
-                await ServerRepository.updateDetectInfo(guildId, DetectType.broadcast, DetectPlatform.twitch, !info.broadcastDetect.twitch);
+                await ServerRepository.updateDetectInfo(guildId, interaction.channelId as string, DetectType.Broadcast, DetectPlatform.Twitch, !info.broadcastDetect.twitch);
                 await interaction.update({ components: [await broadcastButtons(guildId)] });
                 return;
             case ButtonName.new_post_chzzk:
-                await ServerRepository.updateDetectInfo(guildId, DetectType.newPost, DetectPlatform.chzzk, !info.newPostDetect.chzzk);
+                await ServerRepository.updateDetectInfo(guildId, interaction.channelId as string, DetectType.NewPost, DetectPlatform.Chzzk, !info.newPostDetect.chzzk);
                 await interaction.update({ components: [await newPostButtons(guildId)] });
                 return;
             case ButtonName.new_post_afreeca:
-                await ServerRepository.updateDetectInfo(guildId, DetectType.newPost, DetectPlatform.afreeca, !info.newPostDetect.afreeca);
+                await ServerRepository.updateDetectInfo(guildId, interaction.channelId as string, DetectType.NewPost, DetectPlatform.Afreeca, !info.newPostDetect.afreeca);
                 await interaction.update({ components: [await newPostButtons(guildId)] });
                 return;
             case ButtonName.new_post_youtube:
-                await ServerRepository.updateDetectInfo(guildId, DetectType.newPost, DetectPlatform.youtube, !info.newPostDetect.youtube);
+                await ServerRepository.updateDetectInfo(guildId, interaction.channelId as string, DetectType.NewPost, DetectPlatform.Youtube, !info.newPostDetect.youtube);
                 await interaction.update({ components: [await newPostButtons(guildId)] });
                 return;
             case ButtonName.owner_chat_chzzk:
-                await ServerRepository.updateDetectInfo(guildId, DetectType.ownerChat, DetectPlatform.chzzk, !info.ownerChatDetect.chzzk);
+                await ServerRepository.updateDetectInfo(guildId, interaction.channelId as string, DetectType.OwnerChat, DetectPlatform.Chzzk, !info.ownerChatDetect.chzzk);
                 await interaction.update({ components: [await ownerChatButtons(guildId)] });
                 return;
             case ButtonName.owner_chat_afreeca:
-                await ServerRepository.updateDetectInfo(guildId, DetectType.ownerChat, DetectPlatform.afreeca, !info.ownerChatDetect.afreeca);
+                await ServerRepository.updateDetectInfo(guildId, interaction.channelId as string, DetectType.OwnerChat, DetectPlatform.Afreeca, !info.ownerChatDetect.afreeca);
                 await interaction.update({ components: [await ownerChatButtons(guildId)] });
                 return;
             case ButtonName.owner_chat_youtube:
-                await ServerRepository.updateDetectInfo(guildId, DetectType.ownerChat, DetectPlatform.youtube, !info.ownerChatDetect.youtube);
+                await ServerRepository.updateDetectInfo(guildId, interaction.channelId as string, DetectType.OwnerChat, DetectPlatform.Youtube, !info.ownerChatDetect.youtube);
                 await interaction.update({ components: [await ownerChatButtons(guildId)] });
                 return;
             case ButtonName.else_naver_cafe:
-                await ServerRepository.updateDetectInfo(guildId, DetectType.else, DetectPlatform.naverCafe, !info.elseDetect.naverCafe);
+                await ServerRepository.updateDetectInfo(guildId, interaction.channelId as string, DetectType.Else, DetectPlatform.NaverCafe, !info.elseDetect.naverCafe);
                 await interaction.update({ components: [await elseButtons(guildId)] });
                 return;
             default:

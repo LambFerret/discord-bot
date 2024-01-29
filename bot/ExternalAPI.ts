@@ -2,12 +2,7 @@ import axios from 'axios';
 import { CONFIG } from './config/Config';
 import { LiveStreamInfoType } from './model/LiveStreamInfoType';
 import { LiveAfreecaInfoType } from './model/LiveAfreecaInfoType';
-
-export enum StreamType {
-    Twitch,
-    Afreeca,
-    Youtube,
-}
+import { LiveChzzkInfoType } from './model/LiveChzzkInfoType';
 
 class ExternalApi {
     token: Promise<string>
@@ -26,8 +21,40 @@ class ExternalApi {
             }
         }).then(v => v.data.access_token) as string;
 
-    getTwitchLiveInfo = async (streamer: string) => {
-        const url = encodeURI(CONFIG.TWITCH_API_GATEWAY + "streams?user_login=" + streamer)
+    getChzzkLiveInfo = async (streamerID : string) => {
+        const endpoint = `https://api.chzzk.naver.com/service/v2/channels/${streamerID}/live-detail`;
+        const userAgent =
+            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.74 Safari/537.36';
+        const res = await axios
+            .get(endpoint, {
+                headers: { 'User-Agent': userAgent },
+            })
+            .then((res) => {
+                return res.data;
+            })
+            .catch((err) => {
+                return err.response.data;
+            });
+
+        if (res.code !== 200) {
+            // TODO 채팅창에 한번 말해준 후 detecting을 false로 바꿔준다.
+            return undefined;
+        }
+
+        const liveInfo : LiveChzzkInfoType = {
+            channelId: res.content.channel.channelId,
+            channelName: res.content.channel.channelName,
+            channelImageUrl: res.content.channel.channelImageUrl,
+            liveStatus: res.content.status === "OPEN" ? true : false,
+            liveImageUrl: res.content.liveImageUrl,
+            liveTitle: res.content.liveTitle,
+        }
+
+        return liveInfo;
+    }
+
+    getTwitchLiveInfo = async (streamerID: string) => {
+        const url = encodeURI(CONFIG.TWITCH_API_GATEWAY + "streams?user_login=" + streamerID)
         return await axios({
             url: url,
             method: 'get',
@@ -38,8 +65,8 @@ class ExternalApi {
         }).then(v => v.data.data[0] as LiveStreamInfoType);
     }
 
-    getAfreecaLiveInfo = async (streamer: string): Promise<LiveAfreecaInfoType> => {
-        const endpoint = `https://bjapi.afreecatv.com/api/${streamer}/station`;
+    getAfreecaLiveInfo = async (streamerID: string): Promise<LiveAfreecaInfoType> => {
+        const endpoint = `https://bjapi.afreecatv.com/api/${streamerID}/station`;
         const userAgent =
             'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.74 Safari/537.36';
         const res = await axios
@@ -82,4 +109,4 @@ class ExternalApi {
         }
     }
 }
-export { ExternalApi };
+export default new ExternalApi();

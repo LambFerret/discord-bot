@@ -1,10 +1,9 @@
-import { ServerInfo, Entrance } from "../model/ServerType";
+import { ServerInfo, Entrance, LiveInfoDTO } from "../model/ServerType";
 import { Guild } from "discord.js";
 import fs from 'fs/promises';
 import * as fss from 'fs';
 import path from 'path';
 import { UserType } from "../model/UserType";
-import { StreamType } from "../ExternalAPI";
 import { DetectType, DetectPlatform } from "../model/DetectType";
 
 class ServerRepository {
@@ -97,57 +96,73 @@ class ServerRepository {
         return info.serverDetectInfos;
     }
 
-    updateDetectInfo = async (guildId: string, type : DetectType, platform : DetectPlatform, setActive: boolean) => {
+    getDetectID = async (guildId: string, platform: DetectPlatform) => {
         const info = await this.readJsonFromFile(guildId);
+        switch (platform) {
+            case DetectPlatform.Afreeca:
+                return info.broadcastInfo.AfreecaId;
+            case DetectPlatform.Chzzk:
+                return info.broadcastInfo.ChzzkId;
+            case DetectPlatform.Twitch:
+                return info.broadcastInfo.TwitchId;
+            case DetectPlatform.Youtube:
+                return info.broadcastInfo.YoutubeId;
+            default: return "";
+        }
+    }
+
+    updateDetectInfo = async (guildId: string,channelId:string, type: DetectType, platform: DetectPlatform, setActive: boolean) => {
+        const info = await this.readJsonFromFile(guildId);
+        info.detectChannel = channelId;
         switch (type) {
-            case DetectType.broadcast:
+            case DetectType.Broadcast:
                 switch (platform) {
-                    case DetectPlatform.chzzk:
+                    case DetectPlatform.Chzzk:
                         info.serverDetectInfos.broadcastDetect.chzzk = setActive;
                         break;
-                    case DetectPlatform.afreeca:
+                    case DetectPlatform.Afreeca:
                         info.serverDetectInfos.broadcastDetect.afreeca = setActive;
                         break;
-                    case DetectPlatform.youtube:
+                    case DetectPlatform.Youtube:
                         info.serverDetectInfos.broadcastDetect.youtube = setActive;
                         break;
-                    case DetectPlatform.twitch:
+                    case DetectPlatform.Twitch:
                         info.serverDetectInfos.broadcastDetect.twitch = setActive;
                         break;
                     default: return;
                 }
                 break;
-            case DetectType.newPost:
+            case DetectType.NewPost:
                 switch (platform) {
-                    case DetectPlatform.chzzk:
+                    case DetectPlatform.Chzzk:
                         info.serverDetectInfos.newPostDetect.chzzk = setActive;
                         break;
-                    case DetectPlatform.afreeca:
+                    case DetectPlatform.Afreeca:
                         info.serverDetectInfos.newPostDetect.afreeca = setActive;
                         break;
-                    case DetectPlatform.youtube:
+                    case DetectPlatform.Youtube:
                         info.serverDetectInfos.newPostDetect.youtube = setActive;
                         break;
                     default: return;
                 }
                 break;
-            case DetectType.ownerChat:
+            case DetectType.OwnerChat:
                 switch (platform) {
-                    case DetectPlatform.chzzk:
+                    case DetectPlatform.Chzzk:
                         info.serverDetectInfos.ownerChatDetect.chzzk = setActive;
                         break;
-                    case DetectPlatform.afreeca:
+                    case DetectPlatform.Afreeca:
                         info.serverDetectInfos.ownerChatDetect.afreeca = setActive;
                         break;
-                    case DetectPlatform.youtube:
+                    case DetectPlatform.Youtube:
                         info.serverDetectInfos.ownerChatDetect.youtube = setActive;
                         break;
                     default: return;
                 }
                 break;
-            case DetectType.else:
+            case DetectType.Else:
                 switch (platform) {
-                    case DetectPlatform.naverCafe:
+                    case DetectPlatform.NaverCafe:
                         info.serverDetectInfos.elseDetect.naverCafe = setActive;
                         break;
                     default: return;
@@ -201,27 +216,40 @@ class ServerRepository {
         await this.writeJsonAsFile(info);
     }
 
-    checkStreamLive = async (guildId: string, type: StreamType): Promise<boolean | null> => {
+    checkStreamLive = async (guildId: string, type: DetectPlatform) => {
         const info = await this.readJsonFromFile(guildId);
-        if (info.isDetecting) {
-            switch (type) {
-                case StreamType.Afreeca:
-                    return info.streamingStatus.isAfreecaStreamLive;
-                case StreamType.Twitch:
-                    return info.streamingStatus.isTwitchStreamLive;
-                default: return null;
-            }
+        let liveDTO: LiveInfoDTO = {
+            id: undefined,
+            isLive: false,
         }
-        return null;
+        switch (type) {
+            case DetectPlatform.Afreeca:
+                liveDTO.id = info.broadcastInfo.AfreecaId;
+                liveDTO.isLive = info.streamingStatus.isAfreecaStreamLive;
+                break;
+            case DetectPlatform.Twitch:
+                liveDTO.id = info.broadcastInfo.TwitchId;
+                liveDTO.isLive = info.streamingStatus.isTwitchStreamLive;
+                break;
+            case DetectPlatform.Chzzk:
+                liveDTO.id = info.broadcastInfo.ChzzkId;
+                liveDTO.isLive = info.streamingStatus.isChzzkStreamLive;
+                break;
+            case DetectPlatform.Youtube:
+                liveDTO.id = info.broadcastInfo.YoutubeId;
+                liveDTO.isLive = info.streamingStatus.isYoutubeStreamLive;
+                break;
+        }
+        return liveDTO;
     }
 
-    updateStreamLive = async (guildId: string, type: StreamType, isLive: boolean) => {
+    updateStreamLive = async (guildId: string, type: DetectPlatform, isLive: boolean) => {
         const info = await this.readJsonFromFile(guildId);
         switch (type) {
-            case StreamType.Afreeca:
+            case DetectPlatform.Afreeca:
                 info.streamingStatus.isAfreecaStreamLive = isLive;
                 break;
-            case StreamType.Twitch:
+            case DetectPlatform.Twitch:
                 info.streamingStatus.isTwitchStreamLive = isLive;
                 break;
             default: return;

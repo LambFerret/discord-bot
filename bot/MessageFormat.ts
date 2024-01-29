@@ -5,37 +5,31 @@ import { LiveStreamInfoType } from "./model/LiveStreamInfoType";
 import { Entrance } from './model/ServerType';
 import { LiveAfreecaInfoType } from './model/LiveAfreecaInfoType';
 import { CONFIG } from './config/Config';
-export const streamerLiveInfoMsg = (data: LiveStreamInfoType) =>
+import { LiveChzzkInfoType } from './model/LiveChzzkInfoType';
+
+export const twitchLiveInfoMsg = (data: LiveStreamInfoType) =>
   new EmbedBuilder()
     .setColor('#0000ff')
     .setTitle(`${data.user_name} 트위치 뱅온!`)
     .setDescription(data.title)
     .setURL("https://twitch.tv/" + data.user_login)
-  //  .setThumbnail("https://static-cdn.jtvnw.net/previews-ttv/live_user_"+CONFIG.TWITCH_STREAMER_ID+".jpg")
+//  .setThumbnail("https://static-cdn.jtvnw.net/previews-ttv/live_user_"+CONFIG.TWITCH_STREAMER_ID+".jpg")
 
-export const streamerLiveInfoMsgAfreeca = (data: LiveAfreecaInfoType) =>
-new EmbedBuilder()
+export const afreecaLiveInfoMsg = (data: LiveAfreecaInfoType) =>
+  new EmbedBuilder()
     .setColor('#0000ff')
     .setTitle(`${data.user_nick} 아프리카 뱅온!`)
     .setDescription(data.broad_title)
     .setURL("https://play.afreecatv.com/" + data.user_id)
-    .setThumbnail("https://liveimg.afreecatv.com/h/"+data.broad_no+".webp")
+    .setThumbnail("https://liveimg.afreecatv.com/h/" + data.broad_no + ".webp");
 
-export const streamerOfflineInfoMsg = (data: LiveStreamerInfoType) =>
-  new EmbedBuilder()
-    .setColor('#0000ff')
-    .setTitle(`${data.display_name}님은 현재 방송중이 아니시다!`)
-    .setDescription(data.title)
-    .setURL("https://twitch.tv/" + data.broadcaster_login)
-    .setThumbnail(data.thumbnail_url)
-
-export const userNotExistMsg = () =>
-  new EmbedBuilder().setTitle('존재하지 않는 아이디다!')
-
-export const streamerSaveMsg = (name: string) => {
+export const chzzkLiveInfoMsg = (data: LiveChzzkInfoType) => {
   return new EmbedBuilder()
-    .setTitle(name + '을 이 채널에 저장했다!')
-
+    .setColor('#0000ff')
+    .setTitle(`${data.channelName} 치지직 뱅온!`)
+    .setDescription(data.liveTitle)
+    .setURL("https://chzzk.naver.com/live/" + data.channelId)
+    .setThumbnail(data.channelImageUrl)
 }
 
 export const introduceBot = (name: string, myName: string) => {
