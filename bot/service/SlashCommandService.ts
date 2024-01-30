@@ -1,13 +1,15 @@
-import { BaseInteraction, ButtonInteraction, ChatInputCommandInteraction, Client, Collection, Guild, GuildMemberRoleManager, PermissionFlagsBits, PermissionsBitField, REST, Routes, SelectMenuInteraction, StringSelectMenuInteraction } from "discord.js";
+import { BaseInteraction, ButtonInteraction, ChatInputCommandInteraction, Collection, PermissionFlagsBits, PermissionsBitField, REST, Routes, SelectMenuInteraction } from "discord.js";
 import { CONFIG } from "../config/Config";
 import { CustomClient } from "../config/CustomClient";
-import { ButtonName, Command, CommandName, DropdownCommand } from "../command";
+import { Command, CommandName, DropdownCommand } from "../command";
 import { help, helpDropdown } from "../command/help";
 import ping from "../command/ping";
 import postfix from "../command/postfix";
 import { detect, solveDetectButtons } from "../command/detect";
 import initialize from "../command/initalize";
 import register from "../command/register";
+import { afreecaSetting } from "../command/afreecaSetting";
+import { afreecaSettingDelete } from "../command/afreecaSettingDelete";
 
 export default class SlashCommandService {
 
@@ -28,6 +30,8 @@ export default class SlashCommandService {
     this.setCommand(detect);
     this.setCommand(initialize);
     this.setCommand(register);
+    this.setCommand(afreecaSetting);
+    this.setCommand(afreecaSettingDelete);
 
     // dropdown command
     this.setDropdownCommand(helpDropdown);
@@ -80,7 +84,6 @@ export default class SlashCommandService {
   handleButtonInteraction = async (interaction: ButtonInteraction) => {
     const client = interaction.client as CustomClient;
     const command = client.commands.get(CommandName.DetectButton);
-    // check the caller has PermissionFlagsBits.BanMembers
     if (interaction.member && 'permissions' in interaction.member) {
       const memberPermissions = interaction.member.permissions as PermissionsBitField;
       if (!memberPermissions.has(this.hasRole)) {

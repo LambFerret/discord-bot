@@ -9,6 +9,8 @@ export enum CommandName {
     DetectButton = "detectButton",
     Initialize = "initialize",
     Register = "register",
+    Afreeca_Setting = "afreeca_setting",
+    Afreeca_Setting_Delete = "afreeca_setting_delete"
 }
 /* 
  📦 방송
@@ -46,7 +48,7 @@ export enum ButtonName {
     back = "back",
 }
 
-const buttonTitles: { [key in ButtonName]: string } = {
+const detectButtons: { [key in ButtonName]: string } = {
     [ButtonName.broadcast]: "방송 감지",
     [ButtonName.new_post]: "새글 감지",
     [ButtonName.owner_chat]: "방장 채팅 감지",
@@ -110,14 +112,14 @@ export const text: TextType = {
         id: CommandName.Detect,
         name: "감지",
         description: "방송을 감지합니다",
-        titleMap: buttonTitles,
+        titleMap: detectButtons,
     },
     initialize: {
         id: CommandName.Initialize,
         name: "초기화",
         description: "초기화할때는 서버가 리셋 되지 않도록 주의해주세요",
     },
-    register : {
+    register: {
         id: CommandName.Register,
         name: "등록",
         description: "주인님의 정보를 알려주세요!",
@@ -134,6 +136,24 @@ export const text: TextType = {
             }
         ]
     },
+    afreeca_setting: {
+        id: CommandName.Afreeca_Setting,
+        name: "아프리카_설정",
+        description: "감지하고 싶은 특정 게시판 ID번호 적어주세요! ෆ⸒⸒⸜( ˶'ᵕ'˶)⸝ ",
+        options: [
+            {
+                label: "입력",
+                description: "하나의 게시판만 감지하고 싶을 때 입력해주세요!",
+                value: "key"
+            },
+        ]
+    },
+    afreeca_setting_delete: {
+        id : CommandName.Afreeca_Setting_Delete,
+        name : "아프리카_설정_초기화",
+        description : "모든 게시판에 있는 주인님의 글을 감지합니다!",
+
+    }
 }
 
 export type Command = {

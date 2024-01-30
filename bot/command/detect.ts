@@ -19,59 +19,6 @@ export const detect: Command = {
     }
 }
 
-const initialButtons = (guildId: string): ActionRowBuilder<ButtonBuilder> => {
-    return new ActionRowBuilder<ButtonBuilder>()
-        .addComponents(
-            makeButton(ButtonName.broadcast, true),
-            makeButton(ButtonName.new_post, true),
-            makeButton(ButtonName.owner_chat, true),
-            makeButton(ButtonName.else, true),
-        );
-}
-
-const broadcastButtons = async (guildId: string): Promise<ActionRowBuilder<ButtonBuilder>> => {
-    const info = await ServerRepository.getDetectInfo(guildId);
-    return new ActionRowBuilder<ButtonBuilder>()
-        .addComponents(
-            makeButton(ButtonName.broadcast_chzzk, info.broadcastDetect.chzzk),
-            makeButton(ButtonName.broadcast_afreeca, info.broadcastDetect.afreeca),
-            makeButton(ButtonName.broadcast_youtube, info.broadcastDetect.youtube),
-            makeButton(ButtonName.broadcast_twitch, info.broadcastDetect.twitch),
-            makeButton(ButtonName.back, true, true),
-        );
-}
-
-const newPostButtons = async (guildId: string): Promise<ActionRowBuilder<ButtonBuilder>> => {
-    const info = await ServerRepository.getDetectInfo(guildId);
-    return new ActionRowBuilder<ButtonBuilder>()
-        .addComponents(
-            makeButton(ButtonName.new_post_chzzk, info.newPostDetect.chzzk),
-            makeButton(ButtonName.new_post_afreeca, info.newPostDetect.afreeca),
-            makeButton(ButtonName.new_post_youtube, info.newPostDetect.youtube),
-            makeButton(ButtonName.back, true, true),
-        );
-}
-
-const ownerChatButtons = async (guildId: string): Promise<ActionRowBuilder<ButtonBuilder>> => {
-    const info = await ServerRepository.getDetectInfo(guildId);
-    return new ActionRowBuilder<ButtonBuilder>()
-        .addComponents(
-            makeButton(ButtonName.owner_chat_chzzk, info.ownerChatDetect.chzzk),
-            makeButton(ButtonName.owner_chat_afreeca, info.ownerChatDetect.afreeca),
-            makeButton(ButtonName.owner_chat_youtube, info.ownerChatDetect.youtube),
-            makeButton(ButtonName.back, true, true),
-        );
-}
-
-const elseButtons = async (guildId: string): Promise<ActionRowBuilder<ButtonBuilder>> => {
-    const info = await ServerRepository.getDetectInfo(guildId);
-    return new ActionRowBuilder<ButtonBuilder>()
-        .addComponents(
-            makeButton(ButtonName.else_naver_cafe, info.elseDetect.naverCafe),
-            makeButton(ButtonName.back, true, true),
-        );
-}
-
 export const solveDetectButtons: ButtonCommand = {
     command: CommandName.DetectButton,
     execute: async (interaction: ButtonInteraction) => {
@@ -142,6 +89,59 @@ export const solveDetectButtons: ButtonCommand = {
                 break;
         }
     }
+}
+
+const initialButtons = (guildId: string): ActionRowBuilder<ButtonBuilder> => {
+    return new ActionRowBuilder<ButtonBuilder>()
+        .addComponents(
+            makeButton(ButtonName.broadcast, true),
+            makeButton(ButtonName.new_post, true),
+            makeButton(ButtonName.owner_chat, true),
+            makeButton(ButtonName.else, true),
+        );
+}
+
+const broadcastButtons = async (guildId: string): Promise<ActionRowBuilder<ButtonBuilder>> => {
+    const info = await ServerRepository.getDetectInfo(guildId);
+    return new ActionRowBuilder<ButtonBuilder>()
+        .addComponents(
+            makeButton(ButtonName.broadcast_chzzk, info.broadcastDetect.chzzk),
+            makeButton(ButtonName.broadcast_afreeca, info.broadcastDetect.afreeca),
+            makeButton(ButtonName.broadcast_youtube, info.broadcastDetect.youtube),
+            makeButton(ButtonName.broadcast_twitch, info.broadcastDetect.twitch),
+            makeButton(ButtonName.back, true, true),
+        );
+}
+
+const newPostButtons = async (guildId: string): Promise<ActionRowBuilder<ButtonBuilder>> => {
+    const info = await ServerRepository.getDetectInfo(guildId);
+    return new ActionRowBuilder<ButtonBuilder>()
+        .addComponents(
+            makeButton(ButtonName.new_post_chzzk, info.newPostDetect.chzzk),
+            makeButton(ButtonName.new_post_afreeca, info.newPostDetect.afreeca),
+            makeButton(ButtonName.new_post_youtube, info.newPostDetect.youtube),
+            makeButton(ButtonName.back, true, true),
+        );
+}
+
+const ownerChatButtons = async (guildId: string): Promise<ActionRowBuilder<ButtonBuilder>> => {
+    const info = await ServerRepository.getDetectInfo(guildId);
+    return new ActionRowBuilder<ButtonBuilder>()
+        .addComponents(
+            makeButton(ButtonName.owner_chat_chzzk, info.ownerChatDetect.chzzk),
+            makeButton(ButtonName.owner_chat_afreeca, info.ownerChatDetect.afreeca),
+            makeButton(ButtonName.owner_chat_youtube, info.ownerChatDetect.youtube),
+            makeButton(ButtonName.back, true, true),
+        );
+}
+
+const elseButtons = async (guildId: string): Promise<ActionRowBuilder<ButtonBuilder>> => {
+    const info = await ServerRepository.getDetectInfo(guildId);
+    return new ActionRowBuilder<ButtonBuilder>()
+        .addComponents(
+            makeButton(ButtonName.else_naver_cafe, info.elseDetect.naverCafe),
+            makeButton(ButtonName.back, true, true),
+        );
 }
 
 function makeButton(name: ButtonName, setActive: boolean, isBack?: boolean): ButtonBuilder {

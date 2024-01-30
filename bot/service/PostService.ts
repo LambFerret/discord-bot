@@ -1,9 +1,9 @@
 import { Client, EmbedBuilder } from "discord.js";
 import ServerRepository from "../repository/ServerRepository";
 import * as cron from "node-cron";
-import { chzzkLiveInfoMsg } from "../MessageFormat";
 import { DetectPlatform } from "../model/DetectType";
 import api from "../ExternalAPI";
+import { NewPostChzzkInfoType } from "../model/NewPostChzzkInfoType";
 
 export default class PostService {
     client: Client;
@@ -58,8 +58,9 @@ export default class PostService {
     sendAfreecaStreamInfo = async (guildId: string) => {
         const dto = await ServerRepository.checkStreamLive(guildId, DetectPlatform.Afreeca);
         if (dto.id === undefined) return undefined;
+        const setting = await ServerRepository.getServerSettings(guildId);
         const postIDs: string[] = await ServerRepository.getNewPostByPlatform(guildId, DetectPlatform.Afreeca);
-        const latestPostID = await api.getAfreecaCommunityNewPostInfo(dto.id);
+        const latestPostID = await api.getAfreecaCommunityNewPostInfo(dto.id, setting.afreecaNewPostOnlyAnnouncement === "" ? undefined : setting.afreecaNewPostOnlyAnnouncement);
 
         if (!latestPostID || latestPostID?.length == 0) return;
 
@@ -69,14 +70,21 @@ export default class PostService {
                 if (!(postIDs.includes(post.id.toString()))) postIDs.push(post.id.toString());
             });
             ServerRepository.updateNewPostByPlatform(guildId, DetectPlatform.Afreeca, postIDs);
-            const embed = new EmbedBuilder()
-                .setTitle("NEW POST 📌 " + latestPostID[0].title)
-                .setDescription(latestPostID[0].content.slice(0, 50) + "...")
-                .setURL(`https://bj.afreecatv.com/${dto.id}/post/${latestPostID[0].id}`)
-                .setColor(0x0099ff);
-            if (latestPostID[0].attachedImageURL) embed.setImage(latestPostID[0].attachedImageURL);
+            if (
+                (setting.afreecaNewPostOnlyAnnouncement.length == 0) ||
+                (setting.afreecaNewPostOnlyAnnouncement.length > 0 && setting.afreecaNewPostOnlyAnnouncement.includes(latestPostID[0].type.toString()))
+            ) {
+                const embed = new EmbedBuilder()
+                    .setTitle("NEW POST 📌 " + latestPostID[0].title)
+                    .setDescription(latestPostID[0].content.slice(0, 50) + "...")
+                    .setURL(`https://bj.afreecatv.com/${dto.id}/post/${latestPostID[0].id}`)
+                    .setColor(0x0099ff);
+                if (latestPostID[0].attachedImageURL) embed.setImage(latestPostID[0].attachedImageURL);
 
-            this.say(guildId, embed);
+                this.say(guildId, embed);
+                console.log("-0-0-0-0-0-0-0-0-0-0")
+
+            }
         }
     }
 

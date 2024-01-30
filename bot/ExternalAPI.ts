@@ -156,8 +156,13 @@ class ExternalApi {
         return postIDs;
     }
 
-    getAfreecaCommunityNewPostInfo = async (streamerID: string): Promise<NewPostChzzkInfoType[] | undefined> => {
-        const endpoint = `https://bjapi.afreecatv.com/api/${streamerID}/board?page=1&per_page=20&field=user_nick%2Cuser_id&keyword=${streamerID}&type=all`
+    getAfreecaCommunityNewPostInfo = async (streamerID: string, boardId?:string): Promise<NewPostChzzkInfoType[] | undefined> => {
+        let endpoint;
+        if (boardId) {
+            endpoint = `https://bjapi.afreecatv.com/api/${streamerID}/board/${boardId}?page=1&per_page=20&field=user_nick%2Cuser_id&keyword=${streamerID}&type=all&board_id=${boardId}`
+        } else {
+            endpoint = `https://bjapi.afreecatv.com/api/${streamerID}/board?page=1&per_page=10&field=user_nick%2Cuser_id&keyword=${streamerID}&type=all`
+        }
         const res = await axios
             .get(endpoint, {
                 headers: { 'User-Agent': this.userAgent },

@@ -1,10 +1,11 @@
-import { ServerInfo, Entrance, LiveInfoDTO } from "../model/ServerType";
+import { ServerInfo, Entrance, LiveInfoDTO, Settings } from "../model/ServerType";
 import { Guild } from "discord.js";
 import fs from 'fs/promises';
 import * as fss from 'fs';
 import path from 'path';
 import { UserType } from "../model/UserType";
 import { DetectType, DetectPlatform } from "../model/DetectType";
+import { afreecaSetting } from "../command/afreecaSetting";
 
 class ServerRepository {
 
@@ -72,6 +73,9 @@ class ServerRepository {
                 elseDetect: {
                     naverCafe: false,
                 }
+            },
+            settings: {
+                afreecaNewPostOnlyAnnouncement: "",
             }
         }
         await this.writeJsonAsFile(server);
@@ -305,6 +309,17 @@ class ServerRepository {
                 break;
             default: return;
         }
+        await this.writeJsonAsFile(info);
+    }
+
+    getServerSettings = async (guildId: string) : Promise<Settings>=> {
+        const info = await this.readJsonFromFile(guildId);
+        return info.settings;
+    }
+
+    updateServerSettings = async (guildId: string, settings: Settings) => {
+        const info = await this.readJsonFromFile(guildId);
+        info.settings = settings;
         await this.writeJsonAsFile(info);
     }
 
