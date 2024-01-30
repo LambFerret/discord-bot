@@ -1,8 +1,8 @@
-import { BaseInteraction, ButtonInteraction, ChatInputCommandInteraction, Client, Collection, REST, Routes, SelectMenuInteraction, StringSelectMenuInteraction } from "discord.js";
+import { BaseInteraction, ButtonInteraction, ChatInputCommandInteraction, Client, Collection, Guild, GuildMemberRoleManager, PermissionFlagsBits, PermissionsBitField, REST, Routes, SelectMenuInteraction, StringSelectMenuInteraction } from "discord.js";
 import { CONFIG } from "../config/Config";
 import { CustomClient } from "./CustomClient";
 import { ButtonName, Command, CommandName, DropdownCommand } from "../command";
-import {help, helpDropdown} from "../command/help";
+import { help, helpDropdown } from "../command/help";
 import ping from "../command/ping";
 import postfix from "../command/postfix";
 import { detect, solveDetectButtons } from "../command/detect";
@@ -12,8 +12,10 @@ import register from "../command/register";
 export default class SlashCommandService {
 
   client: CustomClient;
+  hasRole;
   constructor(client: CustomClient) {
     this.client = client;
+    this.hasRole = PermissionFlagsBits.BanMembers;
     this.client.commands = new Collection();
   }
 
@@ -35,7 +37,12 @@ export default class SlashCommandService {
 
     const commands = this.client.commands
       .filter((command: any) => typeof command.command !== 'string')
-      .map((command: Command) => command.command.toJSON());
+      .map((command: Command) => {
+        command.command.setDefaultMemberPermissions(this.hasRole);
+        return command.command.toJSON();
+      });
+
+    console.log(JSON.stringify(commands));
 
     const rest = new REST().setToken(CONFIG.DISCORD_BOT_TOKEN);
     await rest.put(
@@ -74,10 +81,15 @@ export default class SlashCommandService {
 
   handleButtonInteraction = async (interaction: ButtonInteraction) => {
     const client = interaction.client as CustomClient;
-    if (interaction.customId in ButtonName) {
-
-    }
     const command = client.commands.get(CommandName.DetectButton);
+    // check the caller has PermissionFlagsBits.BanMembers
+    if (interaction.member && 'permissions' in interaction.member) {
+      const memberPermissions = interaction.member.permissions as PermissionsBitField;
+      if (!memberPermissions.has(this.hasRole)) {
+        await interaction.reply({ content: '이 버튼을 사용할 권한이 없습니다.', ephemeral: true });
+        return;
+      }
+    }
     if (!command) return;
     try {
       await command.execute(interaction);
@@ -88,7 +100,6 @@ export default class SlashCommandService {
 
   handleSelectMenuInteraction = async (interaction: SelectMenuInteraction) => {
     const client = interaction.client as CustomClient;
-    
     const command = client.commands.get(interaction.customId);
     if (!command) return;
     try {
