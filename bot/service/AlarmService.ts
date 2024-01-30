@@ -4,7 +4,7 @@ import api from "../ExternalAPI";
 import { EmbedBuilder } from "@discordjs/builders";
 import { afreecaLiveInfoMsg, chzzkLiveInfoMsg, twitchLiveInfoMsg } from "../MessageFormat";
 import { Client } from "discord.js";
-import * as a from "node-cron";
+import * as cron from "node-cron";
 
 export default class AlarmService {
 
@@ -16,12 +16,21 @@ export default class AlarmService {
         const info = await ServerRepository.getDetectInfo(guildId);
         if (info.broadcastDetect.chzzk) {
             await this.sendChzzkBroadcastInfo(guildId);
+        } 
+        if (info.broadcastDetect.afreeca) {
+            await this.sendAfreecaStreamInfo(guildId);
+        }
+        if (info.broadcastDetect.twitch) {
+            await this.sendTwitchStreamInfo(guildId);
+        }
+        if (info.broadcastDetect.youtube) {
+            await this.sendYoutubeBroadcastInfo(guildId);
         }
     }
 
-    makeCron = async (guildId: string) => {
+    makeCron = (guildId: string) => {
         // make cron of checkAlarm() 
-        a.schedule('* * * * *', () => {
+        cron.schedule('* * * * *', () => {
             this.checkAlarm(guildId);
         });
     }

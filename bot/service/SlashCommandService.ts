@@ -1,6 +1,6 @@
 import { BaseInteraction, ButtonInteraction, ChatInputCommandInteraction, Client, Collection, Guild, GuildMemberRoleManager, PermissionFlagsBits, PermissionsBitField, REST, Routes, SelectMenuInteraction, StringSelectMenuInteraction } from "discord.js";
 import { CONFIG } from "../config/Config";
-import { CustomClient } from "./CustomClient";
+import { CustomClient } from "../config/CustomClient";
 import { ButtonName, Command, CommandName, DropdownCommand } from "../command";
 import { help, helpDropdown } from "../command/help";
 import ping from "../command/ping";
@@ -41,8 +41,6 @@ export default class SlashCommandService {
         command.command.setDefaultMemberPermissions(this.hasRole);
         return command.command.toJSON();
       });
-
-    console.log(JSON.stringify(commands));
 
     const rest = new REST().setToken(CONFIG.DISCORD_BOT_TOKEN);
     await rest.put(

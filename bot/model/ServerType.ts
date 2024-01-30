@@ -62,10 +62,10 @@ export type ServerDetectInfos = {
 }
 
 export type LastCommunityPostIDs = {
-    twitchPostId : string,
-    afreecaPostId : string,
-    chzzkPostId : string,
-    youtubePostId : string,
+    twitchPostId : string[],
+    afreecaPostId : string[],
+    chzzkPostId : string[],
+    youtubePostId : string[],
 }
 
 export type LiveInfoDTO = {

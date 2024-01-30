@@ -9,13 +9,15 @@ import { UserType } from './model/UserType';
 import { showEntranceInfo } from './MessageFormat';
 import { BroadcastInfo } from './model/ServerType';
 import SlashCommandService from './service/SlashCommandService';
-import { CustomClient } from './service/CustomClient';
+import { CustomClient } from './config/CustomClient';
 import AlarmService from './service/AlarmService';
+import PostService from './service/PostService';
 
 export default class DiscordBot {
 
   slashCommandService: SlashCommandService;
   alarmService : AlarmService;
+  postService: PostService;
   command: MessageCommand;
   client: Client;
 
@@ -23,6 +25,7 @@ export default class DiscordBot {
     this.client = new CustomClient();
     this.slashCommandService = new SlashCommandService(this.client as CustomClient);
     this.alarmService = new AlarmService(this.client);
+    this.postService = new PostService(this.client);
     this.command = new MessageCommand();
 
     this.addListeners(this.client);
@@ -52,8 +55,13 @@ export default class DiscordBot {
       this.slashCommandService.registerSlashCommand(serverId);
 
       console.log("detect channel : " + channelId + " | isDetecting : " + server.isDetecting);
-      // this.alarmService.checkAlarm(serverId); // test code 
-      if (!server.isDeleted && server.isDetecting) this.makeDetectingIntervalByGuild(channelId);
+
+      // =-=-=-=-=-=- test =-=-=-=-=-=-=
+      // this.alarmService.checkAlarm(serverId); 
+      this.postService.checkPost(serverId);
+      // =-=-=-=-=-=- test =-=-=-=-=-=-=
+
+      // if (!server.isDeleted && server.isDetecting) this.makeDetectingIntervalByGuild(channelId);
 
       console.log("=============================");
       

@@ -47,10 +47,10 @@ class ServerRepository {
                 isYoutubeStreamLive: false,
             },
             lastCommunityPostIDs: {
-                twitchPostId: "",
-                afreecaPostId: "",
-                chzzkPostId: "",
-                youtubePostId: "",
+                twitchPostId: [],
+                afreecaPostId: [],
+                chzzkPostId: [],
+                youtubePostId: [],
             },
             serverDetectInfos: {
                 broadcastDetect: {
@@ -271,6 +271,37 @@ class ServerRepository {
                 break;
             case DetectPlatform.Twitch:
                 info.streamingStatus.isTwitchStreamLive = isLive;
+                break;
+            default: return;
+        }
+        await this.writeJsonAsFile(info);
+    }
+
+    getNewPostByPlatform = async (guildId: string, type: DetectPlatform) : Promise<string[]> => {
+        const info = await this.readJsonFromFile(guildId);
+        switch (type) {
+            case DetectPlatform.Afreeca:
+                return info.lastCommunityPostIDs.afreecaPostId;
+            case DetectPlatform.Chzzk:
+                return info.lastCommunityPostIDs.chzzkPostId;
+            case DetectPlatform.Youtube:
+                return info.lastCommunityPostIDs.youtubePostId;
+            default: return [];
+        }
+    }
+
+    updateNewPostByPlatform = async (guildId: string, type: DetectPlatform, postId: string[]) => {
+        if (postId.length > 30) postId = postId.slice(-30);
+        const info = await this.readJsonFromFile(guildId);
+        switch (type) {
+            case DetectPlatform.Afreeca:
+                info.lastCommunityPostIDs.afreecaPostId = postId;
+                break;
+            case DetectPlatform.Chzzk:
+                info.lastCommunityPostIDs.chzzkPostId = postId;
+                break;
+            case DetectPlatform.Youtube:
+                info.lastCommunityPostIDs.youtubePostId = postId;
                 break;
             default: return;
         }
