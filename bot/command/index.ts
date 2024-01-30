@@ -8,6 +8,7 @@ export enum CommandName {
     Detect = "detect",
     DetectButton = "detectButton",
     Initialize = "initialize",
+    Register = "register",
 }
 /* 
  📦 방송
@@ -115,6 +116,23 @@ export const text: TextType = {
         id: CommandName.Initialize,
         name: "초기화",
         description: "초기화할때는 서버가 리셋 되지 않도록 주의해주세요",
+    },
+    register : {
+        id: CommandName.Register,
+        name: "등록",
+        description: "주인님의 정보를 알려주세요!",
+        options: [
+            {
+                label: "플랫폼",
+                description: "치지직, 아프리카, 유튜브, 트위치 중 하나를 입력해주세요",
+                value: "platform"
+            },
+            {
+                label: "아이디",
+                description: "아이디를 입력해주세요 (예시: 치지직: bb382c2c0cc9fa7c86ab3b037fb5799c)",
+                value: "id"
+            }
+        ]
     },
 }
 

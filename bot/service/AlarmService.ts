@@ -14,12 +14,6 @@ export default class AlarmService {
     }
     checkAlarm = async (guildId: string) => {
         const info = await ServerRepository.getDetectInfo(guildId);
-
-        console.log("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-");
-        
-
-        console.log(`check alarm Called | guildId - ${guildId}, info - ${JSON.stringify(info)}`);
-        
         if (info.broadcastDetect.chzzk) {
             await this.sendChzzkBroadcastInfo(guildId);
         }
@@ -37,10 +31,6 @@ export default class AlarmService {
         if (dto.id === undefined) return undefined;
         const previousLiveInfo = dto.isLive;
         const liveInfo = await api.getChzzkLiveInfo(dto.id);
-
-        console.log(`sendChzzkBroadcastInfo Called | guildId - ${guildId}, dto - ${JSON.stringify(dto)}, previousLiveInfo - ${previousLiveInfo}, liveInfo - ${JSON.stringify(liveInfo)}`);
-        console.log("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-");
-        
 
         if (!liveInfo) return;
 
@@ -61,6 +51,7 @@ export default class AlarmService {
         const previousLiveInfo = dto.isLive;
         const liveInfo = await api.getAfreecaLiveInfo(dto.id);
 
+        if (liveInfo === undefined) return;
         if (!liveInfo && !previousLiveInfo) return;
 
         if ((!liveInfo && previousLiveInfo) || (!liveInfo.isLive && previousLiveInfo)) {
@@ -80,6 +71,8 @@ export default class AlarmService {
         const previousLiveInfo = dto.isLive;
         const liveInfo = await api.getTwitchLiveInfo(dto.id);
 
+        if (!liveInfo) return;
+
         if (!liveInfo && !previousLiveInfo) return;
 
         if (!liveInfo && previousLiveInfo) {
@@ -93,7 +86,7 @@ export default class AlarmService {
         }
     }
 
-    
+
     sendYoutubeBroadcastInfo = async (guildId: string) => {
         // const info = await ServerRepository.getDetectInfo(guildId);
         // const liveInfo = await this.api.getYoutubeLiveInfo();

@@ -111,6 +111,26 @@ class ServerRepository {
         }
     }
 
+    updateDetectID = async (guildId: string, platform: DetectPlatform, id: string) => {
+        const info = await this.readJsonFromFile(guildId);
+        switch (platform) {
+            case DetectPlatform.Afreeca:
+                info.broadcastInfo.AfreecaId = id;
+                break;
+            case DetectPlatform.Chzzk:
+                info.broadcastInfo.ChzzkId = id;
+                break;
+            case DetectPlatform.Twitch:
+                info.broadcastInfo.TwitchId = id;
+                break;
+            case DetectPlatform.Youtube:
+                info.broadcastInfo.YoutubeId = id;
+                break;
+            default: return;
+        }
+        await this.writeJsonAsFile(info);
+    }
+
     updateDetectInfo = async (guildId: string,channelId:string, type: DetectType, platform: DetectPlatform, setActive: boolean) => {
         const info = await this.readJsonFromFile(guildId);
         info.detectChannel = channelId;

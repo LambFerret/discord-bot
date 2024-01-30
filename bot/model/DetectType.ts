@@ -3,5 +3,9 @@ export enum DetectType  {
 }
 
 export enum DetectPlatform {
-    Chzzk, Afreeca, Youtube, Twitch, NaverCafe
+    Chzzk = 'Chzzk', 
+    Afreeca = 'Afreeca', 
+    Youtube = 'Youtube', 
+    Twitch = 'Twitch', 
+    NaverCafe = 'NaverCafe'
 }

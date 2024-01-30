@@ -32,6 +32,7 @@ class MessageCommand {
         const previousLiveInfo = dto.isLive;
         const liveInfo = await api.getTwitchLiveInfo(dto.id);
 
+        if (!liveInfo) return undefined;
         if (!liveInfo && !previousLiveInfo) return undefined;
 
         if (!liveInfo && previousLiveInfo) {
@@ -52,6 +53,8 @@ class MessageCommand {
         if (dto.id === undefined) return undefined;
         const previousLiveInfo = dto.isLive;
         const afreecaLiveInfo = await api.getAfreecaLiveInfo(dto.id);
+
+        if (!afreecaLiveInfo) return undefined;
 
         if (!afreecaLiveInfo && !previousLiveInfo) return undefined;
 

@@ -21,7 +21,7 @@ class ExternalApi {
             }
         }).then(v => v.data.access_token) as string;
 
-    getChzzkLiveInfo = async (streamerID : string) => {
+    getChzzkLiveInfo = async (streamerID: string): Promise<LiveChzzkInfoType | undefined> => {
         const endpoint = `https://api.chzzk.naver.com/service/v2/channels/${streamerID}/live-detail`;
         const userAgent =
             'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.74 Safari/537.36';
@@ -41,7 +41,7 @@ class ExternalApi {
             return undefined;
         }
 
-        const liveInfo : LiveChzzkInfoType = {
+        const liveInfo: LiveChzzkInfoType = {
             channelId: res.content.channel.channelId,
             channelName: res.content.channel.channelName,
             channelImageUrl: res.content.channel.channelImageUrl,
@@ -53,19 +53,24 @@ class ExternalApi {
         return liveInfo;
     }
 
-    getTwitchLiveInfo = async (streamerID: string) => {
+    getTwitchLiveInfo = async (streamerID: string): Promise<LiveStreamInfoType | undefined> => {
         const url = encodeURI(CONFIG.TWITCH_API_GATEWAY + "streams?user_login=" + streamerID)
-        return await axios({
+        const result = await axios({
             url: url,
             method: 'get',
             headers: {
                 'Client-Id': CONFIG.TWITCH_CLIENT_ID,
                 'Authorization': 'Bearer ' + await this.token
             },
-        }).then(v => v.data.data[0] as LiveStreamInfoType);
+        }).then(v => v.data.data[0] as LiveStreamInfoType)
+            .catch(err => {
+                console.log(err)
+                return undefined
+            });
+        return result;
     }
 
-    getAfreecaLiveInfo = async (streamerID: string): Promise<LiveAfreecaInfoType> => {
+    getAfreecaLiveInfo = async (streamerID: string): Promise<LiveAfreecaInfoType | undefined> => {
         const endpoint = `https://bjapi.afreecatv.com/api/${streamerID}/station`;
         const userAgent =
             'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.74 Safari/537.36';
@@ -89,10 +94,7 @@ class ExternalApi {
             isLive: false,
         };
 
-        if (res.code == 9000) {
-            liveInfo.isLive = false;
-            return liveInfo;
-        }
+        if (res.code == 9000) return undefined;
 
         liveInfo.user_id = res.station.user_id;
         liveInfo.user_nick = res.station.user_nick;

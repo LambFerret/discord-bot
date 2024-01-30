@@ -7,6 +7,7 @@ import ping from "../command/ping";
 import postfix from "../command/postfix";
 import { detect, solveDetectButtons } from "../command/detect";
 import initialize from "../command/initalize";
+import register from "../command/register";
 
 export default class SlashCommandService {
 
@@ -24,6 +25,7 @@ export default class SlashCommandService {
     this.setCommand(postfix);
     this.setCommand(detect);
     this.setCommand(initialize);
+    this.setCommand(register);
 
     // dropdown command
     this.setDropdownCommand(helpDropdown);
@@ -50,7 +52,6 @@ export default class SlashCommandService {
   };
 
   handleInteraction = async (interaction: BaseInteraction) => {
-    console.log(interaction);
     if (interaction.isChatInputCommand()) {
       await this.handleChatInputCommand(interaction);
     } else if (interaction.isButton()) {
