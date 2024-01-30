@@ -5,3 +5,4 @@ db/
 archive/
 .env*
 .vscode/
+temp*.json
