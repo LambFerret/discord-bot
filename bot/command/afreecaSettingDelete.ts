@@ -1,4 +1,4 @@
-import { CommandInteraction, EmbedBuilder, SelectMenuComponentOptionData, SlashCommandBuilder } from "discord.js";
+import { CommandInteraction, EmbedBuilder, SlashCommandBuilder } from "discord.js";
 import { Command, CommandName, text } from ".";
 import { DetectPlatform } from "../model/DetectType";
 import ServerRepository from "../repository/ServerRepository";

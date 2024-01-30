@@ -1,11 +1,8 @@
-import { EmbedBuilder, Guild, Message } from "discord.js"
-import {
-    twitchLiveInfoMsg, introduceBot, afreecaLiveInfoMsg
-} from "./MessageFormat"
-import serverService from "./service/ServerService"
-import { CONFIG } from "./config/Config"
-import { DetectPlatform } from "./model/DetectType"
+import { EmbedBuilder, Message } from "discord.js"
 import api from "./ExternalAPI"
+import { afreecaLiveInfoMsg, twitchLiveInfoMsg } from "./MessageFormat"
+import { DetectPlatform } from "./model/DetectType"
+import serverService from "./service/ServerService"
 
 
 class MessageCommand {
@@ -75,4 +72,5 @@ class MessageCommand {
     }
 }
 
-export { MessageCommand };
+export { MessageCommand }
+

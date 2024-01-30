@@ -1,5 +1,5 @@
-import { SlashCommandBuilder, CommandInteraction, BaseInteraction, Locale, EmbedBuilder, SelectMenuComponentOptionData } from "discord.js";
-import { Command, text, CommandName } from ".";
+import { CommandInteraction, Locale, SelectMenuComponentOptionData, SlashCommandBuilder } from "discord.js";
+import { Command, CommandName, text } from ".";
 import serverService from "../service/ServerService";
 
 const ID = CommandName.Postfix;

@@ -1,7 +1,7 @@
 import { ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle, CommandInteraction, SlashCommandBuilder } from "discord.js";
-import { ButtonName, ButtonCommand, Command, CommandName, text } from ".";
-import ServerRepository from "../repository/ServerRepository";
+import { ButtonCommand, ButtonName, Command, CommandName, text } from ".";
 import { DetectPlatform, DetectType } from "../model/DetectType";
+import ServerRepository from "../repository/ServerRepository";
 
 
 const ID = CommandName.Detect;

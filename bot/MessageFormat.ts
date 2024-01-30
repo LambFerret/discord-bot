@@ -1,11 +1,9 @@
 
 import { EmbedBuilder } from 'discord.js';
-import { LiveStreamerInfoType } from "./model/LiveStreamerInfoType";
+import { LiveAfreecaInfoType } from './model/LiveAfreecaInfoType';
+import { LiveChzzkInfoType } from './model/LiveChzzkInfoType';
 import { LiveStreamInfoType } from "./model/LiveStreamInfoType";
 import { Entrance } from './model/ServerType';
-import { LiveAfreecaInfoType } from './model/LiveAfreecaInfoType';
-import { CONFIG } from './config/Config';
-import { LiveChzzkInfoType } from './model/LiveChzzkInfoType';
 
 export const twitchLiveInfoMsg = (data: LiveStreamInfoType) =>
   new EmbedBuilder()

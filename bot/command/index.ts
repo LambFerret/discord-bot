@@ -1,4 +1,4 @@
-import { Locale, SelectMenuComponentOptionData, SlashCommandBuilder, SlashCommandStringOption } from "discord.js";
+import { SelectMenuComponentOptionData, SlashCommandBuilder } from "discord.js";
 
 export enum CommandName {
     Ping = "ping",

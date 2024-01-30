@@ -1,8 +1,8 @@
 import axios from 'axios';
 import { CONFIG } from './config/Config';
-import { LiveStreamInfoType } from './model/LiveStreamInfoType';
 import { LiveAfreecaInfoType } from './model/LiveAfreecaInfoType';
 import { LiveChzzkInfoType } from './model/LiveChzzkInfoType';
+import { LiveStreamInfoType } from './model/LiveStreamInfoType';
 import { NewPostChzzkInfoType } from './model/NewPostChzzkInfoType';
 
 class ExternalApi {

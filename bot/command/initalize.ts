@@ -1,5 +1,5 @@
-import { SlashCommandBuilder, CommandInteraction, Guild } from "discord.js";
-import { text, CommandName, Command } from ".";
+import { CommandInteraction, Guild, SlashCommandBuilder } from "discord.js";
+import { Command, CommandName, text } from ".";
 import ServerRepository from "../repository/ServerRepository";
 
 const ID = CommandName.Initialize;

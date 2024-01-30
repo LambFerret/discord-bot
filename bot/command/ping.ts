@@ -1,5 +1,5 @@
-import { SlashCommandBuilder, CommandInteraction, BaseInteraction, Locale, EmbedBuilder, PermissionFlagsBits } from "discord.js";
-import { Command, text, CommandName } from ".";
+import { CommandInteraction, EmbedBuilder, Locale, SlashCommandBuilder } from "discord.js";
+import { Command, CommandName, text } from ".";
 
 const ID = CommandName.Ping;
 const commandText = text[ID];

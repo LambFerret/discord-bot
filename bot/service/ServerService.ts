@@ -1,7 +1,7 @@
 import { Guild } from "discord.js";
+import { DetectPlatform } from "../model/DetectType";
 import { UserType } from "../model/UserType";
 import serverRepository from "../repository/ServerRepository";
-import { DetectPlatform } from "../model/DetectType";
 class ServerService {
 
     createServer(info: Guild) {

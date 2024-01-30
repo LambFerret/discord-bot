@@ -1,8 +1,8 @@
-import { SlashCommandBuilder, CommandInteraction, SelectMenuComponentOptionData, EmbedBuilder } from "discord.js";
+import { CommandInteraction, EmbedBuilder, SelectMenuComponentOptionData, SlashCommandBuilder } from "discord.js";
 import { Command, CommandName, text } from ".";
+import api from "../ExternalAPI";
 import { DetectPlatform } from "../model/DetectType";
 import ServerRepository from "../repository/ServerRepository";
-import api from "../ExternalAPI";
 
 const ID = CommandName.Register;
 const commandText = text[ID];

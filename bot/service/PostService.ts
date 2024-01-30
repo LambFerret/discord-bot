@@ -1,9 +1,8 @@
 import { Client, EmbedBuilder } from "discord.js";
-import ServerRepository from "../repository/ServerRepository";
 import * as cron from "node-cron";
-import { DetectPlatform } from "../model/DetectType";
 import api from "../ExternalAPI";
-import { NewPostChzzkInfoType } from "../model/NewPostChzzkInfoType";
+import { DetectPlatform } from "../model/DetectType";
+import ServerRepository from "../repository/ServerRepository";
 
 export default class PostService {
     client: Client;

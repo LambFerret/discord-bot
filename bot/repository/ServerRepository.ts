@@ -1,11 +1,10 @@
-import { ServerInfo, Entrance, LiveInfoDTO, Settings } from "../model/ServerType";
 import { Guild } from "discord.js";
-import fs from 'fs/promises';
 import * as fss from 'fs';
+import fs from 'fs/promises';
 import path from 'path';
+import { DetectPlatform, DetectType } from "../model/DetectType";
+import { Entrance, LiveInfoDTO, ServerInfo, Settings } from "../model/ServerType";
 import { UserType } from "../model/UserType";
-import { DetectType, DetectPlatform } from "../model/DetectType";
-import { afreecaSetting } from "../command/afreecaSetting";
 
 class ServerRepository {
 

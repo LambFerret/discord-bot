@@ -1,4 +1,4 @@
-import { SlashCommandBuilder, ActionRowBuilder, StringSelectMenuBuilder, StringSelectMenuInteraction, EmbedBuilder, SelectMenuComponentOptionData } from "discord.js";
+import { ActionRowBuilder, EmbedBuilder, SelectMenuComponentOptionData, SlashCommandBuilder, StringSelectMenuBuilder, StringSelectMenuInteraction } from "discord.js";
 import { Command, CommandName, DropdownCommand, text } from ".";
 const ID = CommandName.Help;
 const commandText = text[ID];

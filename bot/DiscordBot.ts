@@ -1,17 +1,17 @@
-import { MessageCommand } from './MessageCommand';
-import { CONFIG } from "./config/Config";
 import {
-  Client, Message, Guild, MessageReaction, User,
-  PartialUser, PartialMessageReaction, Role, EmbedBuilder,
-  Events, TextChannel} from "discord.js";
-import serverService from './service/ServerService';
-import { UserType } from './model/UserType';
+  Client, EmbedBuilder,
+  Events, Guild, Message, MessageReaction, PartialMessageReaction, PartialUser, Role, TextChannel, User
+} from "discord.js";
+import { CONFIG } from "./config/Config";
+import { CustomClient } from './config/CustomClient';
+import { MessageCommand } from './MessageCommand';
 import { showEntranceInfo } from './MessageFormat';
 import { BroadcastInfo } from './model/ServerType';
-import SlashCommandService from './service/SlashCommandService';
-import { CustomClient } from './config/CustomClient';
+import { UserType } from './model/UserType';
 import AlarmService from './service/AlarmService';
 import PostService from './service/PostService';
+import serverService from './service/ServerService';
+import SlashCommandService from './service/SlashCommandService';
 
 export default class DiscordBot {
 
@@ -58,7 +58,7 @@ export default class DiscordBot {
 
       // =-=-=-=-=-=- test =-=-=-=-=-=-=
       // this.alarmService.checkAlarm(serverId); 
-      this.postService.checkPost(serverId);
+      // this.postService.checkPost(serverId);
       // =-=-=-=-=-=- test =-=-=-=-=-=-=
 
       // if (!server.isDeleted && server.isDetecting) this.makeDetectingIntervalByGuild(channelId);
@@ -200,34 +200,6 @@ export default class DiscordBot {
   }
 
   ownerMessage = async (msg: Message, message: string[]): Promise<boolean> => {
-    // 쟌코봇치야 봇권한 @어쩌구
-    if (message[1] === '봇권한') {
-      const user = msg.mentions.users.first();
-      if (!user) {
-        this.say(msg, '유저를 멘션해주세요.');
-        return false;
-      }
-      const response = `${user.displayName}님의 권한이 봇제작자로 변경되었습니다.`;
-      this.say(msg, response);
-      serverService.updateBotMaker(msg.guildId as string, user.id);
-      return false;
-    }
-
-    // 쟌코봇치야 관리자 <권한명>
-    if (message[1] === '관리자' && message[2]) {
-
-      if (msg.guild?.roles.cache.find(role => role.name === message[2]) === undefined) {
-        this.say(msg, `해당 역할이 존재하지 않습니다.`);
-        return false;
-      }
-
-      const moderators = msg.guild?.members.cache.filter(member => member.roles.cache.find(role => role.name === message[2])).map(member => member.user.id) as string[];
-      const response = `역할명 <<${message[2]}>> -> 이 채널의 관리자입니다!`
-
-      serverService.updateModeratorId(msg.guildId as string, moderators);
-      this.say(msg, response)
-      return false;
-    }
 
     if (message[1] === '입장권한') {
       if (message[2]) {

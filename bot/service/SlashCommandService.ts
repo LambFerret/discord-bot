@@ -1,15 +1,15 @@
 import { BaseInteraction, ButtonInteraction, ChatInputCommandInteraction, Collection, PermissionFlagsBits, PermissionsBitField, REST, Routes, SelectMenuInteraction } from "discord.js";
-import { CONFIG } from "../config/Config";
-import { CustomClient } from "../config/CustomClient";
 import { Command, CommandName, DropdownCommand } from "../command";
-import { help, helpDropdown } from "../command/help";
-import ping from "../command/ping";
-import postfix from "../command/postfix";
-import { detect, solveDetectButtons } from "../command/detect";
-import initialize from "../command/initalize";
-import register from "../command/register";
 import { afreecaSetting } from "../command/afreecaSetting";
 import { afreecaSettingDelete } from "../command/afreecaSettingDelete";
+import { detect, solveDetectButtons } from "../command/detect";
+import { help, helpDropdown } from "../command/help";
+import initialize from "../command/initalize";
+import ping from "../command/ping";
+import postfix from "../command/postfix";
+import register from "../command/register";
+import { CONFIG } from "../config/Config";
+import { CustomClient } from "../config/CustomClient";
 
 export default class SlashCommandService {
 

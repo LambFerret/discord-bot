@@ -1,4 +1,4 @@
-import { Client, GatewayIntentBits, Partials, ActivityType, Collection } from "discord.js";
+import { ActivityType, Client, Collection, GatewayIntentBits, Partials } from "discord.js";
 
 export class CustomClient extends Client {
     public commands: Collection<string, any>;
