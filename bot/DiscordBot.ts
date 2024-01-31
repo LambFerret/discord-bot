@@ -16,7 +16,7 @@ import SlashCommandService from './service/SlashCommandService';
 export default class DiscordBot {
 
   slashCommandService: SlashCommandService;
-  alarmService : AlarmService;
+  alarmService: AlarmService;
   postService: PostService;
   command: MessageCommand;
   client: Client;
@@ -29,9 +29,9 @@ export default class DiscordBot {
     this.command = new MessageCommand();
 
     this.addListeners(this.client);
-   }
+  }
 
-  addListeners = (client : Client) => {
+  addListeners = (client: Client) => {
     client.login(CONFIG.DISCORD_BOT_TOKEN);
     client.once(Events.ClientReady, this.initServers)
     client.on(Events.GuildCreate, (e) => serverService.createServer(e))
@@ -48,7 +48,7 @@ export default class DiscordBot {
     lists.forEach(server => {
       let serverId = server.id;
       let channelId = server.detectChannel;
-      
+
       console.log(`==== init ${server.name} server ====`);
 
       console.log("register slash command");
@@ -59,13 +59,16 @@ export default class DiscordBot {
       // =-=-=-=-=-=- test =-=-=-=-=-=-=
       // this.alarmService.checkAlarm(serverId); 
       // this.postService.checkPost(serverId);
+      this.test();
       // =-=-=-=-=-=- test =-=-=-=-=-=-=
 
       // if (!server.isDeleted && server.isDetecting) this.makeDetectingIntervalByGuild(channelId);
 
       console.log("=============================");
-      
+
     });
+  }
+  test = async () => {
   }
 
   checkDBAndBotServerMatch = async () => {
@@ -119,7 +122,7 @@ export default class DiscordBot {
     }
   }
 
-  detectNewPost =async (broadcastInfo : BroadcastInfo) => {
+  detectNewPost = async (broadcastInfo: BroadcastInfo) => {
     if (broadcastInfo.AfreecaId !== "") {
     }
 
@@ -156,7 +159,7 @@ export default class DiscordBot {
     const a = await this.command.sendTwitchStreamInfo(guildId)
     if (a !== undefined) {
       this.sayEmbed(chan, a)
-    } 
+    }
   }
 
   searchStreamerAfreeca = async (chan: TextChannel) => {
@@ -189,7 +192,7 @@ export default class DiscordBot {
       if (shouldContinue) {
         shouldContinue = await this.botMakerMessage(msg, message);
       }
-  
+
     }
 
     // If the user is a BotMaker, they can access BotMaker, Moderator and Normal functionalities

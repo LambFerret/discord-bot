@@ -1,9 +1,11 @@
 import axios from 'axios';
+import { google } from 'googleapis';
 import { CONFIG } from './config/Config';
 import { LiveAfreecaInfoType } from './model/LiveAfreecaInfoType';
 import { LiveChzzkInfoType } from './model/LiveChzzkInfoType';
 import { LiveStreamInfoType } from './model/LiveStreamInfoType';
 import { NewPostChzzkInfoType } from './model/NewPostChzzkInfoType';
+import { YoutubeChannelInfoType } from './model/youtubeChannelInfoType';
 
 class ExternalApi {
     token: Promise<string>
@@ -112,6 +114,60 @@ class ExternalApi {
         }
     }
 
+    searchYoutubeChannelIDWithTitle = async (youtubeTitle: string) :Promise<YoutubeChannelInfoType[]> => {
+        const youtube = google.youtube('v3');
+        const param = {
+            key: CONFIG.YOUTUBE_API_KEY,
+            part: 'snippet',
+            q: youtubeTitle,
+            type: 'channel',
+            maxResults: 10,
+        } as any;
+
+        const items = (await youtube.search.list(param)).data.items;
+
+        // change this dto type
+        const results: YoutubeChannelInfoType[] = [];
+        items?.forEach(e => {
+            const dto = {
+                id : "",
+                channelTitle : "",
+                description : "--",
+                url : "",
+                thumbnail : "",
+            } as YoutubeChannelInfoType;
+            if (e.id?.channelId) dto.id = e.id.channelId;
+            if (e.snippet?.title) dto.channelTitle = e.snippet.title;
+            if (e.snippet?.description) dto.description = e.snippet.description.slice(0, 40);
+            results.push(dto);
+        });
+        return results;
+    }
+
+    searchYoutubeByChannelID = async (channelID: string) : Promise<YoutubeChannelInfoType | undefined> => {
+        const youtube = google.youtube('v3');
+        const param = {
+            key: CONFIG.YOUTUBE_API_KEY,
+            part: 'snippet',
+            id: channelID,
+        } as any;
+        const items = (await youtube.channels.list(param)).data.items;
+        if (!items) return undefined;
+        const dto = {
+            id : items[0].id,
+            channelTitle : "",
+            description : "--",
+            url : "",
+            thumbnail : "",
+        } as YoutubeChannelInfoType;
+        if (items[0].snippet?.title) dto.channelTitle = items[0].snippet.title;
+        if (items[0].snippet?.description) dto.description = items[0].snippet.description;
+        if (items[0].snippet?.customUrl) dto.url = items[0].snippet.customUrl;
+        if (items[0].snippet?.thumbnails?.default?.url) dto.thumbnail = items[0].snippet.thumbnails.default.url;
+        return dto;
+    }
+
+
     getChzzkCommunityNewPostInfo = async (streamerID: string): Promise<NewPostChzzkInfoType[] | undefined> => {
         const endpoint = `https://apis.naver.com/nng_main/nng_comment_api/v1/type/CHANNEL_POST/id/${streamerID}/comments?limit=10`
         const res = await axios
@@ -156,7 +212,7 @@ class ExternalApi {
         return postIDs;
     }
 
-    getAfreecaCommunityNewPostInfo = async (streamerID: string, boardId?:string): Promise<NewPostChzzkInfoType[] | undefined> => {
+    getAfreecaCommunityNewPostInfo = async (streamerID: string, boardId?: string): Promise<NewPostChzzkInfoType[] | undefined> => {
         let endpoint;
         if (boardId) {
             endpoint = `https://bjapi.afreecatv.com/api/${streamerID}/board/${boardId}?page=1&per_page=20&field=user_nick%2Cuser_id&keyword=${streamerID}&type=all&board_id=${boardId}`
@@ -174,7 +230,7 @@ class ExternalApi {
                 return err.response.data;
             });
 
-            // console.log(res);
+        // console.log(res);
         if (res.code === 9000) {
             // TODO 채팅창에 한번 말해준 후 detecting을 false로 바꿔준다.
             return undefined;

@@ -1,5 +1,5 @@
 import { BaseInteraction, ButtonInteraction, ChatInputCommandInteraction, Collection, PermissionFlagsBits, PermissionsBitField, REST, Routes, SelectMenuInteraction } from "discord.js";
-import { Command, CommandName, DropdownCommand } from "../command";
+import { Command, DropdownCommand } from "../command";
 import { afreecaSetting } from "../command/afreecaSetting";
 import { afreecaSettingDelete } from "../command/afreecaSettingDelete";
 import { detect, solveDetectButtons } from "../command/detect";
@@ -7,7 +7,7 @@ import { help, helpDropdown } from "../command/help";
 import initialize from "../command/initalize";
 import ping from "../command/ping";
 import postfix from "../command/postfix";
-import register from "../command/register";
+import { regiesterYoutubeConfirmButton, register, registerYoutube } from "../command/register";
 import { CONFIG } from "../config/Config";
 import { CustomClient } from "../config/CustomClient";
 
@@ -35,16 +35,18 @@ export default class SlashCommandService {
 
     // dropdown command
     this.setDropdownCommand(helpDropdown);
+    this.setDropdownCommand(registerYoutube);
 
     // button command
     this.setDropdownCommand(solveDetectButtons);
+    this.setDropdownCommand(regiesterYoutubeConfirmButton);
 
     const commands = this.client.commands
-      .filter((command: any) => typeof command.command !== 'string')
-      .map((command: Command) => {
-        command.command.setDefaultMemberPermissions(this.hasRole);
-        return command.command.toJSON();
-      });
+    .filter((command: any) => typeof command.command !== 'string')
+    .map((command: Command) => {
+      // command.command.setDefaultMemberPermissions(this.hasRole);
+      return command.command.toJSON();
+    });
 
     const rest = new REST().setToken(CONFIG.DISCORD_BOT_TOKEN);
     await rest.put(
@@ -83,13 +85,14 @@ export default class SlashCommandService {
 
   handleButtonInteraction = async (interaction: ButtonInteraction) => {
     const client = interaction.client as CustomClient;
-    const command = client.commands.get(CommandName.DetectButton);
+    const commandName = interaction.customId.split(":")[0];
+    const command = client.commands.get(commandName);
     if (interaction.member && 'permissions' in interaction.member) {
       const memberPermissions = interaction.member.permissions as PermissionsBitField;
-      if (!memberPermissions.has(this.hasRole)) {
-        await interaction.reply({ content: '이 버튼을 사용할 권한이 없습니다.', ephemeral: true });
-        return;
-      }
+      // if (!memberPermissions.has(this.hasRole)) {
+      //   await interaction.reply({ content: '이 버튼을 사용할 권한이 없습니다.', ephemeral: true });
+      //   return;
+      // }
     }
     if (!command) return;
     try {

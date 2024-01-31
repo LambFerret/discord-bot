@@ -15,7 +15,7 @@ export const detect: Command = {
         .setNameLocalization('ko', commandText.name),
 
     execute: async (interaction: CommandInteraction) => {
-        await interaction.reply({ content: '카테고리를 선택하세요!', components: [initialButtons(interaction.guildId as string)] });
+        await interaction.reply({ content: '카테고리를 선택하세요!', components: [initialButtons()] });
     }
 }
 
@@ -25,7 +25,9 @@ export const solveDetectButtons: ButtonCommand = {
         const guildId = interaction.guildId as string;
         const info = await ServerRepository.getDetectInfo(guildId);
 
-        switch (interaction.customId) {
+        const name = ButtonName[interaction.customId.split(":")[1] as keyof typeof ButtonName];
+
+        switch (name) {
             case ButtonName.broadcast:
                 await interaction.update({ content: '방송 감지를 선택하셨습니다!', components: [await broadcastButtons(guildId)] });
                 return;
@@ -39,7 +41,7 @@ export const solveDetectButtons: ButtonCommand = {
                 await interaction.update({ content: '(후추) 그외를 선택하셨습니다!', components: [await elseButtons(guildId)] });
                 return;
             case ButtonName.back:
-                await interaction.update({ content: '뒤로가기를 선택하셨습니다!', components: [initialButtons(guildId)] });
+                await interaction.update({ content: '뒤로가기를 선택하셨습니다!', components: [initialButtons()] });
                 return;
             case ButtonName.broadcast_chzzk:
                 await ServerRepository.updateDetectInfo(guildId, interaction.channelId as string, DetectType.Broadcast, DetectPlatform.Chzzk, !info.broadcastDetect.chzzk);
@@ -91,7 +93,7 @@ export const solveDetectButtons: ButtonCommand = {
     }
 }
 
-const initialButtons = (guildId: string): ActionRowBuilder<ButtonBuilder> => {
+const initialButtons = (): ActionRowBuilder<ButtonBuilder> => {
     return new ActionRowBuilder<ButtonBuilder>()
         .addComponents(
             makeButton(ButtonName.broadcast, true),
@@ -146,7 +148,7 @@ const elseButtons = async (guildId: string): Promise<ActionRowBuilder<ButtonBuil
 
 function makeButton(name: ButtonName, setActive: boolean, isBack?: boolean): ButtonBuilder {
     return new ButtonBuilder()
-        .setCustomId(name)
+        .setCustomId(CommandName.DetectButton + ":" + name)
         .setLabel(commandText.titleMap[name])
         .setStyle(isBack ? ButtonStyle.Danger : (setActive ? ButtonStyle.Primary : ButtonStyle.Secondary));
 }

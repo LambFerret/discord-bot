@@ -9,6 +9,8 @@ export enum CommandName {
     DetectButton = "detectButton",
     Initialize = "initialize",
     Register = "register",
+    RegisterYoutube = "register_youtube",
+    RegisterYoutubeConfirmButton = "register_youtube_confirm_button",
     Afreeca_Setting = "afreeca_setting",
     Afreeca_Setting_Delete = "afreeca_setting_delete"
 }
@@ -131,10 +133,27 @@ export const text: TextType = {
             },
             {
                 label: "아이디",
-                description: "아이디를 입력해주세요 (예시: 치지직: bb382c2c0cc9fa7c86ab3b037fb5799c)",
+                description: "아이디를 입력해주세요. 유튜브는 채널명을 입력해주세요! 검색해볼게요!",
                 value: "id"
             }
         ]
+    },
+    register_youtube: {
+        id: CommandName.RegisterYoutube,
+        name: "등록_유튜브",
+        description: "주인님의 유튜브 채널명을 알려주세요!",
+        options: [
+            {
+                label: "채널명",
+                description: "채널명을 입력해주세요 (예시: hanryang1125)",
+                value: "channel_name"
+            }
+        ]
+    },
+    register_youtube_confirm_button: {
+        id: CommandName.RegisterYoutubeConfirmButton,
+        name: "등록_유튜브_확인",
+        description: "확인",
     },
     afreeca_setting: {
         id: CommandName.Afreeca_Setting,
@@ -149,9 +168,9 @@ export const text: TextType = {
         ]
     },
     afreeca_setting_delete: {
-        id : CommandName.Afreeca_Setting_Delete,
-        name : "아프리카_설정_초기화",
-        description : "모든 게시판에 있는 주인님의 글을 감지합니다!",
+        id: CommandName.Afreeca_Setting_Delete,
+        name: "아프리카_설정_초기화",
+        description: "모든 게시판에 있는 주인님의 글을 감지합니다!",
 
     }
 }
