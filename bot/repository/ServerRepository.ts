@@ -4,7 +4,6 @@ import fs from 'fs/promises';
 import path from 'path';
 import { DetectPlatform, DetectType } from "../model/DetectType";
 import { Entrance, LiveInfoDTO, ServerInfo, Settings } from "../model/ServerType";
-import { UserType } from "../model/UserType";
 
 class ServerRepository {
 
@@ -15,6 +14,7 @@ class ServerRepository {
 
     createNewServer = async (info: Guild) => {
         const entrance: Entrance = {
+            entranceChannelId: "",
             quote: "토끼 클릭으로 입장해요!",
             messageId: "",
             emoji: "🐰",
@@ -26,13 +26,9 @@ class ServerRepository {
             createdDate: info.joinedAt,
             OwnerId: info.ownerId,
             detectChannel: "",
-            MyId: "",
-            ModeratorId: [],
-            prefix: '쟌코봇치야',
             postfix: '삐삐리뽀',
             status: 'INIT',
             entrance: entrance,
-            isDetecting: false,
             isDeleted: false,
             broadcastInfo: {
                 AfreecaId: "",
@@ -134,9 +130,9 @@ class ServerRepository {
         await this.writeJsonAsFile(info);
     }
 
-    updateDetectInfo = async (guildId: string,channelId:string, type: DetectType, platform: DetectPlatform, setActive: boolean) => {
+    updateDetectInfo = async (guildId: string, channelId: string, type: DetectType, platform: DetectPlatform, setActive: boolean) => {
         const info = await this.readJsonFromFile(guildId);
-        info.detectChannel = channelId;
+        if (info.detectChannel === "") info.detectChannel = channelId;
         switch (type) {
             case DetectType.Broadcast:
                 switch (platform) {
@@ -203,24 +199,6 @@ class ServerRepository {
         await this.writeJsonAsFile(info);
     }
 
-    updateStreamDetecting = async (guildId: string, isDetecting: boolean) => {
-        const info = await this.readJsonFromFile(guildId);
-        info.isDetecting = isDetecting;
-        await this.writeJsonAsFile(info);
-    }
-
-    updateServerPrefix = async (guildId: string, prefix: string, isPrefix: boolean) => {
-        try {
-            const info = await this.readJsonFromFile(guildId);
-            if (isPrefix) info.prefix = prefix;
-            else info.postfix = prefix;
-            await this.writeJsonAsFile(info);
-            console.log(`Server ${guildId} prefix updated successfully!`);
-        } catch (err) {
-            console.error(`Failed to update server prefix: ${err}`);
-        }
-    }
-
     updateGuildEntranceQuote = async (guildId: string, quote: string) => {
         const info = await this.readJsonFromFile(guildId);
         info.entrance.quote = quote;
@@ -275,12 +253,18 @@ class ServerRepository {
             case DetectPlatform.Twitch:
                 info.streamingStatus.isTwitchStreamLive = isLive;
                 break;
+            case DetectPlatform.Chzzk:
+                info.streamingStatus.isChzzkStreamLive = isLive;
+                break;
+            case DetectPlatform.Youtube:
+                info.streamingStatus.isYoutubeStreamLive = isLive;
+                break;
             default: return;
         }
         await this.writeJsonAsFile(info);
     }
 
-    getNewPostByPlatform = async (guildId: string, type: DetectPlatform) : Promise<string[]> => {
+    getNewPostByPlatform = async (guildId: string, type: DetectPlatform): Promise<string[]> => {
         const info = await this.readJsonFromFile(guildId);
         switch (type) {
             case DetectPlatform.Afreeca:
@@ -311,7 +295,7 @@ class ServerRepository {
         await this.writeJsonAsFile(info);
     }
 
-    getServerSettings = async (guildId: string) : Promise<Settings>=> {
+    getServerSettings = async (guildId: string): Promise<Settings> => {
         const info = await this.readJsonFromFile(guildId);
         return info.settings;
     }
@@ -322,48 +306,32 @@ class ServerRepository {
         await this.writeJsonAsFile(info);
     }
 
-
-    checkIdInfo = async (guildId: string, id: string): Promise<UserType> => {
-        const info = await this.readJsonFromFile(guildId);
-        switch (id) {
-            case info.OwnerId:
-                return UserType.Owner
-
-            case info.MyId:
-                return UserType.BotMaker
-            default: {
-                if (info.ModeratorId.includes(id)) {
-                    return UserType.Moderator
-                } else {
-                    return UserType.Normal
-
-                }
-            }
-        }
-    }
-
     updateDetectChannel = async (guildId: string, channelId: string) => {
         const info = await this.readJsonFromFile(guildId);
         info.detectChannel = channelId;
         await this.writeJsonAsFile(info);
     }
 
-
-    updateModerators = async (guildId: string, moderator: string[]) => {
-        const info = await this.readJsonFromFile(guildId);
-        if (!moderator) info.ModeratorId = moderator;
+    setEntranceChannel = async (guild: Guild, channelId: string) => {
+        const info = await this.readJsonFromFile(guild.id);
+        info.entrance.entranceChannelId = channelId;
         await this.writeJsonAsFile(info);
     }
 
-    updateBotMaker = async (guildId: string, botMaker: string) => {
-        const info = await this.readJsonFromFile(guildId);
-        info.MyId = botMaker;
+    setNoticeChannel = async (guild: Guild, channelId: string) => {
+        const info = await this.readJsonFromFile(guild.id);
+        info.detectChannel = channelId;
         await this.writeJsonAsFile(info);
     }
 
     getDetectChannel = async (guildId: string): Promise<string> => (await this.readJsonFromFile(guildId)).detectChannel;
-    getServerPrefix = async (guildId: string): Promise<string> => (await this.readJsonFromFile(guildId)).prefix;
     getServerPostfix = async (guildId: string): Promise<string> => (await this.readJsonFromFile(guildId)).postfix;
+
+    updateGuildPostfix = async (guildId: string, postfix: string) => {
+        const info = await this.readJsonFromFile(guildId);
+        info.postfix = postfix;
+        await this.writeJsonAsFile(info);
+    }
 
     writeJsonAsFile = async (info: ServerInfo) => {
         try {

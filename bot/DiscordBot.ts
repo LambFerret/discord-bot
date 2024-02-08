@@ -1,13 +1,13 @@
 import {
   Client, EmbedBuilder,
-  Events, Guild, Message, MessageReaction, PartialMessageReaction, PartialUser, Role, TextChannel, User
+  Events, Guild, Message, MessageReaction, PartialMessageReaction,
+  PartialUser, Role, TextChannel, User
 } from "discord.js";
 import { CONFIG } from "./config/Config";
 import { CustomClient } from './config/CustomClient';
 import { MessageCommand } from './MessageCommand';
 import { showEntranceInfo } from './MessageFormat';
 import { BroadcastInfo } from './model/ServerType';
-import { UserType } from './model/UserType';
 import AlarmService from './service/AlarmService';
 import PostService from './service/PostService';
 import serverService from './service/ServerService';
@@ -34,11 +34,27 @@ export default class DiscordBot {
   addListeners = (client: Client) => {
     client.login(CONFIG.DISCORD_BOT_TOKEN);
     client.once(Events.ClientReady, this.initServers)
-    client.on(Events.GuildCreate, (e) => serverService.createServer(e))
+    client.on(Events.GuildCreate, this.createServer)
     client.on(Events.GuildDelete, (e) => serverService.deleteServer(e.id))
-    client.on(Events.MessageCreate, this.clientMessage)
     client.on(Events.MessageReactionAdd, this.handleReactionAdd)
     client.on(Events.InteractionCreate, this.slashCommandService.handleInteraction)
+  }
+
+  createServer = async (guild: Guild) => {
+    serverService.createServer(guild);
+    // DM to guild owner 
+    const owner = await guild.fetchOwner();
+    const dm = await owner.createDM();
+    const embed = new EmbedBuilder()
+      .setTitle("안녕하세요! 봇을 추가해주셔서 감사합니다.")
+      .setDescription("봇을 사용하기 위해서는 몇가지 설정이 필요합니다. \n" +
+        "방송 알림을 보낼 채널을 설정해야 합니다. \`/알림채널등록\` 으로 등록해주세요.  \n" +
+        "추가로 새 친구가 입장시 서버의 권한을 설정해 줄 수 있습니다. 입장채널을 설정하려면 \`/입장채널등록\` 으로 등록해주세요 \n" +
+        "알림 채널을 등록했다면, 제게 주인님의 정보를 알려줘야겠죠? \`/등록\`으로 정보를 입력해주세요! \n" +
+        "모든 감지는 주인님이 켜고 끌 수 있습니다! 초기설정은 off이므로 \`/감지\`를 통해 원하는 기능을 on 해주세요! \n" +
+        "더욱 자세한 설명서는 현재 제작중에 있습니다! \`/\`를 누르시고 한번 둘러보세요! \n")
+
+    dm.send({ embeds: [embed] });
   }
 
   initServers = async () => {
@@ -47,28 +63,23 @@ export default class DiscordBot {
     const lists = await serverService.getAllServers();
     lists.forEach(server => {
       let serverId = server.id;
-      let channelId = server.detectChannel;
 
       console.log(`==== init ${server.name} server ====`);
 
       console.log("register slash command");
       this.slashCommandService.registerSlashCommand(serverId);
 
-      console.log("detect channel : " + channelId + " | isDetecting : " + server.isDetecting);
-
       // =-=-=-=-=-=- test =-=-=-=-=-=-=
-      this.alarmService.checkAlarm(serverId); 
-      // this.postService.checkPost(serverId);
+      this.alarmService.makeCron(serverId);
+      this.postService.makeCron(serverId);
       this.test();
       // =-=-=-=-=-=- test =-=-=-=-=-=-=
-
-      // if (!server.isDeleted && server.isDetecting) this.makeDetectingIntervalByGuild(channelId);
-
       console.log("=============================");
 
     });
   }
   test = async () => {
+
   }
 
   checkDBAndBotServerMatch = async () => {
@@ -87,21 +98,15 @@ export default class DiscordBot {
     if (user.bot) return;
     if (reaction.partial) await reaction.fetch();
     if (user.partial) await user.fetch();
-    const entranceInfo = await serverService.getEntraceInfo(reaction.message.guildId as string);
+    const entranceInfo = await serverService.getEntranceInfo(reaction.message.guildId as string);
     if (!entranceInfo) return;
 
     if (entranceInfo.role === "") {
       const a: Message = reaction.message as Message;
-      const b: User = user as User;
-      if (await serverService.getUserInfo(a.guildId as string, b.id) === UserType.Owner) {
-        this.say(a, "안녕하세요! \n" + "먼저 /입장권한 역할 <역할명> 을 입력해주세요!");
-      } else {
-        this.say(a, "입장역할이 설정되지 않았습니다. 관리자에게 문의해주세요.");
-      }
+      this.sayEmbed(a.channel as TextChannel, showEntranceInfo(entranceInfo));
       return;
     }
 
-    // Check if the message is the specific message and the emoji is the specific emoji
     const targetMessageId = entranceInfo.messageId;
     const targetEmoji = entranceInfo.emoji;
 
@@ -119,20 +124,6 @@ export default class DiscordBot {
 
       // Add the role to the member
       await member.roles.add(role);
-    }
-  }
-
-  detectNewPost = async (broadcastInfo: BroadcastInfo) => {
-    if (broadcastInfo.AfreecaId !== "") {
-    }
-
-    if (broadcastInfo.TwitchId !== "") {
-    }
-
-    if (broadcastInfo.ChzzkId !== "") {
-    }
-
-    if (broadcastInfo.YoutubeId !== "") {
     }
   }
 
@@ -173,99 +164,11 @@ export default class DiscordBot {
     }
   }
 
-  clientMessage = async (msg: Message) => {
-    if (!msg.guildId) return;
-    if (!await this.command.isStartWithPrefix(msg)) return;
-
-    const userType = await serverService.getUserInfo(msg.guildId as string, msg.author.id)
-    let shouldContinue = true;
-
-    console.log("user said : " + msg.content);
-
-    const message = msg.content.split(" ")
-
-
-    // If the user is an Owner, they can access all functionalities.
-    if (userType === UserType.Owner) {
-      shouldContinue = await this.ownerMessage(msg, message);
-
-      if (shouldContinue) {
-        shouldContinue = await this.botMakerMessage(msg, message);
-      }
-
-    }
-
-    // If the user is a BotMaker, they can access BotMaker, Moderator and Normal functionalities
-    else if (userType === UserType.BotMaker) {
-      shouldContinue = await this.botMakerMessage(msg, message);
-    }
-
-  }
-
-  ownerMessage = async (msg: Message, message: string[]): Promise<boolean> => {
-
-    if (message[1] === '입장권한') {
-      if (message[2]) {
-        if (message[2] === '대사') {
-          serverService.updateGuildEntranceQuote(msg.guildId as string, message[3]);
-          this.say(msg, `입장대사가 ${message[3]}로 변경되었습니다.`);
-          return false;
-        } else if (message[2] === '이모지') {
-          serverService.updateGuildEntranceEmoji(msg.guildId as string, message[3]);
-          this.say(msg, `입장이모지가 ${message[3]}로 변경되었습니다.`);
-          return false;
-        } else if (message[2] === '역할') {
-          if (msg.guild?.roles.cache.find(role => role.name === message[3]) === undefined) {
-            this.say(msg, `해당 역할이 존재하지 않습니다.`);
-            return false;
-          }
-          serverService.updateGuildEntranceRole(msg.guildId as string, message[3]);
-          this.say(msg, `입장역할이 ${message[3]}로 변경되었습니다.`);
-          return false;
-        }
-      } else {
-        const entranceInfo = await serverService.getEntraceInfo(msg.guildId as string);
-        this.sayEmbed(msg.channel as TextChannel, showEntranceInfo(entranceInfo));
-      }
-      return false;
-    }
-    return true;
-  }
-
-  botMakerMessage = async (msg: Message, message: string[]): Promise<boolean> => {
-
-    if (message[1] === '입장권') {
-      const entranceInfo = await serverService.getEntraceInfo(msg.guildId as string);
-      const a = await this.say(msg, `${entranceInfo.quote}`)
-      if (a) {
-        serverService.saveEntranceMessageId(msg.guildId as string, a.id);
-        a.react(entranceInfo.emoji);
-
-      } else {
-        this.say(msg, "갱신 실패! ")
-      }
-
-
-      return false;
-    }
-    return true;
-  }
-
-  say = async (msg: Message, context: string, givenPostfix?: string) => {
-    const postfix = givenPostfix ? givenPostfix : await serverService.getGuildPostfix(msg.guildId as string);
-    let toSay = "";
-    context.split("\n").forEach((line) => {
-      toSay += line + " " + postfix + "\n";
-    });
-    return msg.channel.send(toSay);
-  }
-
   sayEmbed = async (msg: TextChannel, context: any) => {
     const postfix = await serverService.getGuildPostfix(msg.guildId as string);
     const embed = context as EmbedBuilder;
     embed.setFooter({ text: " ..." + postfix })
     console.log(context);
-
     return msg.send({ embeds: [embed] });
   }
 }

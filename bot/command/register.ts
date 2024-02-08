@@ -1,8 +1,10 @@
-import { ActionRowBuilder, BaseInteraction, ButtonBuilder, ButtonInteraction, ButtonStyle, CommandInteraction, EmbedBuilder, SelectMenuComponentOptionData, SlashCommandBuilder, StringSelectMenuBuilder, StringSelectMenuInteraction } from "discord.js";
+import { ActionRowBuilder, BaseInteraction, ButtonBuilder, ButtonInteraction, ButtonStyle, 
+    CommandInteraction, EmbedBuilder, SelectMenuComponentOptionData, SlashCommandBuilder, 
+    StringSelectMenuBuilder, StringSelectMenuInteraction } from "discord.js";
 import { ButtonCommand, Command, CommandName, DropdownCommand, text } from ".";
 import api from "../ExternalAPI";
 import { DetectPlatform } from "../model/DetectType";
-import { YoutubeChannelInfoType } from "../model/youtubeChannelInfoType";
+import { YoutubeChannelInfoType } from "../model/YoutubeChannelInfoType";
 import ServerRepository from "../repository/ServerRepository";
 
 const ID = CommandName.Register;
@@ -98,7 +100,7 @@ export const registerYoutube: DropdownCommand = {
             .setTitle(`유튜브 채널 \`${channelInfo.channelTitle}\` 가 맞으신가요?`)
             .setDescription(channelInfo.description)
             .setThumbnail(channelInfo.thumbnail)
-            .setURL("https://www.youtube.com/" + channelInfo.url)
+            // .setURL("https://www.youtube.com/" + channelInfo.url)
             .setColor('#0099ff');
 
         const confirmButton = new ButtonBuilder()
@@ -129,7 +131,7 @@ export const regiesterYoutubeConfirmButton: ButtonCommand = {
                 .setTitle(`정상적으로 등록되었습니다! (ง •̀_•́)ง`)
                 .setColor('#0099ff')
                 .setFooter({ text: " ..." + postfix })
-            await interaction.update({ embeds: [embedMessage], components: [], content: ""});
+            await interaction.update({ embeds: [embedMessage], components: [], content: "" });
         } else if (interaction.customId.split(":")[2] === "cancel") {
             const customData = interaction.customId.split(":")[1];
             if (customData) await solveYoutube(interaction, customData);

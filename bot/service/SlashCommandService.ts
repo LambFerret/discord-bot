@@ -3,8 +3,11 @@ import { Command, DropdownCommand } from "../command";
 import { afreecaSetting } from "../command/afreecaSetting";
 import { afreecaSettingDelete } from "../command/afreecaSettingDelete";
 import { detect, solveDetectButtons } from "../command/detect";
+import { entranceChannel, entranceChannelDropdown } from "../command/entranceChannel";
+import { entrancePermission, entrancePermissionDropdown } from "../command/entrancePermission";
 import { help, helpDropdown } from "../command/help";
 import initialize from "../command/initalize";
+import { noticeChannel, noticeChannelDropdown } from "../command/NoticeChannel";
 import ping from "../command/ping";
 import postfix from "../command/postfix";
 import { regiesterYoutubeConfirmButton, register, registerYoutube } from "../command/register";
@@ -32,10 +35,17 @@ export default class SlashCommandService {
     this.setCommand(register);
     this.setCommand(afreecaSetting);
     this.setCommand(afreecaSettingDelete);
+    this.setCommand(entranceChannel);
+    this.setCommand(entrancePermission);
+    this.setCommand(noticeChannel);
+
 
     // dropdown command
     this.setDropdownCommand(helpDropdown);
     this.setDropdownCommand(registerYoutube);
+    this.setDropdownCommand(entranceChannelDropdown);
+    this.setDropdownCommand(entrancePermissionDropdown);
+    this.setDropdownCommand(noticeChannelDropdown);
 
     // button command
     this.setDropdownCommand(solveDetectButtons);

@@ -22,10 +22,10 @@ const postfix: Command = {
         const guildId = interaction.guildId as string;
 
         if (postfix === '') {
-            serverService.updateGuildPrefix(guildId, "", false);
+            serverService.updateGuildPostfix(guildId, "");
             await interaction.reply(`난 이제 말투가 없습니다! \n`);
         } else {
-            serverService.updateGuildPrefix(guildId, postfix, false);
+            serverService.updateGuildPostfix(guildId, postfix);
             await interaction.reply(`접미사가 바뀌었습니다! \n` + `앞으로 제 말투는 <<${postfix}>> 입니다!`);
         }
     }

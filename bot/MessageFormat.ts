@@ -4,7 +4,7 @@ import { LiveAfreecaInfoType } from './model/LiveAfreecaInfoType';
 import { LiveChzzkInfoType } from './model/LiveChzzkInfoType';
 import { LiveStreamInfoType } from "./model/LiveStreamInfoType";
 import { Entrance } from './model/ServerType';
-import { YoutubeChannelInfoType } from './model/youtubeChannelInfoType';
+import { YoutubeChannelInfoType } from './model/YoutubeChannelInfoType';
 
 export const twitchLiveInfoMsg = (data: LiveStreamInfoType) =>
   new EmbedBuilder()
@@ -32,12 +32,14 @@ export const chzzkLiveInfoMsg = (data: LiveChzzkInfoType) => {
 }
 
 export const youtubeLiveInfoMsg = (data: YoutubeChannelInfoType) => {
+  console.log(data.url);
+  
   return new EmbedBuilder()
     .setColor('#0000ff')
     // 현재 임시적으로 description에는 스트림 제목이 들어가있음
     .setTitle(`${data.description} 유튜브 뱅온!`)
     .setDescription(data.channelTitle)
-    .setURL("https://www.youtube.com/" + data.url)
+    // .setURL("https://www.youtube.com/" + data.description)
     .setThumbnail(data.thumbnail)
 }
 

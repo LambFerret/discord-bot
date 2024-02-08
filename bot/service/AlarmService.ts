@@ -9,30 +9,38 @@ import ServerRepository from "../repository/ServerRepository";
 export default class AlarmService {
 
     client: Client;
+    activeCronJobs: { [key: string]: cron.ScheduledTask };
     constructor(client: Client) {
         this.client = client;
+        this.activeCronJobs = {};
     }
+
     checkAlarm = async (guildId: string) => {
         const info = await ServerRepository.getDetectInfo(guildId);
-        // if (info.broadcastDetect.chzzk) {
-        //     await this.sendChzzkStreamInfo(guildId);
-        // }
-        // if (info.broadcastDetect.afreeca) {
-        //     await this.sendAfreecaStreamInfo(guildId);
-        // }
-        // if (info.broadcastDetect.twitch) {
-        //     await this.sendTwitchStreamInfo(guildId);
-        // }
+        if (info.broadcastDetect.chzzk) {
+            await this.sendChzzkStreamInfo(guildId);
+        }
+        if (info.broadcastDetect.afreeca) {
+            await this.sendAfreecaStreamInfo(guildId);
+        }
+        if (info.broadcastDetect.twitch) {
+            await this.sendTwitchStreamInfo(guildId);
+        }
         if (info.broadcastDetect.youtube) {
             await this.sendYoutubeStreamInfo(guildId);
         }
     }
 
     makeCron = (guildId: string) => {
-        // make cron of checkAlarm() 
-        cron.schedule('* * * * *', () => {
+        if (this.activeCronJobs[guildId]) {
+            this.activeCronJobs[guildId].stop();
+            delete this.activeCronJobs[guildId];
+        }
+
+        const task = cron.schedule('* * * * *', () => {
             this.checkAlarm(guildId);
         });
+        this.activeCronJobs[guildId] = task;
     }
 
     sendChzzkStreamInfo = async (guildId: string) => {
@@ -99,7 +107,7 @@ export default class AlarmService {
     sendYoutubeStreamInfo = async (guildId: string) => {
         const dto = await ServerRepository.checkStreamLive(guildId, DetectPlatform.Youtube);
         console.log(dto);
-        
+
         if (dto.id === undefined) return undefined;
         const previousLiveInfo = dto.isLive;
         const liveInfo = await api.getYoutubeLiveInfo(dto.id);

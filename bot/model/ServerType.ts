@@ -4,13 +4,9 @@ export type ServerInfo = {
     createdDate: Date,
     OwnerId: string,
     detectChannel: string,
-    MyId: string,
-    ModeratorId: Array<string>,
-    prefix: string,
     postfix: string,
     status: string,
     entrance: Entrance,
-    isDetecting: boolean,
     isDeleted: boolean,
     broadcastInfo: BroadcastInfo,
     streamingStatus: StreamingStatus,
@@ -20,6 +16,7 @@ export type ServerInfo = {
 }
 
 export type Entrance = {
+    entranceChannelId: string,
     quote: string,
     messageId: string,
     emoji: string,

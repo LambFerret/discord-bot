@@ -6,23 +6,6 @@ import serverService from "./service/ServerService"
 
 
 class MessageCommand {
-
-    isStartWithPrefix = async (message: Message) => {
-        if (!message.guildId) return false
-        const msg = message.content
-        let prefix = ''
-        try {
-            prefix = await serverService.getGuildPrefix(message.guildId);
-        } catch (err) {
-            // prefix = (await serverService.createServer(message.guild as Guild)).prefix
-        }
-        if (msg.startsWith(prefix) && !message.author.bot && prefix != '') {
-            return true
-        } else {
-            return false
-        }
-    }
-
     sendTwitchStreamInfo = async (guildId: string): Promise<EmbedBuilder | undefined> => {
         const dto = await serverService.getStreamLiveInfo(guildId, DetectPlatform.Twitch);
         if (dto.id === undefined) return undefined;

@@ -5,7 +5,7 @@ import { LiveAfreecaInfoType } from './model/LiveAfreecaInfoType';
 import { LiveChzzkInfoType } from './model/LiveChzzkInfoType';
 import { LiveStreamInfoType } from './model/LiveStreamInfoType';
 import { NewPostChzzkInfoType } from './model/NewPostChzzkInfoType';
-import { YoutubeChannelInfoType } from './model/youtubeChannelInfoType';
+import { YoutubeChannelInfoType } from './model/YoutubeChannelInfoType';
 
 class ExternalApi {
     token: Promise<string>
@@ -164,7 +164,7 @@ class ExternalApi {
         } as YoutubeChannelInfoType;
         if (items[0].snippet?.title) dto.channelTitle = items[0].snippet.title;
         if (items[0].snippet?.description) dto.description = items[0].snippet.description;
-        if (items[0].snippet?.customUrl) dto.url = items[0].snippet.customUrl;
+        if (items[0].snippet?.title) dto.url = items[0].snippet.title;
         if (items[0].snippet?.thumbnails?.default?.url) dto.thumbnail = items[0].snippet.thumbnails.default.url;
         return dto;
     }

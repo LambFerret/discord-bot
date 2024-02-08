@@ -4,6 +4,12 @@ export enum CommandName {
     Ping = "ping",
     Help = "help",
     HelpDropdown = "helpDropdown",
+    EntranceChannel = "entrance_channel",
+    EntranceChannelDropdown = "entrance_channel_dropdown",
+    EntrancePermission = "entrance_permission",
+    EntrancePermissionDropdown = "entrance_permission_dropdown",
+    NoticeChannel = "notice_channel",
+    NoticeChannelDropdown = "entrance_permission_dropdown",
     Postfix = "postfix",
     Detect = "detect",
     DetectButton = "detectButton",
@@ -80,6 +86,36 @@ export const text: TextType = {
             }
         ]
     },
+    entrance_channel : {
+        id: CommandName.EntranceChannel,
+        name: "입장채널등록",
+        description: "입장채널을 변경합니다!"
+    },
+    entrance_channel_dropdown: {
+        id: CommandName.EntranceChannelDropdown,
+        name: "입장채널dropdown",
+        description: "입장채널을 변경합니다! dropdown",
+    },
+    entrance_permission: {
+        id: CommandName.EntrancePermission,
+        name: "입장권한",
+        description: "입장권한을 변경합니다!"
+    },
+    entrance_permission_dropdown: {
+        id: CommandName.EntrancePermissionDropdown,
+        name: "입장권한dropdown",
+        description: "입장권한을 변경합니다! dropdown",
+    },
+    notice_channel: {
+        id: CommandName.NoticeChannel,
+        name: "알림채널등록",
+        description: "알림채널을 변경합니다!"
+    },
+    notice_channel_dropdown: {
+        id: CommandName.NoticeChannelDropdown,
+        name: "공지채널dropdown",
+        description: "공지채널을 변경합니다! dropdown",
+    },
     postfix: {
         id: CommandName.Postfix,
         name: "말투",
@@ -154,7 +190,6 @@ export const text: TextType = {
         id: CommandName.Afreeca_Setting_Delete,
         name: "아프리카_설정_초기화",
         description: "모든 게시판에 있는 주인님의 글을 감지합니다!",
-
     }
 }
 

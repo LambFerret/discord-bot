@@ -1,6 +1,5 @@
 import { Guild } from "discord.js";
 import { DetectPlatform } from "../model/DetectType";
-import { UserType } from "../model/UserType";
 import serverRepository from "../repository/ServerRepository";
 class ServerService {
 
@@ -12,16 +11,12 @@ class ServerService {
         return serverRepository.deleteServer(guildId);
     }
 
-    getUserInfo = async (guildId: string, userId: string): Promise<UserType> => {
-        return await serverRepository.checkIdInfo(guildId, userId)
-    }
-
-    async getStreamLiveInfo(guildId: string, type : DetectPlatform) {
+    async getStreamLiveInfo(guildId: string, type: DetectPlatform) {
         return await serverRepository.checkStreamLive(guildId, type)
     }
 
-    async updateStreamLive(guildId: string, type :DetectPlatform, isLive: boolean) {
-        await serverRepository.updateStreamLive(guildId,type, isLive)
+    async updateStreamLive(guildId: string, type: DetectPlatform, isLive: boolean) {
+        await serverRepository.updateStreamLive(guildId, type, isLive)
     }
 
     async updateDetectChannel(guildId: string, channelId: string) {
@@ -35,28 +30,16 @@ class ServerService {
     async getAllGuildId(): Promise<string[]> {
         return await serverRepository.getAllGuildId()
     }
- 
-    updateModeratorId(guildId: string, userId: string[]) {
-        serverRepository.updateModerators(guildId, userId)
-    }
-
-    updateBotMaker(guildId: string, botMaker: string) {
-        serverRepository.updateBotMaker(guildId, botMaker)
-    }
-
-    async getGuildPrefix(guildId: string): Promise<string> {
-        return await serverRepository.getServerPrefix(guildId)
-    }
 
     async getGuildPostfix(guildId: string): Promise<string> {
         return await serverRepository.getServerPostfix(guildId)
     }
 
-    async updateGuildPrefix(guildId: string, postfix: string, isPrefix: boolean) {
-        serverRepository.updateServerPrefix(guildId, postfix, isPrefix)
+    async updateGuildPostfix(guildId: string, postfix: string) {
+        return await serverRepository.updateGuildPostfix(guildId, postfix)
     }
 
-    async getEntraceInfo(guildId: string) {
+    async getEntranceInfo(guildId: string) {
         return await serverRepository.getEntranceInfo(guildId)
     }
 
@@ -74,10 +57,6 @@ class ServerService {
 
     async updateGuildEntranceRole(guildId: string, role: string) {
         serverRepository.updateGuildEntranceRole(guildId, role)
-    }
-
-    async updateStreamDetecting(guildId: string, isDetecting: boolean) {
-        serverRepository.updateStreamDetecting(guildId, isDetecting)
     }
 
     async getAllServers() {
