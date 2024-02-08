@@ -38,6 +38,7 @@ class ExternalApi {
                 return res.data;
             })
             .catch((err) => {
+                console.error(err);
                 return err.response.data;
             });
 
@@ -114,7 +115,7 @@ class ExternalApi {
         }
     }
 
-    searchYoutubeChannelIDWithTitle = async (youtubeTitle: string) :Promise<YoutubeChannelInfoType[]> => {
+    searchYoutubeChannelIDWithTitle = async (youtubeTitle: string): Promise<YoutubeChannelInfoType[]> => {
         const youtube = google.youtube('v3');
         const param = {
             key: CONFIG.YOUTUBE_API_KEY,
@@ -130,11 +131,11 @@ class ExternalApi {
         const results: YoutubeChannelInfoType[] = [];
         items?.forEach(e => {
             const dto = {
-                id : "",
-                channelTitle : "",
-                description : "--",
-                url : "",
-                thumbnail : "",
+                id: "",
+                channelTitle: "",
+                description: "--",
+                url: "",
+                thumbnail: "",
             } as YoutubeChannelInfoType;
             if (e.id?.channelId) dto.id = e.id.channelId;
             if (e.snippet?.title) dto.channelTitle = e.snippet.title;
@@ -144,27 +145,54 @@ class ExternalApi {
         return results;
     }
 
-    searchYoutubeByChannelID = async (channelID: string) : Promise<YoutubeChannelInfoType | undefined> => {
+    searchYoutubeByChannelID = async (channelID: string): Promise<YoutubeChannelInfoType | undefined> => {
         const youtube = google.youtube('v3');
         const param = {
             key: CONFIG.YOUTUBE_API_KEY,
             part: 'snippet',
             id: channelID,
         } as any;
-        const items = (await youtube.channels.list(param)).data.items;
+        const items = (await youtube.search.list(param)).data.items;
         if (!items) return undefined;
         const dto = {
-            id : items[0].id,
-            channelTitle : "",
-            description : "--",
-            url : "",
-            thumbnail : "",
+            id: items[0].snippet?.liveBroadcastContent,
+            channelTitle: "",
+            description: "--",
+            url: "",
+            thumbnail: "",
+            isLive: items[0].snippet?.liveBroadcastContent === "live" ? true : false,
         } as YoutubeChannelInfoType;
         if (items[0].snippet?.title) dto.channelTitle = items[0].snippet.title;
         if (items[0].snippet?.description) dto.description = items[0].snippet.description;
         if (items[0].snippet?.customUrl) dto.url = items[0].snippet.customUrl;
         if (items[0].snippet?.thumbnails?.default?.url) dto.thumbnail = items[0].snippet.thumbnails.default.url;
         return dto;
+    }
+
+    getYoutubeLiveInfo = async (channelID: string): Promise<YoutubeChannelInfoType | undefined> => {
+        const youtube = google.youtube('v3');
+        const param = {
+            key: CONFIG.YOUTUBE_API_KEY,
+            part: 'snippet',
+            id: channelID,
+        } as any;
+        const items = (await youtube.search.list(param)).data.items;
+        if (!items) return undefined;
+        const dto = {
+            id: items[0].snippet?.liveBroadcastContent,
+            channelTitle: "",
+            description: "--",
+            url: "",
+            thumbnail: "",
+            isLive: items[0].snippet?.liveBroadcastContent === "live" ? true : false,
+        } as YoutubeChannelInfoType;
+        const urlData = await this.searchYoutubeByChannelID(channelID);
+        if (items[0].snippet?.channelTitle) dto.channelTitle = items[0].snippet.channelTitle;
+        if (items[0].snippet?.channelTitle) dto.description = items[0].snippet.channelTitle;
+        if (urlData?.url) dto.url = urlData.url;
+        if (items[0].snippet?.thumbnails?.default?.url) dto.thumbnail = items[0].snippet.thumbnails.default.url;
+        return dto;
+
     }
 
 

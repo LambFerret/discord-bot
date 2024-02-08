@@ -14,23 +14,6 @@ export enum CommandName {
     Afreeca_Setting = "afreeca_setting",
     Afreeca_Setting_Delete = "afreeca_setting_delete"
 }
-/* 
- 📦 방송
- ├─ 방송감지
- │  ├─ 치지직 chzzk
- │  ├─ 아프리카 afreeca
- │  ├─ 유튜브 youtube
- │  └─ 트위치 twitch
- ├─ 새글 감지
- │  ├─ 치지직
- │  ├─ 아프리카
- │  └─ 유튜브
- ├─ 방장 채팅 감지
- │  ├─ 치지직
- │  ├─ 아프리카
- │  └─ 유튜브
- └─ (후추) 네이버카페 공지 감지
- */
 export enum ButtonName {
     broadcast = "broadcast",
     new_post = "new_post",

@@ -2,7 +2,7 @@ import { EmbedBuilder } from "@discordjs/builders";
 import { Client } from "discord.js";
 import * as cron from "node-cron";
 import api from "../ExternalAPI";
-import { afreecaLiveInfoMsg, chzzkLiveInfoMsg, twitchLiveInfoMsg } from "../MessageFormat";
+import { afreecaLiveInfoMsg, chzzkLiveInfoMsg, twitchLiveInfoMsg, youtubeLiveInfoMsg } from "../MessageFormat";
 import { DetectPlatform } from "../model/DetectType";
 import ServerRepository from "../repository/ServerRepository";
 
@@ -14,17 +14,17 @@ export default class AlarmService {
     }
     checkAlarm = async (guildId: string) => {
         const info = await ServerRepository.getDetectInfo(guildId);
-        if (info.broadcastDetect.chzzk) {
-            await this.sendChzzkBroadcastInfo(guildId);
-        } 
-        if (info.broadcastDetect.afreeca) {
-            await this.sendAfreecaStreamInfo(guildId);
-        }
-        if (info.broadcastDetect.twitch) {
-            await this.sendTwitchStreamInfo(guildId);
-        }
+        // if (info.broadcastDetect.chzzk) {
+        //     await this.sendChzzkStreamInfo(guildId);
+        // }
+        // if (info.broadcastDetect.afreeca) {
+        //     await this.sendAfreecaStreamInfo(guildId);
+        // }
+        // if (info.broadcastDetect.twitch) {
+        //     await this.sendTwitchStreamInfo(guildId);
+        // }
         if (info.broadcastDetect.youtube) {
-            await this.sendYoutubeBroadcastInfo(guildId);
+            await this.sendYoutubeStreamInfo(guildId);
         }
     }
 
@@ -35,7 +35,7 @@ export default class AlarmService {
         });
     }
 
-    sendChzzkBroadcastInfo = async (guildId: string) => {
+    sendChzzkStreamInfo = async (guildId: string) => {
         const dto = await ServerRepository.checkStreamLive(guildId, DetectPlatform.Chzzk);
         if (dto.id === undefined) return undefined;
         const previousLiveInfo = dto.isLive;
@@ -96,23 +96,28 @@ export default class AlarmService {
     }
 
 
-    sendYoutubeBroadcastInfo = async (guildId: string) => {
-        // const info = await ServerRepository.getDetectInfo(guildId);
-        // const liveInfo = await this.api.getYoutubeLiveInfo();
+    sendYoutubeStreamInfo = async (guildId: string) => {
+        const dto = await ServerRepository.checkStreamLive(guildId, DetectPlatform.Youtube);
+        console.log(dto);
+        
+        if (dto.id === undefined) return undefined;
+        const previousLiveInfo = dto.isLive;
+        const liveInfo = await api.getYoutubeLiveInfo(dto.id);
+        console.log(liveInfo);
 
-        // if (!liveInfo && !info.broadcastDetect.youtube) return undefined;
+        if (!liveInfo) return;
 
-        // if (!liveInfo && info.broadcastDetect.youtube) {
-        //     ServerRepository.updateBroadcastDetect(guildId, 'youtube', false);
-        //     return undefined;
-        // }
+        if (!liveInfo && !previousLiveInfo) return;
 
-        // if (liveInfo && !info.broadcastDetect.youtube) {
-        //     ServerRepository.updateBroadcastDetect(guildId, 'youtube', true);
-        //     return youtubeLiveInfoMsg(liveInfo);
-        // }
+        if (liveInfo.id === "" && previousLiveInfo) {
+            ServerRepository.updateStreamLive(guildId, DetectPlatform.Youtube, false);
+            return;
+        }
 
-        // return undefined;
+        if (liveInfo.id !== "" && !previousLiveInfo) {
+            ServerRepository.updateStreamLive(guildId, DetectPlatform.Youtube, true);
+            this.say(guildId, youtubeLiveInfoMsg(liveInfo));
+        }
     }
 
     say = async (guildId: string, msg: EmbedBuilder) => {

@@ -57,7 +57,7 @@ export default class DiscordBot {
       console.log("detect channel : " + channelId + " | isDetecting : " + server.isDetecting);
 
       // =-=-=-=-=-=- test =-=-=-=-=-=-=
-      // this.alarmService.checkAlarm(serverId); 
+      this.alarmService.checkAlarm(serverId); 
       // this.postService.checkPost(serverId);
       this.test();
       // =-=-=-=-=-=- test =-=-=-=-=-=-=
@@ -94,7 +94,7 @@ export default class DiscordBot {
       const a: Message = reaction.message as Message;
       const b: User = user as User;
       if (await serverService.getUserInfo(a.guildId as string, b.id) === UserType.Owner) {
-        this.say(a, "안녕하세요! \n" + "먼저 <제이름> 입장권한 역할 <역할명> 을 입력해주세요!");
+        this.say(a, "안녕하세요! \n" + "먼저 /입장권한 역할 <역할명> 을 입력해주세요!");
       } else {
         this.say(a, "입장역할이 설정되지 않았습니다. 관리자에게 문의해주세요.");
       }
