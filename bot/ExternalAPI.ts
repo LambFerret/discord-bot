@@ -276,7 +276,7 @@ class ExternalApi {
                 id: post.title_no,
                 type: post.bbs_no,
                 title: post.title_name,
-                content: post.content.text_content,
+                content: post.content.summary,
                 createdDate: post.reg_date,
             }
             if (post.photo_cnt > 0) postInfo.attachedImageURL = post.photos[0].url.replace('//', 'https://');

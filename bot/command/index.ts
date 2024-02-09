@@ -170,7 +170,6 @@ export const text: TextType = {
 }
 
 export type Command = {
-    // when has string option
     command: SlashCommandBuilder,
     execute: (interaction: any) => Promise<void>
 }

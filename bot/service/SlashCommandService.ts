@@ -56,7 +56,7 @@ export default class SlashCommandService {
     return client.commands
       .filter((command: any) => typeof command.command !== 'string')
       .map((command: Command) => {
-        // command.command.setDefaultMemberPermissions(this.hasRole);
+        command.command.setDefaultMemberPermissions(this.hasRole);
         return command.command.toJSON();
       });
   }
@@ -103,10 +103,10 @@ export default class SlashCommandService {
     const command = client.commands.get(commandName);
     if (interaction.member && 'permissions' in interaction.member) {
       const memberPermissions = interaction.member.permissions as PermissionsBitField;
-      // if (!memberPermissions.has(this.hasRole)) {
-      //   await interaction.reply({ content: '이 버튼을 사용할 권한이 없습니다.', ephemeral: true });
-      //   return;
-      // }
+      if (!memberPermissions.has(this.hasRole)) {
+        await interaction.reply({ content: '이 버튼을 사용할 권한이 없습니다.', ephemeral: true });
+        return;
+      }
     }
     if (!command) return;
     try {

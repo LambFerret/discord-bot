@@ -12,7 +12,6 @@ const initialize: Command = {
         .setNameLocalization('ko', commandText.name),
 
     execute: async (interaction: CommandInteraction) => {
-        // make modal and if press confirm, delete server info and create new server info
         await ServerRepository.deleteServer(interaction.guildId as string);
         await ServerRepository.createNewServer(interaction.guild as Guild);
         await interaction.reply({ content: '초기화' });

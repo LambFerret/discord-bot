@@ -41,7 +41,7 @@ export default class DiscordBot {
     // DM to guild owner 
     const owner = await guild.fetchOwner();
     introduceBotWithDM(owner);
-    // this.readyEachServer(server);
+    this.readyEachServer(server);
   }
 
   initServers = async () => {
@@ -77,9 +77,6 @@ export default class DiscordBot {
     // =-=-=-=-=-=- test =-=-=-=-=-=-=
     this.alarmService.makeCron(serverId);
     this.postService.makeCron(serverId);
-    this.test();
-    const guild = this.client.guilds.cache.get(serverId) as Guild;
-    // this.createServer(guild);
     // =-=-=-=-=-=- test =-=-=-=-=-=-=
     console.log("=============================");
   }
