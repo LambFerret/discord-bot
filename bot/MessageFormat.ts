@@ -1,137 +1,105 @@
 
-import { EmbedBuilder } from 'discord.js';
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder, GuildMember } from 'discord.js';
+import BotConfig, { MessageColor } from './BotConfig';
 import { LiveAfreecaInfoType } from './model/LiveAfreecaInfoType';
 import { LiveChzzkInfoType } from './model/LiveChzzkInfoType';
 import { LiveStreamInfoType } from "./model/LiveStreamInfoType";
-import { Entrance } from './model/ServerType';
 import { YoutubeChannelInfoType } from './model/YoutubeChannelInfoType';
 
-export const twitchLiveInfoMsg = (data: LiveStreamInfoType) =>
-  new EmbedBuilder()
-    .setColor('#0000ff')
-    .setTitle(`${data.user_name} 트위치 뱅온!`)
-    .setDescription(data.title)
-    .setURL("https://twitch.tv/" + data.user_login)
-//  .setThumbnail("https://static-cdn.jtvnw.net/previews-ttv/live_user_"+CONFIG.TWITCH_STREAMER_ID+".jpg")
-
-export const afreecaLiveInfoMsg = (data: LiveAfreecaInfoType) =>
-  new EmbedBuilder()
-    .setColor('#0000ff')
-    .setTitle(`${data.user_nick} 아프리카 뱅온!`)
-    .setDescription(data.broad_title)
-    .setURL("https://play.afreecatv.com/" + data.user_id)
+export const twitchLiveInfoMsg = async (guildId: string, data: LiveStreamInfoType) => {
+  const embed = await BotConfig.makeEmbed(
+    `${data.user_name} 트위치 뱅온!`,
+    data.title,
+    MessageColor.Default,
+    guildId
+  )
+  embed.setURL("https://twitch.tv/" + data.user_login)
+  //  .setThumbnail("https://static-cdn.jtvnw.net/previews-ttv/live_user_"+CONFIG.TWITCH_STREAMER_ID+".jpg")
+  return embed;
+}
+export const afreecaLiveInfoMsg = async (guildId: string, data: LiveAfreecaInfoType) => {
+  const embed = await BotConfig.makeEmbed(
+    `${data.user_nick} 아프리카 뱅온!`,
+    data.broad_title,
+    MessageColor.Default,
+    guildId
+  )
+  embed.setURL("https://play.afreecatv.com/" + data.user_id)
     .setThumbnail("https://liveimg.afreecatv.com/h/" + data.broad_no + ".webp");
-
-export const chzzkLiveInfoMsg = (data: LiveChzzkInfoType) => {
-  return new EmbedBuilder()
-    .setColor('#0000ff')
-    .setTitle(`${data.channelName} 치지직 뱅온!`)
-    .setDescription(data.liveTitle)
-    .setURL("https://chzzk.naver.com/live/" + data.channelId)
-    .setThumbnail(data.channelImageUrl)
+  return embed;
 }
 
-export const youtubeLiveInfoMsg = (data: YoutubeChannelInfoType) => {
-  console.log(data.url);
-  
-  return new EmbedBuilder()
-    .setColor('#0000ff')
-    // 현재 임시적으로 description에는 스트림 제목이 들어가있음
-    .setTitle(`${data.description} 유튜브 뱅온!`)
-    .setDescription(data.channelTitle)
-    // .setURL("https://www.youtube.com/" + data.description)
+export const chzzkLiveInfoMsg = async (guildId: string, data: LiveChzzkInfoType) => {
+  const embed = await BotConfig.makeEmbed(
+    `${data.channelName} 치지직 뱅온!`,
+    data.liveTitle,
+    MessageColor.Default,
+    guildId
+  )
+  embed.setURL("https://chzzk.naver.com/live/" + data.channelId)
+    .setThumbnail(data.channelImageUrl);
+  return embed;
+}
+
+export const youtubeLiveInfoMsg = async (guildId: string, data: YoutubeChannelInfoType) => {
+
+  const embed = await BotConfig.makeEmbed(
+    `${data.description} 유튜브 뱅온!`,
+    data.channelTitle,
+    MessageColor.Default,
+    guildId
+  )
+  embed
     .setThumbnail(data.thumbnail)
+  // .setURL("https://www.youtube.com/" + data.description)
+  return embed;
 }
 
-export const introduceBot = (name: string, myName: string) => {
-  return new EmbedBuilder()
-    .setColor('#0099ff')
-    .setTitle(`${name} 서버의 쟌코봇입니다!`)
-    .setDescription(`제가 할 수 있는 일은 다음과 같습니다!`)
-    .addFields(
-      {
-        "name": "\u200B",
-        "value": "\u200B",
-      }
-    )
-    .addFields(
-      {
-        "name": `데쟝님 전용 명령어!`,
-        "value": "데쟝님은 이하 모든 명령어를 사용가능하십니다!",
-        "inline": true
-      },
-      {
-        "name": `\`${myName} 봇권한 @상대\``,
-        "value": `상대에게 쟌코봇의 관리 권한을 줍니다! 하지만 쟌코봇 관리자는 한명밖에 지정이 안됩니다!`
-      },
-      {
-        "name": `\`${myName} 관리자 <권한명>\``,
-        "value": `내가 관리자이름이 무엇인지 알게해줍니다! 관리자이름을 바꿨다면 이 명령어를 써주세요!`
-      },
-      {
-        "name": `\`${myName} 입장권한 <명령어> <내용>\``,
-        "value": `입장권을 설정해줍니다! \n\`|    \`명령어 : 대사, 이모지, 역할 \n\`|    \`ex) ${myName} 입장권한 대사 안녕하세요! `
-      },
-      {
-        "name": `\`${myName} 입장권한\``,
-        "value": `입장권한정보를 알려줍니다!`
-      }
-    )
-    .addFields(
-      {
-        "name": "\u200B",
-        "value": "\u200B",
-      }
-    )
-    .addFields(
-      {
-        "name": `봇 관리쟌코 명령어!`,
-        "value": "\u200B",
-        "inline": true
-      },
-      {
-        "name": `\`${myName} status \``,
-        "value": `핑 확인!`
-      }, {
-      "name": `\`${myName} 입장권 \``,
-      "value": `현 채널에 입장 대사를 적습니다!`
+export const introduceBotWithDM = async (member: GuildMember) => {
+  const dm = await member.createDM();
+
+  const title = "Hello! World! (✿◠‿◠)";
+  const description = "안녕하세요! \`하우미\` 입니다! \n 저를 사용하시기 위해 몇가지 설정이 필요합니다! ξ(✿ ❛‿❛)ξ 아래의 단계를 거치면 설정이 완료돼요 ( ' ▽ ' )ﾉ  \n\n" +
+    "더욱 자세한 설명서는 현재 제작중에 있습니다! \`/\`를 누르시고 한번 둘러보세요! \n"
+    + "================================================"
+
+
+  const embed = await BotConfig.makeEmbed(
+    title,
+    description,
+    MessageColor.Default,
+    member.guild.id
+  )
+  embed.addFields(
+    {
+      name: "1️⃣ 등록",
+      value: "\`/알림채널등록\` 으로 방송 알림을 보낼 채널을 설정합니다. \n", inline: false
     },
-    )
-    .addFields(
-      {
-        "name": "\u200B",
-        "value": "\u200B",
-      }
-    )
-    .addFields(
-      {
-        "name": `관리자 명령어!`,
-        "value": "\u200B",
-        "inline": true
-      },
-      {
-        "name": `\`${myName} 말투 앞 <내용> \``,
-        "value": `내이름을 설정해줍니다!`
-      },
-      {
-        "name": `\`${myName} 말투 뒤 <내용> \``,
-        "value": `내말투를 설정해줍니다!`
-      },
-      {
-        "name": `\`${myName} 방송감지 켜기|끄기 \``,
-        "value": `데쟝님의 방송을 감지합니다!`
-      },
+    {
+      name: "2️⃣ 정보입력",
+      value: "\`/등록\`으로 주인님의 방송 정보를 입력해주세요! \n", inline: false
+    },
+    {
+      name: "3️⃣ 감지설정",
+      value: "\`/감지\`를 통해 원하는 기능을 on 해주세요! 모든 감지는 켜고 끌 수 있습니다! \n "
+        + "================================================", inline: false
+    },
+    {
+      name: "(선택) 입장채널등록",
+      value: "1. \`/입장역할\` 으로 역할을 설정합니다. \n"
+        + "2. \`/입장채널\` 으로 입장채널을 설정합니다. \n"
+        + "3. \`/입장메시지\`과 \`/입장이모지 로 세부사항을 변경할 수 있습니다. \n"
+      , inline: false
+    }
+  )
 
+  const urlButtons = new ActionRowBuilder<ButtonBuilder>()
+    .addComponents(
+      new ButtonBuilder()
+        .setLabel("개발자 깃허브")
+        .setStyle(ButtonStyle.Link)
+        .setURL("https://www.github.com/LambFerret")
     )
-    .addFields({ name: 'Version', value: '1.0', inline: true })
-    .setThumbnail('https://your-image-url.com/thumbnail.jpg')
-}
 
-export const showEntranceInfo = (entrance: Entrance) => {
-  return new EmbedBuilder()
-    .setColor('#0099ff')
-    .setTitle(`현재 입장권한 정보입니다!`)
-    .setDescription(`입장대사 : ${entrance.quote} \n`
-      + `입장이모지 : ${entrance.emoji} \n`
-      + `입장역할 : ${entrance.role}`)
+  dm.send({ embeds: [embed], components: [urlButtons] });
 }

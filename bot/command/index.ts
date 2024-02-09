@@ -3,7 +3,6 @@ import { SelectMenuComponentOptionData, SlashCommandBuilder } from "discord.js";
 export enum CommandName {
     Ping = "ping",
     Help = "help",
-    HelpDropdown = "helpDropdown",
     EntranceChannel = "entrance_channel",
     EntranceChannelDropdown = "entrance_channel_dropdown",
     EntrancePermission = "entrance_permission",
@@ -18,7 +17,6 @@ export enum CommandName {
     RegisterYoutube = "register_youtube",
     RegisterYoutubeConfirmButton = "register_youtube_confirm_button",
     Afreeca_Setting = "afreeca_setting",
-    Afreeca_Setting_Delete = "afreeca_setting_delete"
 }
 export enum ButtonName {
     broadcast = "broadcast",
@@ -42,8 +40,8 @@ export enum ButtonName {
 const detectButtons: { [key in ButtonName]: string } = {
     [ButtonName.broadcast]: "방송 감지",
     [ButtonName.new_post]: "새글 감지",
-    [ButtonName.owner_chat]: "방장 채팅 감지",
-    [ButtonName.else]: "(후추) 그외",
+    [ButtonName.owner_chat]: "(공사중) 방장 채팅 감지",
+    [ButtonName.else]: "(공사중) 그외",
     [ButtonName.broadcast_chzzk]: "치지직 방송 감지",
     [ButtonName.broadcast_afreeca]: "아프리카 방송 감지",
     [ButtonName.broadcast_youtube]: "유튜브 방송 감지",
@@ -62,34 +60,17 @@ export const text: TextType = {
     ping: {
         id: CommandName.Ping,
         name: "핑",
-        description: "현재 상태와 지연 시간을 표시합니다."
+        description: "현재 상태와 지연 시간을 표시합니다!  ෆ⸒⸒⸜( ˶'ᵕ'˶)⸝ "
     },
     help: {
         id: CommandName.Help,
         name: "설명서",
-        description: "설명서 입니다!"
-    },
-    helpDropdown: {
-        id: CommandName.HelpDropdown,
-        name: "설명서",
-        description: "설명서 입니다!!",
-        options: [
-            {
-                label: "노래 명령어",
-                description: "노래 관련 명령어 안내...",
-                value: "music_commands"
-            },
-            {
-                label: "권한 명령어",
-                description: "권한 관련 명령어 안내...",
-                value: "permission_commands"
-            }
-        ]
+        description: "DM으로 설명서를 보내드릴게요!  ෆ⸒⸒⸜( ˶'ᵕ'˶)⸝ "
     },
     entrance_channel : {
         id: CommandName.EntranceChannel,
         name: "입장채널등록",
-        description: "입장채널을 변경합니다!"
+        description: "입장채널을 변경합니다!  ෆ⸒⸒⸜( ˶'ᵕ'˶)⸝ "
     },
     entrance_channel_dropdown: {
         id: CommandName.EntranceChannelDropdown,
@@ -99,7 +80,7 @@ export const text: TextType = {
     entrance_permission: {
         id: CommandName.EntrancePermission,
         name: "입장권한",
-        description: "입장권한을 변경합니다!"
+        description: "입장권한을 변경합니다!  ෆ⸒⸒⸜( ˶'ᵕ'˶)⸝ "
     },
     entrance_permission_dropdown: {
         id: CommandName.EntrancePermissionDropdown,
@@ -109,7 +90,7 @@ export const text: TextType = {
     notice_channel: {
         id: CommandName.NoticeChannel,
         name: "알림채널등록",
-        description: "알림채널을 변경합니다!"
+        description: "알림채널을 변경합니다!  ෆ⸒⸒⸜( ˶'ᵕ'˶)⸝ "
     },
     notice_channel_dropdown: {
         id: CommandName.NoticeChannelDropdown,
@@ -119,11 +100,11 @@ export const text: TextType = {
     postfix: {
         id: CommandName.Postfix,
         name: "말투",
-        description: "말투를 변경합니다!",
+        description: "말투를 변경합니다!  ෆ⸒⸒⸜( ˶'ᵕ'˶)⸝ ",
         options: [
             {
                 label: "말투",
-                description: "공백으로 말투를 없앨 수 있습니다!",
+                description: "'없음'을 입력하여 없앨 수 있습니다!",
                 value: "postfix"
             }
         ]
@@ -132,13 +113,13 @@ export const text: TextType = {
     detect: {
         id: CommandName.Detect,
         name: "감지",
-        description: "방송을 감지합니다",
+        description: "방송을 감지합니다!  ෆ⸒⸒⸜( ˶'ᵕ'˶)⸝ ",
         titleMap: detectButtons,
     },
     initialize: {
         id: CommandName.Initialize,
         name: "초기화",
-        description: "초기화할때는 서버가 리셋 되지 않도록 주의해주세요",
+        description: "제가가진 서버 정보를 초기화합니다! 주의해주세요!",
     },
     register: {
         id: CommandName.Register,
@@ -160,7 +141,7 @@ export const text: TextType = {
     register_youtube: {
         id: CommandName.RegisterYoutube,
         name: "등록_유튜브",
-        description: "주인님의 유튜브 채널명을 알려주세요!",
+        description: "주인님의 유튜브 채널명을 알려주세요!  ෆ⸒⸒⸜( ˶'ᵕ'˶)⸝ ",
         options: [
             {
                 label: "채널명",
@@ -186,11 +167,6 @@ export const text: TextType = {
             },
         ]
     },
-    afreeca_setting_delete: {
-        id: CommandName.Afreeca_Setting_Delete,
-        name: "아프리카_설정_초기화",
-        description: "모든 게시판에 있는 주인님의 글을 감지합니다!",
-    }
 }
 
 export type Command = {

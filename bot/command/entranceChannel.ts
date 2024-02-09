@@ -1,4 +1,4 @@
-import { SlashCommandBuilder, StringSelectMenuInteraction, ActionRowBuilder, StringSelectMenuBuilder, SelectMenuComponentOptionData, CommandInteraction, Guild } from "discord.js";
+import { ActionRowBuilder, Guild, SlashCommandBuilder, StringSelectMenuBuilder, StringSelectMenuInteraction } from "discord.js";
 import { Command, CommandName, DropdownCommand, text } from ".";
 import ServerRepository from "../repository/ServerRepository";
 
@@ -7,13 +7,13 @@ const commandText = text[ID];
 
 export const entranceChannel: Command = {
     command: new SlashCommandBuilder()
-    .setName(commandText.id)
-    .setDescription(commandText.description)
+        .setName(commandText.id)
+        .setDescription(commandText.description)
         .setNameLocalization('ko', commandText.name),
     execute: async (interaction: StringSelectMenuInteraction) => {
         const dropdown = new ActionRowBuilder<StringSelectMenuBuilder>()
             .addComponents(makeChannelSelectMenu(interaction.guild as Guild));
-        await interaction.reply({ content: 'Please select an option:', components: [dropdown] });
+        await interaction.reply({ content: '채널을 선택해 주세요!', components: [dropdown] });
     }
 }
 
@@ -24,45 +24,53 @@ export const entranceChannelDropdown: DropdownCommand = {
         if (entranceInfo.messageId !== "") {
             const entranceChannel = interaction.guild?.channels.cache.get(entranceInfo.entranceChannelId);
             if (entranceChannel && entranceChannel.isTextBased()) {
-                const message = await entranceChannel.messages.fetch(entranceInfo.messageId);
-                if (message) {
-                    message.delete();
+                try {
+                    const message = await entranceChannel.messages.fetch(entranceInfo.messageId);
+                    if (message) {
+                        message.delete();
+                    }
+                } catch (error) {
+                    console.error("message already deleted error");
                 }
             }
         }
 
         await ServerRepository.setEntranceChannel(interaction.guild as Guild, interaction.values[0]);
-        await interaction.update({ content: '설정이 완료되었습니다.' });
+        entranceInfo.entranceChannelId = interaction.values[0];
+        await interaction.update({ content: '설정이 완료되었습니다.', components: [] });
 
-        if (entranceInfo) {
-            const entranceChannel = interaction.guild?.channels.cache.get(entranceInfo.entranceChannelId);
-            if (entranceChannel && entranceChannel.isTextBased()) {
-                const message = await entranceChannel.send(`${entranceInfo.quote}`);
-                if (message) {
-                    ServerRepository.saveEntranceMessageId(interaction.guildId as string, message.id);
-                    message.react(entranceInfo.emoji);
-                } else {
-                    await interaction.update({ content: "갱신 실패! " });
-                }
+        const entranceChannel = interaction.guild?.channels.cache.get(entranceInfo.entranceChannelId);
+        if (entranceChannel && entranceChannel.isTextBased()) {
+            const message = await entranceChannel.send(`${entranceInfo.quote}`);
+            if (message) {
+                ServerRepository.saveEntranceMessageId(interaction.guildId as string, message.id);
+                message.react(entranceInfo.emoji);
+            } else {
+                await interaction.update({ content: "예상치 못한 오류가 발생했어요 ", components: [] });
             }
         }
+
     }
 }
 
 const makeChannelSelectMenu = (guild: Guild): StringSelectMenuBuilder => {
-    const channels = guild.channels.cache.filter(channel => channel.isTextBased()).map(channel => channel);
+    const channels = guild.channels.cache.filter(channel => {
+        return channel.isTextBased()
+    }).map(channel => channel);
 
     const options = channels.map(channel => {
+        let description = "";
+        if (channel.parent) description = "\`" + channel.parent.name + "\` 의 하위 채널";
         return {
             label: channel.name,
             value: channel.id,
-            description: typeof channel
+            description: description,
         }
     });
 
     const selectMenu = new StringSelectMenuBuilder()
         .setCustomId(CommandName.EntranceChannelDropdown)
-        .setPlaceholder('Nothing selected')
+        .setPlaceholder('채널을 선택해 주세요!')
         .addOptions(options);
 
     return selectMenu;

@@ -1,11 +1,10 @@
-import { BaseInteraction, ButtonInteraction, ChatInputCommandInteraction, Collection, PermissionFlagsBits, PermissionsBitField, REST, Routes, SelectMenuInteraction } from "discord.js";
+import { BaseInteraction, ButtonInteraction, ChatInputCommandInteraction, Client, Collection, PermissionFlagsBits, PermissionsBitField, REST, RESTPostAPIChatInputApplicationCommandsJSONBody, Routes, SelectMenuInteraction } from "discord.js";
 import { Command, DropdownCommand } from "../command";
 import { afreecaSetting } from "../command/afreecaSetting";
-import { afreecaSettingDelete } from "../command/afreecaSettingDelete";
 import { detect, solveDetectButtons } from "../command/detect";
 import { entranceChannel, entranceChannelDropdown } from "../command/entranceChannel";
 import { entrancePermission, entrancePermissionDropdown } from "../command/entrancePermission";
-import { help, helpDropdown } from "../command/help";
+import { help } from "../command/help";
 import initialize from "../command/initalize";
 import { noticeChannel, noticeChannelDropdown } from "../command/NoticeChannel";
 import ping from "../command/ping";
@@ -34,14 +33,11 @@ export default class SlashCommandService {
     this.setCommand(initialize);
     this.setCommand(register);
     this.setCommand(afreecaSetting);
-    this.setCommand(afreecaSettingDelete);
     this.setCommand(entranceChannel);
     this.setCommand(entrancePermission);
     this.setCommand(noticeChannel);
 
-
     // dropdown command
-    this.setDropdownCommand(helpDropdown);
     this.setDropdownCommand(registerYoutube);
     this.setDropdownCommand(entranceChannelDropdown);
     this.setDropdownCommand(entrancePermissionDropdown);
@@ -51,26 +47,34 @@ export default class SlashCommandService {
     this.setDropdownCommand(solveDetectButtons);
     this.setDropdownCommand(regiesterYoutubeConfirmButton);
 
-    const commands = this.client.commands
-    .filter((command: any) => typeof command.command !== 'string')
-    .map((command: Command) => {
-      // command.command.setDefaultMemberPermissions(this.hasRole);
-      return command.command.toJSON();
-    });
+    const commandJSON = this.getCommandsJSONFromClient(this.client);
+    this.sendCommandsToClient(commandJSON, guildId);
 
+  };
+
+  getCommandsJSONFromClient = (client: CustomClient) => {
+    return client.commands
+      .filter((command: any) => typeof command.command !== 'string')
+      .map((command: Command) => {
+        // command.command.setDefaultMemberPermissions(this.hasRole);
+        return command.command.toJSON();
+      });
+  }
+
+  sendCommandsToClient = async (json: RESTPostAPIChatInputApplicationCommandsJSONBody[], guildId: string) => {
     const rest = new REST().setToken(CONFIG.DISCORD_BOT_TOKEN);
     await rest.put(
       Routes.applicationGuildCommands(CONFIG.DISCORD_BOT_ID, guildId),
-      { body: commands },
+      { body: json },
     ).then(() => console.log('Successfully registered application commands.'))
       .catch((e) => {
 
         console.error('Failed to register application commands.');
         console.log(e);
-        console.log(commands);
+        console.log(json);
 
       });
-  };
+  }
 
   handleInteraction = async (interaction: BaseInteraction) => {
     if (interaction.isChatInputCommand()) {

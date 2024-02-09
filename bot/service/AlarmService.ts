@@ -45,7 +45,8 @@ export default class AlarmService {
 
     sendChzzkStreamInfo = async (guildId: string) => {
         const dto = await ServerRepository.checkStreamLive(guildId, DetectPlatform.Chzzk);
-        if (dto.id === undefined) return undefined;
+        if (dto.id === undefined) return;
+        if (dto.id === "") return;
         const previousLiveInfo = dto.isLive;
         const liveInfo = await api.getChzzkLiveInfo(dto.id);
 
@@ -58,13 +59,14 @@ export default class AlarmService {
 
         if (liveInfo.liveStatus && !previousLiveInfo) {
             ServerRepository.updateStreamLive(guildId, DetectPlatform.Chzzk, true);
-            this.say(guildId, chzzkLiveInfoMsg(liveInfo));
+            this.say(guildId, await chzzkLiveInfoMsg(guildId, liveInfo));
         }
     }
 
     sendAfreecaStreamInfo = async (guildId: string) => {
         const dto = await ServerRepository.checkStreamLive(guildId, DetectPlatform.Afreeca);
-        if (dto.id === undefined) return undefined;
+        if (dto.id === undefined) return;
+        if (dto.id === "") return;
         const previousLiveInfo = dto.isLive;
         const liveInfo = await api.getAfreecaLiveInfo(dto.id);
 
@@ -78,13 +80,14 @@ export default class AlarmService {
 
         if (liveInfo.isLive && !previousLiveInfo) {
             ServerRepository.updateStreamLive(guildId, DetectPlatform.Afreeca, true);
-            this.say(guildId, afreecaLiveInfoMsg(liveInfo));
+            this.say(guildId, await afreecaLiveInfoMsg(guildId, liveInfo));
         }
     }
 
     sendTwitchStreamInfo = async (guildId: string) => {
         const dto = await ServerRepository.checkStreamLive(guildId, DetectPlatform.Twitch);
-        if (dto.id === undefined) return undefined;
+        if (dto.id === undefined) return;
+        if (dto.id === "") return;
         const previousLiveInfo = dto.isLive;
         const liveInfo = await api.getTwitchLiveInfo(dto.id);
 
@@ -99,19 +102,18 @@ export default class AlarmService {
 
         if (liveInfo.type === 'live' && !previousLiveInfo) {
             ServerRepository.updateStreamLive(guildId, DetectPlatform.Twitch, true);
-            this.say(guildId, twitchLiveInfoMsg(liveInfo));
+            this.say(guildId, await twitchLiveInfoMsg(guildId, liveInfo));
         }
     }
 
 
     sendYoutubeStreamInfo = async (guildId: string) => {
         const dto = await ServerRepository.checkStreamLive(guildId, DetectPlatform.Youtube);
-        console.log(dto);
 
-        if (dto.id === undefined) return undefined;
+        if (dto.id === undefined) return;
+        if (dto.id === "") return;
         const previousLiveInfo = dto.isLive;
         const liveInfo = await api.getYoutubeLiveInfo(dto.id);
-        console.log(liveInfo);
 
         if (!liveInfo) return;
 
@@ -124,7 +126,7 @@ export default class AlarmService {
 
         if (liveInfo.id !== "" && !previousLiveInfo) {
             ServerRepository.updateStreamLive(guildId, DetectPlatform.Youtube, true);
-            this.say(guildId, youtubeLiveInfoMsg(liveInfo));
+            this.say(guildId, await youtubeLiveInfoMsg(guildId, liveInfo));
         }
     }
 

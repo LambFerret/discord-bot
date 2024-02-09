@@ -12,7 +12,7 @@ class ServerRepository {
         return path.join(__dirname + "/../../db/");
     }
 
-    createNewServer = async (info: Guild) => {
+    createNewServer = async (info: Guild) :Promise<ServerInfo> => {
         const entrance: Entrance = {
             entranceChannelId: "",
             quote: "토끼 클릭으로 입장해요!",

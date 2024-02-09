@@ -1,11 +1,15 @@
-import { ActionRowBuilder, BaseInteraction, ButtonBuilder, ButtonInteraction, ButtonStyle, 
-    CommandInteraction, EmbedBuilder, SelectMenuComponentOptionData, SlashCommandBuilder, 
-    StringSelectMenuBuilder, StringSelectMenuInteraction } from "discord.js";
+import {
+    ActionRowBuilder, BaseInteraction, ButtonBuilder, ButtonInteraction, ButtonStyle,
+    CommandInteraction, SelectMenuComponentOptionData, SlashCommandBuilder,
+    StringSelectMenuBuilder, StringSelectMenuInteraction
+} from "discord.js";
 import { ButtonCommand, Command, CommandName, DropdownCommand, text } from ".";
+import BotConfig, { MessageColor } from "../BotConfig";
 import api from "../ExternalAPI";
 import { DetectPlatform } from "../model/DetectType";
 import { YoutubeChannelInfoType } from "../model/YoutubeChannelInfoType";
 import ServerRepository from "../repository/ServerRepository";
+import { EmbedBuilder } from "@discordjs/builders";
 
 const ID = CommandName.Register;
 const commandText = text[ID];
@@ -38,7 +42,6 @@ export const register: Command = {
         const platform = DetectPlatform[interaction.options.get(optionsText[0].label)?.value as keyof typeof DetectPlatform];
         const platformKoreanName = choices.find(choice => choice.value === platform)?.name;
         const id = interaction.options.get(optionsText[1].label)?.value as string;
-        const postfix = await ServerRepository.getServerPostfix(interaction.guildId as string);
         let embedMessage: EmbedBuilder;
         let isError: boolean = false;
 
@@ -61,25 +64,27 @@ export const register: Command = {
         }
 
         if (isError) {
-            embedMessage = new EmbedBuilder()
-                .setTitle(`${platformKoreanName} 에서 \`${id}\` 주인님을 찾을 수 없어요 (｡•́︿•̀｡) `)
-                .setDescription(`
-                    **아이디를 다시 확인해주세요!**
-                    
-                    *예시*
-                    - 치지직: \`bb382c2c0cc9fa7c86ab3b037fb5799c\`\n
-                    - 아프리카: \`maruko86\`\n
-                    - 유튜브: \`침투부\`\n
-                    - 트위치: \`zilioner\`\n
-                `)
-                .setColor('#FF0000')
-                .setFooter({ text: " ..." + postfix })
+            embedMessage = await BotConfig.makeEmbed(
+                `${platformKoreanName} 에서 아이디 \`${id}\` 를 찾을 수 없어요 (｡•́︿•̀｡) `,
+                `
+                **아이디를 다시 확인해주세요!**
+                
+                *예시*
+                - 치지직: \`bb382c2c0cc9fa7c86ab3b037fb5799c\`\n
+                - 아프리카: \`maruko86\`\n
+                - 유튜브: \`침투부\`\n
+                - 트위치: \`zilioner\`\n`,
+                MessageColor.Error,
+                interaction.guildId as string
+            )
         } else {
             ServerRepository.updateDetectID(interaction.guildId as string, platform, id);
-            embedMessage = new EmbedBuilder()
-                .setTitle(`${platformKoreanName} 에서  \`${id}\` 주인님이 등록되었습니다! (ง •̀_•́)ง`)
-                .setColor('#0099ff')
-                .setFooter({ text: " ..." + postfix })
+            embedMessage = await BotConfig.makeEmbed(
+                `${platformKoreanName} 에서 아이디 \`${id}\` 로 등록되었습니다!`,
+                " (ง •̀_•́)ง",
+                MessageColor.Confirm,
+                interaction.guildId as string
+            )
         }
         await interaction.reply({ embeds: [embedMessage] });
     }
@@ -96,12 +101,13 @@ export const registerYoutube: DropdownCommand = {
             return;
         }
 
-        const embed = new EmbedBuilder()
-            .setTitle(`유튜브 채널 \`${channelInfo.channelTitle}\` 가 맞으신가요?`)
-            .setDescription(channelInfo.description)
+        const embed = await BotConfig.makeEmbed(`유튜브 채널 \`${channelInfo.channelTitle}\` 가 맞으신가요?`,
+            `*${channelInfo.description}*`,
+            MessageColor.Default,
+            interaction.guildId as string);
+        embed
             .setThumbnail(channelInfo.thumbnail)
-            // .setURL("https://www.youtube.com/" + channelInfo.url)
-            .setColor('#0099ff');
+        // .setURL("https://www.youtube.com/" + channelInfo.url)
 
         const confirmButton = new ButtonBuilder()
             .setCustomId(regiesterYoutubeConfirmButton.command + ":" + selectedChannelId + ":" + "confirm")
@@ -126,11 +132,7 @@ export const regiesterYoutubeConfirmButton: ButtonCommand = {
         if (interaction.customId.split(":")[2] === "confirm") {
             const selectedChannelId = interaction.customId.split(":")[1];
             ServerRepository.updateDetectID(interaction.guildId as string, DetectPlatform.Youtube, selectedChannelId);
-            const postfix = await ServerRepository.getServerPostfix(interaction.guildId as string);
-            const embedMessage = new EmbedBuilder()
-                .setTitle(`정상적으로 등록되었습니다! (ง •̀_•́)ง`)
-                .setColor('#0099ff')
-                .setFooter({ text: " ..." + postfix })
+            const embedMessage = await BotConfig.makeEmbed(`정상적으로 등록되었습니다!`, " (ง •̀_•́)ง", MessageColor.Confirm, interaction.guildId as string);
             await interaction.update({ embeds: [embedMessage], components: [], content: "" });
         } else if (interaction.customId.split(":")[2] === "cancel") {
             const customData = interaction.customId.split(":")[1];

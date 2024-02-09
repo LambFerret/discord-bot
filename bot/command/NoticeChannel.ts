@@ -5,7 +5,7 @@ import ServerRepository from "../repository/ServerRepository";
 const ID = CommandName.NoticeChannel;
 const commandText = text[ID];
 
-export const noticeChannel : Command = {
+export const noticeChannel: Command = {
     command: new SlashCommandBuilder()
         .setName(commandText.id)
         .setDescription(commandText.description)
@@ -13,35 +13,36 @@ export const noticeChannel : Command = {
     execute: async (interaction: StringSelectMenuInteraction) => {
         const dropdown = new ActionRowBuilder<StringSelectMenuBuilder>()
             .addComponents(makeChannelSelectMenu(interaction.guild as Guild));
-        await interaction.reply({ content: 'Please select an option:', components: [dropdown] });
+        await interaction.reply({ content: '채널을 선택해 주세요!', components: [dropdown] });
     }
 }
 
-export const noticeChannelDropdown :DropdownCommand = {
+export const noticeChannelDropdown: DropdownCommand = {
     command: CommandName.NoticeChannelDropdown,
     execute: async (interaction: StringSelectMenuInteraction) => {
         await ServerRepository.setNoticeChannel(interaction.guild as Guild, interaction.values[0]);
-        await interaction.update({ content: '설정이 완료되었습니다.' });
+        await interaction.update({ content: '설정이 완료되었습니다.', components: [] });
     }
 }
 
 const makeChannelSelectMenu = (guild: Guild): StringSelectMenuBuilder => {
-    // get all channel names and ids
-    const channels = guild.channels.cache.filter(channel => channel.isTextBased()).map(channel => channel);
+    const channels = guild.channels.cache.filter(channel => {
+        return channel.isTextBased()
+    }).map(channel => channel);
 
-    // make options
     const options = channels.map(channel => {
+        let description = "";
+        if (channel.parent) description = "\`" + channel.parent.name + "\` 의 하위 채널";
         return {
             label: channel.name,
             value: channel.id,
-            description: "Text Channel"
+            description: description,
         }
     });
 
-    // make select menu
     const selectMenu = new StringSelectMenuBuilder()
         .setCustomId(CommandName.NoticeChannelDropdown)
-        .setPlaceholder('Nothing selected')
+        .setPlaceholder('채널을 선택해 주세요!')
         .addOptions(options);
 
     return selectMenu;

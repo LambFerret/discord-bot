@@ -1,5 +1,6 @@
-import { CommandInteraction, EmbedBuilder, Locale, SlashCommandBuilder } from "discord.js";
+import { CommandInteraction, Locale, SlashCommandBuilder } from "discord.js";
 import { Command, CommandName, text } from ".";
+import BotConfig, { MessageColor } from "../BotConfig";
 
 const ID = CommandName.Ping;
 const commandText = text[ID];
@@ -12,13 +13,14 @@ const ping: Command = {
 
     execute: async (interaction: CommandInteraction) => {
         const ping = interaction.client.ws.ping;
-        const responseEmbed = new EmbedBuilder()
-            .setColor(0x0099ff)
-            .setTitle('Pong!')
-            .setDescription(`
-        pong!  ${ping}ms \n
-        현재 시각 : ${new Date()} 
-      `);
+        const responseEmbed = await
+            BotConfig.makeEmbed(
+                "Pong!",
+                `지연 시간 : ${ping}ms \n 현재 시각 : ${new Date()}`,
+                MessageColor.Default,
+                interaction.guildId as string
+            );
+
         await interaction.reply({ embeds: [responseEmbed] });
     }
 }

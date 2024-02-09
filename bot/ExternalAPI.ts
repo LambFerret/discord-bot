@@ -214,6 +214,8 @@ class ExternalApi {
             return undefined;
         }
 
+        if (Object.keys(res.content).length === 0) return;
+
         const data = await res.content.comments.data;
         const postIDs: NewPostChzzkInfoType[] = [];
         data.forEach((d: any) => {
@@ -227,6 +229,7 @@ class ExternalApi {
                 content: post.content,
                 createdDate: post.createdDate,
             }
+            if (post.attaches !== null) 
             for (const e of post.attaches) {
                 if (e.attachType === 'PHOTO') {
                     postInfo.attachedImageURL = e.attachValue;
@@ -265,6 +268,7 @@ class ExternalApi {
         }
 
         const data = await res.data;
+        if (data === undefined) return undefined;
         const postIDs: NewPostChzzkInfoType[] = [];
 
         data.forEach((post: any) => {

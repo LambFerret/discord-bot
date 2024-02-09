@@ -35,9 +35,11 @@ export const solveDetectButtons: ButtonCommand = {
                 await interaction.update({ content: '새글 감지를 선택하셨습니다!', components: [await newPostButtons(guildId)] });
                 return;
             case ButtonName.owner_chat:
+                return; // TODO : This is not implemented yet
                 await interaction.update({ content: '방장 채팅 감지를 선택하셨습니다!', components: [await ownerChatButtons(guildId)] });
                 return;
             case ButtonName.else:
+                return; // TODO : This is not implemented yet
                 await interaction.update({ content: '(후추) 그외를 선택하셨습니다!', components: [await elseButtons(guildId)] });
                 return;
             case ButtonName.back:
@@ -98,8 +100,8 @@ const initialButtons = (): ActionRowBuilder<ButtonBuilder> => {
         .addComponents(
             makeButton(ButtonName.broadcast, true),
             makeButton(ButtonName.new_post, true),
-            makeButton(ButtonName.owner_chat, true),
-            makeButton(ButtonName.else, true),
+            makeButton(ButtonName.owner_chat, false),
+            makeButton(ButtonName.else, false),
         );
 }
 

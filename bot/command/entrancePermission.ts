@@ -1,4 +1,4 @@
-import { SlashCommandBuilder, StringSelectMenuInteraction, ActionRowBuilder, StringSelectMenuBuilder, SelectMenuComponentOptionData, CommandInteraction, Guild } from "discord.js";
+import { ActionRowBuilder, Guild, SlashCommandBuilder, StringSelectMenuBuilder, StringSelectMenuInteraction } from "discord.js";
 import { Command, CommandName, DropdownCommand, text } from ".";
 import ServerRepository from "../repository/ServerRepository";
 
@@ -13,7 +13,7 @@ export const entrancePermission: Command  = {
     execute: async (interaction: StringSelectMenuInteraction) => {
         const dropdown = new ActionRowBuilder<StringSelectMenuBuilder>()
             .addComponents(makePermissionSelectMenu(interaction.guild as Guild));
-        await interaction.reply({ content: 'Please select an option:', components: [dropdown] });
+        await interaction.reply({ content: '기본으로 지급할 역할을 선택해 주세요!', components: [dropdown] });
     }
 }
 
@@ -21,7 +21,7 @@ export const entrancePermissionDropdown: DropdownCommand = {
     command: CommandName.EntrancePermissionDropdown,
     execute: async (interaction: StringSelectMenuInteraction) => {
         await ServerRepository.updateGuildEntranceRole(interaction.guildId as string, interaction.values[0]);
-        await interaction.update({ content: '설정이 완료되었습니다.' });
+        await interaction.update({ content: '설정이 완료되었습니다.', components: []});
     }
 }
 
@@ -33,13 +33,13 @@ const makePermissionSelectMenu = (guild: Guild): StringSelectMenuBuilder => {
         return {
             label: roleName,
             value: roleName,
-            description: roleName
+            description: ""
         }
     });
 
     const selectMenu = new StringSelectMenuBuilder()
         .setCustomId(CommandName.EntrancePermissionDropdown)
-        .setPlaceholder('Nothing selected')
+        .setPlaceholder('역할을 선택해 주세요!')
         .addOptions(options);
 
     return selectMenu;

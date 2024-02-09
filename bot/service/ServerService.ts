@@ -1,10 +1,11 @@
 import { Guild } from "discord.js";
 import { DetectPlatform } from "../model/DetectType";
+import { ServerInfo } from "../model/ServerType";
 import serverRepository from "../repository/ServerRepository";
 class ServerService {
 
-    createServer(info: Guild) {
-        serverRepository.createNewServer(info);
+    createServer(info: Guild) : Promise<ServerInfo> {
+        return serverRepository.createNewServer(info);
     }
 
     deleteServer(guildId: string) {
