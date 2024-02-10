@@ -94,6 +94,7 @@ export const registerYoutube: DropdownCommand = {
     command: CommandName.RegisterYoutube,
     execute: async (interaction: StringSelectMenuInteraction) => {
         const selectedChannelId = interaction.values[0].split(":")[0];
+        console.log(selectedChannelId);
         const channelInfo = await api.searchYoutubeByChannelID(selectedChannelId);
 
         if (!channelInfo) {
@@ -159,12 +160,12 @@ const solveYoutube = async (interaction: BaseInteraction, channelTitle: string) 
         .addComponents(
             new StringSelectMenuBuilder()
                 .setCustomId(registerYoutube.command)
-                .setPlaceholder('Nothing selected')
+                .setPlaceholder('선택해주세요.')
                 .addOptions(options as SelectMenuComponentOptionData[]),
         );
     if (interaction.isCommand())
-        await interaction.reply({ content: 'IS COMMAND OPTION', components: [dropdown] });
+        await interaction.reply({ components: [dropdown] });
     if (interaction.isButton()) {
-        await interaction.update({ content: 'IS BUTTON OPTION', components: [dropdown], embeds: [] });
+        await interaction.update({ components: [dropdown], embeds: [] });
     }
 }

@@ -152,20 +152,22 @@ class ExternalApi {
             part: 'snippet',
             id: channelID,
         } as any;
-        const items = (await youtube.search.list(param)).data.items;
+        const items = (await youtube.channels.list(param)).data.items;
         if (!items) return undefined;
+        const item = items[0];
+        
         const dto = {
-            id: items[0].snippet?.liveBroadcastContent,
+            id: channelID,
             channelTitle: "",
             description: "--",
             url: "",
             thumbnail: "",
-            isLive: items[0].snippet?.liveBroadcastContent === "live" ? true : false,
+            isLive: false //items[0].snippet?. === "live" ? true : false,
         } as YoutubeChannelInfoType;
-        if (items[0].snippet?.title) dto.channelTitle = items[0].snippet.title;
-        if (items[0].snippet?.description) dto.description = items[0].snippet.description;
-        if (items[0].snippet?.title) dto.url = items[0].snippet.title;
-        if (items[0].snippet?.thumbnails?.default?.url) dto.thumbnail = items[0].snippet.thumbnails.default.url;
+        if (item.snippet?.title) dto.channelTitle = item.snippet.title;
+        if (item.snippet?.description) dto.description = item.snippet.description;
+        if (item.snippet?.customUrl) dto.url = item.snippet.customUrl;
+        if (item.snippet?.thumbnails?.default?.url) dto.thumbnail = item.snippet.thumbnails.default.url;
         return dto;
     }
 

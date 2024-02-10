@@ -6,3 +6,5 @@ archive/
 .env*
 .vscode/
 temp*.json
+build/
+build*

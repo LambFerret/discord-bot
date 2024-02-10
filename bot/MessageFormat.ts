@@ -60,7 +60,7 @@ export const introduceBotWithDM = async (member: GuildMember) => {
 
   const title = "Hello! World! (✿◠‿◠)";
   const description = "안녕하세요! \`하우미\` 입니다! \n 저를 사용하시기 위해 몇가지 설정이 필요합니다! ξ(✿ ❛‿❛)ξ 아래의 단계를 거치면 설정이 완료돼요 ( ' ▽ ' )ﾉ  \n\n" +
-    "더욱 자세한 설명서는 현재 제작중에 있습니다! \`/\`를 누르시고 한번 둘러보세요! \n"
+    "더욱 자세한 설명서는 [여기서 보실 수 있습니다!](https://terrific-slipper-728.notion.site/Hellow-Howmee-c8049b3ee7ef42f7adc714759fd4ad4f#30d3287b85d6483daf806483fd14584c) \`/\`를 누르시고 한번 둘러보세요! \n"
     + "================================================"
 
 
@@ -96,9 +96,25 @@ export const introduceBotWithDM = async (member: GuildMember) => {
   const urlButtons = new ActionRowBuilder<ButtonBuilder>()
     .addComponents(
       new ButtonBuilder()
-        .setLabel("개발자 깃허브")
+        .setLabel("자세한 설명서")
         .setStyle(ButtonStyle.Link)
-        .setURL("https://www.github.com/LambFerret")
+        .setURL("https://terrific-slipper-728.notion.site/Hellow-Howmee-c8049b3ee7ef42f7adc714759fd4ad4f#30d3287b85d6483daf806483fd14584c"),
+      // new ButtonBuilder()
+      //   .setLabel("봇 초대하기")
+      //   .setStyle(ButtonStyle.Link)
+      //   .setURL("https://discord.com/api/oauth2/authorize?client_id=989700084809756692&permissions=8&scope=bot"),
+      new ButtonBuilder()
+        .setLabel("공식 서버")
+        .setStyle(ButtonStyle.Link)
+        .setURL("https://discord.gg/99ZNZ8G2"),
+      new ButtonBuilder()
+        .setLabel("매달 후원하기")
+        .setStyle(ButtonStyle.Link)
+        .setURL("https://www.patreon.com/HowMee"),
+        new ButtonBuilder()
+        .setLabel("커피한잔 사주기")
+        .setStyle(ButtonStyle.Link)
+        .setURL("https://toss.me/하우미하움하움")
     )
 
   dm.send({ embeds: [embed], components: [urlButtons] });

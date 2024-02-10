@@ -33,7 +33,7 @@ const makePermissionSelectMenu = (guild: Guild): StringSelectMenuBuilder => {
         return {
             label: roleName,
             value: roleName,
-            description: ""
+            description: "Role"
         }
     });
 
