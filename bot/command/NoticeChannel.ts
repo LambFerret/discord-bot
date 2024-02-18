@@ -21,7 +21,7 @@ export const noticeChannelDropdown: DropdownCommand = {
     command: CommandName.NoticeChannelDropdown,
     execute: async (interaction: StringSelectMenuInteraction) => {
         await ServerRepository.setNoticeChannel(interaction.guild as Guild, interaction.values[0]);
-        await interaction.update({ content: '설정이 완료되었습니다.', components: [] });
+        await interaction.update({ content: '채널 설정이 완료되었습니다.', components: [] });
     }
 }
 

@@ -21,7 +21,7 @@ export const entrancePermissionDropdown: DropdownCommand = {
     command: CommandName.EntrancePermissionDropdown,
     execute: async (interaction: StringSelectMenuInteraction) => {
         await ServerRepository.updateGuildEntranceRole(interaction.guildId as string, interaction.values[0]);
-        await interaction.update({ content: '설정이 완료되었습니다.', components: []});
+        await interaction.update({ content: '역할 설정이 완료되었습니다.', components: []});
     }
 }
 

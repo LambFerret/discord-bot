@@ -22,7 +22,7 @@ exports.noticeChannelDropdown = {
     command: _1.CommandName.NoticeChannelDropdown,
     execute: async (interaction) => {
         await ServerRepository_1.default.setNoticeChannel(interaction.guild, interaction.values[0]);
-        await interaction.update({ content: '설정이 완료되었습니다.', components: [] });
+        await interaction.update({ content: '채널 설정이 완료되었습니다.', components: [] });
     }
 };
 const makeChannelSelectMenu = (guild) => {

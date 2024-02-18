@@ -22,7 +22,7 @@ exports.entrancePermissionDropdown = {
     command: _1.CommandName.EntrancePermissionDropdown,
     execute: async (interaction) => {
         await ServerRepository_1.default.updateGuildEntranceRole(interaction.guildId, interaction.values[0]);
-        await interaction.update({ content: '설정이 완료되었습니다.', components: [] });
+        await interaction.update({ content: '역할 설정이 완료되었습니다.', components: [] });
     }
 };
 const makePermissionSelectMenu = (guild) => {
