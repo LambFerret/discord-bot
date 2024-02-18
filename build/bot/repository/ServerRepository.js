@@ -364,6 +364,16 @@ class ServerRepository {
         }
         return guilds;
     };
+    checkGuildExists = async (guildId) => {
+        try {
+            const filePath = path_1.default.join(this.dbPath(), `${guildId}.json`);
+            await promises_1.default.access(filePath);
+            return true;
+        }
+        catch (err) {
+            return false;
+        }
+    };
 }
 exports.default = new ServerRepository();
 //# sourceMappingURL=ServerRepository.js.map

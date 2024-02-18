@@ -12,7 +12,7 @@ class ServerRepository {
         return path.join(__dirname + "/../../db/");
     }
 
-    createNewServer = async (info: Guild) :Promise<ServerInfo> => {
+    createNewServer = async (info: Guild): Promise<ServerInfo> => {
         const entrance: Entrance = {
             entranceChannelId: "",
             quote: "토끼 클릭으로 입장해요!",
@@ -390,6 +390,16 @@ class ServerRepository {
             guilds.push(info.id);
         }
         return guilds;
+    }
+
+    checkGuildExists = async (guildId: string): Promise<boolean> => {
+        try {
+            const filePath = path.join(this.dbPath(), `${guildId}.json`);
+            await fs.access(filePath);
+            return true;
+        } catch (err) {
+            return false;
+        }
     }
 
 }

@@ -6,6 +6,7 @@ import { CONFIG } from "./config/Config";
 import { CustomClient } from './config/CustomClient';
 import { introduceBotWithDM } from './MessageFormat';
 import { ServerInfo } from './model/ServerType';
+import ServerRepository from "./repository/ServerRepository";
 import AlarmService from './service/AlarmService';
 import PostService from './service/PostService';
 import serverService from './service/ServerService';
@@ -83,21 +84,25 @@ export default class DiscordBot {
 
 
   checkDBAndBotServerMatch = async () => {
-    const botGuilds = this.client.guilds.cache.map(guild => guild.id);
-    const dbGuilds = await serverService.getAllGuildId();
+    const guildsInBotCache = this.client.guilds.cache.map(guild => guild.id);
+    const GuildsInDB = await serverService.getAllGuildId();
 
-    dbGuilds.forEach(async (guildId) => {
-      if (!botGuilds.includes(guildId)) {
-        serverService.deleteServer(guildId);
+    // 데이터베이스에는 있지만 봇 캐시에 없는 서버 삭제
+    for (const guildId of GuildsInDB) {
+      if (!guildsInBotCache.includes(guildId)) {
+        await serverService.deleteServer(guildId);
       }
-    })
+    }
 
-    botGuilds.forEach(async (guildId) => {
-      if (!dbGuilds.includes(guildId)) {
-        const guild = this.client.guilds.cache.get(guildId) as Guild;
-        serverService.createServer(guild);
+    for (const guildId of guildsInBotCache) {
+      if (!GuildsInDB.includes(guildId)) {
+        const exists = await ServerRepository.checkGuildExists(guildId); 
+        if (!exists) {
+          const guild = this.client.guilds.cache.get(guildId);
+          if (guild) await serverService.createServer(guild);
+        }
       }
-    })
+    }
   }
 
   handleReactionAdd = async (reaction: MessageReaction | PartialMessageReaction, user: User | PartialUser) => {

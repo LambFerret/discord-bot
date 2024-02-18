@@ -5,6 +5,7 @@ const discord_js_1 = require("discord.js");
 const Config_1 = require("./config/Config");
 const CustomClient_1 = require("./config/CustomClient");
 const MessageFormat_1 = require("./MessageFormat");
+const ServerRepository_1 = tslib_1.__importDefault(require("./repository/ServerRepository"));
 const AlarmService_1 = tslib_1.__importDefault(require("./service/AlarmService"));
 const PostService_1 = tslib_1.__importDefault(require("./service/PostService"));
 const ServerService_1 = tslib_1.__importDefault(require("./service/ServerService"));
@@ -67,19 +68,24 @@ class DiscordBot {
         console.log("=============================");
     };
     checkDBAndBotServerMatch = async () => {
-        const botGuilds = this.client.guilds.cache.map(guild => guild.id);
-        const dbGuilds = await ServerService_1.default.getAllGuildId();
-        dbGuilds.forEach(async (guildId) => {
-            if (!botGuilds.includes(guildId)) {
-                ServerService_1.default.deleteServer(guildId);
+        const guildsInBotCache = this.client.guilds.cache.map(guild => guild.id);
+        const GuildsInDB = await ServerService_1.default.getAllGuildId();
+        // 데이터베이스에는 있지만 봇 캐시에 없는 서버 삭제
+        for (const guildId of GuildsInDB) {
+            if (!guildsInBotCache.includes(guildId)) {
+                await ServerService_1.default.deleteServer(guildId);
             }
-        });
-        botGuilds.forEach(async (guildId) => {
-            if (!dbGuilds.includes(guildId)) {
-                const guild = this.client.guilds.cache.get(guildId);
-                ServerService_1.default.createServer(guild);
+        }
+        for (const guildId of guildsInBotCache) {
+            if (!GuildsInDB.includes(guildId)) {
+                const exists = await ServerRepository_1.default.checkGuildExists(guildId);
+                if (!exists) {
+                    const guild = this.client.guilds.cache.get(guildId);
+                    if (guild)
+                        await ServerService_1.default.createServer(guild);
+                }
             }
-        });
+        }
     };
     handleReactionAdd = async (reaction, user) => {
         if (user.bot)
