@@ -10,7 +10,7 @@ var CommandName;
     CommandName["EntrancePermission"] = "entrance_permission";
     CommandName["EntrancePermissionDropdown"] = "entrance_permission_dropdown";
     CommandName["NoticeChannel"] = "notice_channel";
-    CommandName["NoticeChannelDropdown"] = "entrance_permission_dropdown";
+    CommandName["NoticeChannelDropdown"] = "notice_channel_dropdown";
     CommandName["Postfix"] = "postfix";
     CommandName["Detect"] = "detect";
     CommandName["DetectButton"] = "detectButton";

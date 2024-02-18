@@ -8,7 +8,7 @@ export enum CommandName {
     EntrancePermission = "entrance_permission",
     EntrancePermissionDropdown = "entrance_permission_dropdown",
     NoticeChannel = "notice_channel",
-    NoticeChannelDropdown = "entrance_permission_dropdown",
+    NoticeChannelDropdown = "notice_channel_dropdown",
     Postfix = "postfix",
     Detect = "detect",
     DetectButton = "detectButton",
