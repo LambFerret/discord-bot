@@ -16,7 +16,13 @@ export default class AlarmService {
     }
 
     checkAlarm = async (guildId: string) => {
-        const info = await ServerRepository.getDetectInfo(guildId);
+        let info;
+        try {
+            info = await ServerRepository.getDetectInfo(guildId);
+        } catch (e) {
+            return;
+        }
+        if (!info) return;
         if (info.broadcastDetect.chzzk) {
             await this.sendChzzkStreamInfo(guildId);
         }

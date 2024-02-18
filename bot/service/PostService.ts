@@ -13,7 +13,13 @@ export default class PostService {
     }
 
     checkPost = async (guildId: string) => {
-        const info = await ServerRepository.getDetectInfo(guildId);
+        let info;
+        try {
+            info = await ServerRepository.getDetectInfo(guildId);
+        } catch (e) {
+            return;
+        }
+        if (!info) return;
         if (info.newPostDetect.chzzk) {
             await this.sendChzzkBroadcastInfo(guildId);
         }
