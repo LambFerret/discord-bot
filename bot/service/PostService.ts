@@ -91,8 +91,9 @@ export default class PostService {
     say = async (guildId: string, msg: EmbedBuilder) => {
         const channelID = await ServerRepository.getDetectChannel(guildId);
         const channel = this.client.guilds.cache.get(guildId)?.channels.cache.get(channelID);
+        const setting = await ServerRepository.getServerSettings(guildId);
         if (channel && channel.isTextBased()) {
-            channel.send({ embeds: [msg] });
+            channel.send({ content: setting.newPostIncludeEveryone ? "@everyone" : "", embeds: [msg] });
         } else {
             console.log(`ERROR IN ALARM | guildID - ${guildId}, channelID - ${channelID}, message - ${msg.data.title}`);
         }

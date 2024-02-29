@@ -38,7 +38,7 @@ class ExternalApi {
                 return res.data;
             })
             .catch((err) => {
-                console.error(err);
+                console.error(err.code + ":" + err.message);
                 return err.response.data;
             });
 
@@ -70,7 +70,8 @@ class ExternalApi {
             },
         }).then(v => v.data.data[0] as LiveStreamInfoType)
             .catch(err => {
-                console.log(err)
+                console.error("getTwitchLiveInfo Error")
+                console.error(err)
                 return undefined
             });
         return result;
@@ -86,6 +87,8 @@ class ExternalApi {
                 return res.data;
             })
             .catch((err) => {
+                console.error("getAfreecaLiveInfo Error")
+                console.error(err)
                 return err.response.data;
             });
 
@@ -155,7 +158,7 @@ class ExternalApi {
         const items = (await youtube.channels.list(param)).data.items;
         if (!items) return undefined;
         const item = items[0];
-        
+
         const dto = {
             id: channelID,
             channelTitle: "",
@@ -208,6 +211,8 @@ class ExternalApi {
                 return res.data;
             })
             .catch((err) => {
+                console.error("getChzzkCommunityNewPostInfo Error")
+                console.error(err)
                 return err.response.data;
             });
 
@@ -231,13 +236,13 @@ class ExternalApi {
                 content: post.content,
                 createdDate: post.createdDate,
             }
-            if (post.attaches !== null) 
-            for (const e of post.attaches) {
-                if (e.attachType === 'PHOTO') {
-                    postInfo.attachedImageURL = e.attachValue;
-                    break;
+            if (post.attaches !== null)
+                for (const e of post.attaches) {
+                    if (e.attachType === 'PHOTO') {
+                        postInfo.attachedImageURL = e.attachValue;
+                        break;
+                    }
                 }
-            }
 
             postIDs.push(postInfo);
         });
@@ -260,6 +265,8 @@ class ExternalApi {
                 return res.data;
             })
             .catch((err) => {
+                console.error("getAfreecaCommunityNewPostInfo Error")
+                console.error(err)
                 return err.response.data;
             });
 

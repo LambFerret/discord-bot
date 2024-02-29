@@ -11,7 +11,17 @@ class ServerRepository {
             fss.mkdirSync(__dirname + "/../../db/");
         return path_1.default.join(__dirname + "/../../db/");
     };
+    log = (methodName, content) => {
+        const totalLength = 30;
+        const nameLength = methodName.length;
+        const totalPadding = totalLength - nameLength;
+        const leftPadding = Math.floor(totalPadding / 2);
+        const rightPadding = totalPadding - leftPadding;
+        const paddedName = ' '.repeat(leftPadding) + methodName + ' '.repeat(rightPadding);
+        console.log(`${new Date().toISOString()} | [${paddedName}] - ${content}`);
+    };
     createNewServer = async (info) => {
+        this.log(`Create New Server`, `${info.name} : ${info.id}`);
         const entrance = {
             entranceChannelId: "",
             quote: "토끼 클릭으로 입장해요!",
@@ -70,12 +80,15 @@ class ServerRepository {
             },
             settings: {
                 afreecaNewPostOnlyAnnouncement: "",
+                newPostIncludeEveryone: false,
+                LiveIncludeEveryone: false,
             }
         };
         await this.writeJsonAsFile(server);
         return server;
     };
     deleteServer = async (guildId) => {
+        this.log(`Delete Server`, `${guildId}`);
         const info = await this.readJsonFromFile(guildId);
         info.isDeleted = true;
         await this.writeJsonAsFile(info);
@@ -105,6 +118,7 @@ class ServerRepository {
         }
     };
     updateDetectID = async (guildId, platform, id) => {
+        this.log(`Update Detect ID`, `${guildId} : ${platform} : ${id}`);
         const info = await this.readJsonFromFile(guildId);
         switch (platform) {
             case DetectType_1.DetectPlatform.Afreeca:
@@ -124,6 +138,7 @@ class ServerRepository {
         await this.writeJsonAsFile(info);
     };
     updateDetectInfo = async (guildId, channelId, type, platform, setActive) => {
+        this.log(`Update Detect Info`, `${guildId} : ${channelId} : ${type} : ${platform} : ${setActive}`);
         const info = await this.readJsonFromFile(guildId);
         if (info.detectChannel === "")
             info.detectChannel = channelId;
@@ -186,21 +201,25 @@ class ServerRepository {
         await this.writeJsonAsFile(info);
     };
     saveEntranceMessageId = async (guildId, messageId) => {
+        this.log(`Save Entrance Message ID`, `${guildId} : ${messageId}`);
         const info = await this.readJsonFromFile(guildId);
         info.entrance.messageId = messageId;
         await this.writeJsonAsFile(info);
     };
     updateGuildEntranceQuote = async (guildId, quote) => {
+        this.log(`Update Entrance Quote`, `${guildId} : ${quote}`);
         const info = await this.readJsonFromFile(guildId);
         info.entrance.quote = quote;
         await this.writeJsonAsFile(info);
     };
     updateGuildEntranceEmoji = async (guildId, emoji) => {
+        this.log(`Update Entrance Emoji`, `${guildId} : ${emoji}`);
         const info = await this.readJsonFromFile(guildId);
         info.entrance.emoji = emoji;
         await this.writeJsonAsFile(info);
     };
     updateGuildEntranceRole = async (guildId, role) => {
+        this.log(`Update Entrance Role`, `${guildId} : ${role}`);
         const info = await this.readJsonFromFile(guildId);
         info.entrance.role = role;
         await this.writeJsonAsFile(info);
@@ -232,6 +251,7 @@ class ServerRepository {
         return liveDTO;
     };
     updateStreamLive = async (guildId, type, isLive) => {
+        this.log(`Update Stream Live`, `${guildId} : ${type} : ${isLive}`);
         const info = await this.readJsonFromFile(guildId);
         switch (type) {
             case DetectType_1.DetectPlatform.Afreeca:
@@ -263,6 +283,7 @@ class ServerRepository {
         }
     };
     updateNewPostByPlatform = async (guildId, type, postId) => {
+        this.log(`Update New Post`, `${guildId} : ${type} : ${postId}`);
         if (postId.length > 30)
             postId = postId.slice(-30);
         const info = await this.readJsonFromFile(guildId);
@@ -285,21 +306,25 @@ class ServerRepository {
         return info.settings;
     };
     updateServerSettings = async (guildId, settings) => {
+        this.log(`Update Server Settings`, `${guildId} : ${settings}`);
         const info = await this.readJsonFromFile(guildId);
         info.settings = settings;
         await this.writeJsonAsFile(info);
     };
     updateDetectChannel = async (guildId, channelId) => {
+        this.log(`Update Detect Channel`, `${guildId} : ${channelId}`);
         const info = await this.readJsonFromFile(guildId);
         info.detectChannel = channelId;
         await this.writeJsonAsFile(info);
     };
     setEntranceChannel = async (guild, channelId) => {
+        this.log(`Set Entrance Channel`, `${guild.name} : ${channelId}`);
         const info = await this.readJsonFromFile(guild.id);
         info.entrance.entranceChannelId = channelId;
         await this.writeJsonAsFile(info);
     };
     setNoticeChannel = async (guild, channelId) => {
+        this.log(`Set Notice Channel`, `${guild.name} : ${channelId}`);
         const info = await this.readJsonFromFile(guild.id);
         info.detectChannel = channelId;
         await this.writeJsonAsFile(info);
@@ -307,6 +332,7 @@ class ServerRepository {
     getDetectChannel = async (guildId) => (await this.readJsonFromFile(guildId)).detectChannel;
     getServerPostfix = async (guildId) => (await this.readJsonFromFile(guildId)).postfix;
     updateGuildPostfix = async (guildId, postfix) => {
+        this.log(`Update Postfix`, `${guildId} : ${postfix}`);
         const info = await this.readJsonFromFile(guildId);
         info.postfix = postfix;
         await this.writeJsonAsFile(info);
@@ -328,7 +354,9 @@ class ServerRepository {
             return JSON.parse(data);
         }
         catch (err) {
-            console.log(`Failed to read JSON from file: ${err}`);
+            if (err instanceof Error && !err.toString().includes('ENOENT')) {
+                console.log(`Failed to read JSON from file: ${err}`);
+            }
             throw err;
         }
     };
@@ -348,9 +376,17 @@ class ServerRepository {
         const detectingServers = [];
         for (const file of await promises_1.default.readdir(this.dbPath())) {
             const filePath = path_1.default.join(this.dbPath(), file);
-            const data = await promises_1.default.readFile(filePath, 'utf-8');
-            const info = JSON.parse(data);
-            detectingServers.push(info);
+            try {
+                const data = await promises_1.default.readFile(filePath, 'utf-8');
+                const info = JSON.parse(data);
+                detectingServers.push(info);
+            }
+            catch (err) {
+                if (err instanceof Error && !err.toString().includes('ENOENT')) {
+                    console.log(`Failed to read JSON from file: ${err}`);
+                }
+                throw err;
+            }
         }
         return detectingServers;
     };
@@ -358,9 +394,17 @@ class ServerRepository {
         const guilds = [];
         for (const file of await promises_1.default.readdir(this.dbPath())) {
             const filePath = path_1.default.join(this.dbPath(), file);
-            const data = await promises_1.default.readFile(filePath, 'utf-8');
-            const info = JSON.parse(data);
-            guilds.push(info.id);
+            try {
+                const data = await promises_1.default.readFile(filePath, 'utf-8');
+                const info = JSON.parse(data);
+                guilds.push(info.id);
+            }
+            catch (err) {
+                if (err instanceof Error && !err.toString().includes('ENOENT')) {
+                    console.log(`Failed to read JSON from file: ${err}`);
+                }
+                throw err;
+            }
         }
         return guilds;
     };

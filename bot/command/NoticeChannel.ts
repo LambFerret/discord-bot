@@ -32,12 +32,19 @@ const makeChannelSelectMenu = (guild: Guild): StringSelectMenuBuilder => {
 
     const options = channels.map(channel => {
         let description = "";
-        if (channel.parent) description = "\`" + channel.parent.name + "\` 의 하위 채널";
+        if (channel.parent) description = "`" + channel.parent.name + "` 의 하위 채널";
+
+        // 각 필드 값이 빈 문자열인지 확인하고, 빈 문자열이면 "-"로 대체
+        const label = channel.name === "" ? "-" : channel.name;
+        const value = channel.id === "" ? "-" : channel.id;
+        const descriptionFinal = description === "" ? "-" : description;
+
         return {
-            label: channel.name,
-            value: channel.id,
-            description: description,
-        }
+            label: label,
+            value: value,
+            description: descriptionFinal,
+        };
+
     });
 
     const selectMenu = new StringSelectMenuBuilder()

@@ -30,7 +30,7 @@ class ExternalApi {
             return res.data;
         })
             .catch((err) => {
-            console.error(err);
+            console.error(err.code + ":" + err.message);
             return err.response.data;
         });
         if (res.code !== 200) {
@@ -58,7 +58,8 @@ class ExternalApi {
             },
         }).then(v => v.data.data[0])
             .catch(err => {
-            console.log(err);
+            console.error("getTwitchLiveInfo Error");
+            console.error(err);
             return undefined;
         });
         return result;
@@ -73,6 +74,8 @@ class ExternalApi {
             return res.data;
         })
             .catch((err) => {
+            console.error("getAfreecaLiveInfo Error");
+            console.error(err);
             return err.response.data;
         });
         const liveInfo = {
@@ -197,6 +200,8 @@ class ExternalApi {
             return res.data;
         })
             .catch((err) => {
+            console.error("getChzzkCommunityNewPostInfo Error");
+            console.error(err);
             return err.response.data;
         });
         if (res.code !== 200) {
@@ -247,6 +252,8 @@ class ExternalApi {
             return res.data;
         })
             .catch((err) => {
+            console.error("getAfreecaCommunityNewPostInfo Error");
+            console.error(err);
             return err.response.data;
         });
         // console.log(res);

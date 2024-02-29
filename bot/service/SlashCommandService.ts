@@ -10,6 +10,7 @@ import { noticeChannel, noticeChannelDropdown } from "../command/NoticeChannel";
 import ping from "../command/ping";
 import postfix from "../command/postfix";
 import { regiesterYoutubeConfirmButton, register, registerYoutube } from "../command/register";
+import { setting, solveSettingButtons } from "../command/setting";
 import { CONFIG } from "../config/Config";
 import { CustomClient } from "../config/CustomClient";
 
@@ -36,6 +37,7 @@ export default class SlashCommandService {
     this.setCommand(entranceChannel);
     this.setCommand(entrancePermission);
     this.setCommand(noticeChannel);
+    this.setCommand(setting);
 
     // dropdown command
     this.setDropdownCommand(registerYoutube);
@@ -45,6 +47,7 @@ export default class SlashCommandService {
 
     // button command
     this.setDropdownCommand(solveDetectButtons);
+    this.setDropdownCommand(solveSettingButtons);
     this.setDropdownCommand(regiesterYoutubeConfirmButton);
 
     const commandJSON = this.getCommandsJSONFromClient(this.client);

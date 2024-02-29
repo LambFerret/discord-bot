@@ -73,4 +73,6 @@ export type LiveInfoDTO = {
 
 export type Settings = {
     afreecaNewPostOnlyAnnouncement: string,
+    newPostIncludeEveryone: boolean,
+    LiveIncludeEveryone: boolean,
 }

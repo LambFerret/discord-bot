@@ -17,8 +17,10 @@ export enum CommandName {
     RegisterYoutube = "register_youtube",
     RegisterYoutubeConfirmButton = "register_youtube_confirm_button",
     Afreeca_Setting = "afreeca_setting",
+    Setting = "setting",
+    SettingButton = "settingButton",
 }
-export enum ButtonName {
+export enum RegisterButtonName {
     broadcast = "broadcast",
     new_post = "new_post",
     owner_chat = "owner_chat",
@@ -37,23 +39,33 @@ export enum ButtonName {
     back = "back",
 }
 
-const detectButtons: { [key in ButtonName]: string } = {
-    [ButtonName.broadcast]: "방송 감지",
-    [ButtonName.new_post]: "새글 감지",
-    [ButtonName.owner_chat]: "(공사중) 방장 채팅 감지",
-    [ButtonName.else]: "(공사중) 그외",
-    [ButtonName.broadcast_chzzk]: "치지직 방송 감지",
-    [ButtonName.broadcast_afreeca]: "아프리카 방송 감지",
-    [ButtonName.broadcast_youtube]: "유튜브 방송 감지",
-    [ButtonName.broadcast_twitch]: "트위치 방송 감지",
-    [ButtonName.new_post_chzzk]: "치지직 새글 감지",
-    [ButtonName.new_post_afreeca]: "아프리카 새글 감지",
-    [ButtonName.new_post_youtube]: "유튜브 새글 감지",
-    [ButtonName.owner_chat_chzzk]: "치지직 방장 채팅 감지",
-    [ButtonName.owner_chat_afreeca]: "아프리카 방장 채팅 감지",
-    [ButtonName.owner_chat_youtube]: "유튜브 방장 채팅 감지",
-    [ButtonName.else_naver_cafe]: "(후추) 네이버카페 공지 감지",
-    [ButtonName.back]: "뒤로가기",
+const detectButtons: { [key in RegisterButtonName]: string } = {
+    [RegisterButtonName.broadcast]: "방송 감지",
+    [RegisterButtonName.new_post]: "새글 감지",
+    [RegisterButtonName.owner_chat]: "(공사중) 방장 채팅 감지",
+    [RegisterButtonName.else]: "(공사중) 그외",
+    [RegisterButtonName.broadcast_chzzk]: "치지직 방송 감지",
+    [RegisterButtonName.broadcast_afreeca]: "아프리카 방송 감지",
+    [RegisterButtonName.broadcast_youtube]: "유튜브 방송 감지",
+    [RegisterButtonName.broadcast_twitch]: "트위치 방송 감지",
+    [RegisterButtonName.new_post_chzzk]: "치지직 새글 감지",
+    [RegisterButtonName.new_post_afreeca]: "아프리카 새글 감지",
+    [RegisterButtonName.new_post_youtube]: "유튜브 새글 감지",
+    [RegisterButtonName.owner_chat_chzzk]: "치지직 방장 채팅 감지",
+    [RegisterButtonName.owner_chat_afreeca]: "아프리카 방장 채팅 감지",
+    [RegisterButtonName.owner_chat_youtube]: "유튜브 방장 채팅 감지",
+    [RegisterButtonName.else_naver_cafe]: "(후추) 네이버카페 공지 감지",
+    [RegisterButtonName.back]: "뒤로가기",
+}
+
+export enum SettingButtonName {
+    new_post_everyone = "new_post_everyone",
+    live_everyone = "live_everyone",
+}
+
+const settingButtons: { [key in SettingButtonName]: string } = {
+    [SettingButtonName.new_post_everyone]: "새글 감지에 @everyone 추가",
+    [SettingButtonName.live_everyone]: "방송 감지에 @everyone 추가",
 }
 
 export const text: TextType = {
@@ -67,7 +79,7 @@ export const text: TextType = {
         name: "설명서",
         description: "DM으로 설명서를 보내드릴게요!  ෆ⸒⸒⸜( ˶'ᵕ'˶)⸝ "
     },
-    entrance_channel : {
+    entrance_channel: {
         id: CommandName.EntranceChannel,
         name: "입장채널등록",
         description: "입장채널을 변경합니다!  ෆ⸒⸒⸜( ˶'ᵕ'˶)⸝ "
@@ -167,7 +179,14 @@ export const text: TextType = {
             },
         ]
     },
+    setting: {
+        id: CommandName.Setting,
+        name: "설정",
+        description: "하우미의 설정을 변경합니다!  ෆ⸒⸒⸜( ˶'ᵕ'˶)⸝ ",
+        titleMap: settingButtons,
+    },
 }
+
 
 export type Command = {
     command: SlashCommandBuilder,

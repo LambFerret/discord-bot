@@ -138,9 +138,10 @@ export default class AlarmService {
 
     say = async (guildId: string, msg: EmbedBuilder) => {
         const channelID = await ServerRepository.getDetectChannel(guildId);
+        const setting = await ServerRepository.getServerSettings(guildId);
         const channel = this.client.guilds.cache.get(guildId)?.channels.cache.get(channelID);
         if (channel && channel.isTextBased()) {
-            channel.send({ embeds: [msg] });
+            channel.send({ content: setting.LiveIncludeEveryone ? "@everyone" : "", embeds: [msg] });
         } else {
             console.log(`ERROR IN ALARM | guildID - ${guildId}, channelID - ${channelID}, message - ${msg.data.title}`);
         }

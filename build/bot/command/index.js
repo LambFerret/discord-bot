@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.text = exports.ButtonName = exports.CommandName = void 0;
+exports.text = exports.SettingButtonName = exports.RegisterButtonName = exports.CommandName = void 0;
 var CommandName;
 (function (CommandName) {
     CommandName["Ping"] = "ping";
@@ -19,43 +19,54 @@ var CommandName;
     CommandName["RegisterYoutube"] = "register_youtube";
     CommandName["RegisterYoutubeConfirmButton"] = "register_youtube_confirm_button";
     CommandName["Afreeca_Setting"] = "afreeca_setting";
+    CommandName["Setting"] = "setting";
+    CommandName["SettingButton"] = "settingButton";
 })(CommandName = exports.CommandName || (exports.CommandName = {}));
-var ButtonName;
-(function (ButtonName) {
-    ButtonName["broadcast"] = "broadcast";
-    ButtonName["new_post"] = "new_post";
-    ButtonName["owner_chat"] = "owner_chat";
-    ButtonName["else"] = "else";
-    ButtonName["broadcast_chzzk"] = "broadcast_chzzk";
-    ButtonName["broadcast_afreeca"] = "broadcast_afreeca";
-    ButtonName["broadcast_youtube"] = "broadcast_youtube";
-    ButtonName["broadcast_twitch"] = "broadcast_twitch";
-    ButtonName["new_post_chzzk"] = "new_post_chzzk";
-    ButtonName["new_post_afreeca"] = "new_post_afreeca";
-    ButtonName["new_post_youtube"] = "new_post_youtube";
-    ButtonName["owner_chat_chzzk"] = "owner_chat_chzzk";
-    ButtonName["owner_chat_afreeca"] = "owner_chat_afreeca";
-    ButtonName["owner_chat_youtube"] = "owner_chat_youtube";
-    ButtonName["else_naver_cafe"] = "else_naver_cafe";
-    ButtonName["back"] = "back";
-})(ButtonName = exports.ButtonName || (exports.ButtonName = {}));
+var RegisterButtonName;
+(function (RegisterButtonName) {
+    RegisterButtonName["broadcast"] = "broadcast";
+    RegisterButtonName["new_post"] = "new_post";
+    RegisterButtonName["owner_chat"] = "owner_chat";
+    RegisterButtonName["else"] = "else";
+    RegisterButtonName["broadcast_chzzk"] = "broadcast_chzzk";
+    RegisterButtonName["broadcast_afreeca"] = "broadcast_afreeca";
+    RegisterButtonName["broadcast_youtube"] = "broadcast_youtube";
+    RegisterButtonName["broadcast_twitch"] = "broadcast_twitch";
+    RegisterButtonName["new_post_chzzk"] = "new_post_chzzk";
+    RegisterButtonName["new_post_afreeca"] = "new_post_afreeca";
+    RegisterButtonName["new_post_youtube"] = "new_post_youtube";
+    RegisterButtonName["owner_chat_chzzk"] = "owner_chat_chzzk";
+    RegisterButtonName["owner_chat_afreeca"] = "owner_chat_afreeca";
+    RegisterButtonName["owner_chat_youtube"] = "owner_chat_youtube";
+    RegisterButtonName["else_naver_cafe"] = "else_naver_cafe";
+    RegisterButtonName["back"] = "back";
+})(RegisterButtonName = exports.RegisterButtonName || (exports.RegisterButtonName = {}));
 const detectButtons = {
-    [ButtonName.broadcast]: "방송 감지",
-    [ButtonName.new_post]: "새글 감지",
-    [ButtonName.owner_chat]: "(공사중) 방장 채팅 감지",
-    [ButtonName.else]: "(공사중) 그외",
-    [ButtonName.broadcast_chzzk]: "치지직 방송 감지",
-    [ButtonName.broadcast_afreeca]: "아프리카 방송 감지",
-    [ButtonName.broadcast_youtube]: "유튜브 방송 감지",
-    [ButtonName.broadcast_twitch]: "트위치 방송 감지",
-    [ButtonName.new_post_chzzk]: "치지직 새글 감지",
-    [ButtonName.new_post_afreeca]: "아프리카 새글 감지",
-    [ButtonName.new_post_youtube]: "유튜브 새글 감지",
-    [ButtonName.owner_chat_chzzk]: "치지직 방장 채팅 감지",
-    [ButtonName.owner_chat_afreeca]: "아프리카 방장 채팅 감지",
-    [ButtonName.owner_chat_youtube]: "유튜브 방장 채팅 감지",
-    [ButtonName.else_naver_cafe]: "(후추) 네이버카페 공지 감지",
-    [ButtonName.back]: "뒤로가기",
+    [RegisterButtonName.broadcast]: "방송 감지",
+    [RegisterButtonName.new_post]: "새글 감지",
+    [RegisterButtonName.owner_chat]: "(공사중) 방장 채팅 감지",
+    [RegisterButtonName.else]: "(공사중) 그외",
+    [RegisterButtonName.broadcast_chzzk]: "치지직 방송 감지",
+    [RegisterButtonName.broadcast_afreeca]: "아프리카 방송 감지",
+    [RegisterButtonName.broadcast_youtube]: "유튜브 방송 감지",
+    [RegisterButtonName.broadcast_twitch]: "트위치 방송 감지",
+    [RegisterButtonName.new_post_chzzk]: "치지직 새글 감지",
+    [RegisterButtonName.new_post_afreeca]: "아프리카 새글 감지",
+    [RegisterButtonName.new_post_youtube]: "유튜브 새글 감지",
+    [RegisterButtonName.owner_chat_chzzk]: "치지직 방장 채팅 감지",
+    [RegisterButtonName.owner_chat_afreeca]: "아프리카 방장 채팅 감지",
+    [RegisterButtonName.owner_chat_youtube]: "유튜브 방장 채팅 감지",
+    [RegisterButtonName.else_naver_cafe]: "(후추) 네이버카페 공지 감지",
+    [RegisterButtonName.back]: "뒤로가기",
+};
+var SettingButtonName;
+(function (SettingButtonName) {
+    SettingButtonName["new_post_everyone"] = "new_post_everyone";
+    SettingButtonName["live_everyone"] = "live_everyone";
+})(SettingButtonName = exports.SettingButtonName || (exports.SettingButtonName = {}));
+const settingButtons = {
+    [SettingButtonName.new_post_everyone]: "새글 감지에 @everyone 추가",
+    [SettingButtonName.live_everyone]: "방송 감지에 @everyone 추가",
 };
 exports.text = {
     ping: {
@@ -166,6 +177,12 @@ exports.text = {
                 value: "key"
             },
         ]
+    },
+    setting: {
+        id: CommandName.Setting,
+        name: "설정",
+        description: "하우미의 설정을 변경합니다!  ෆ⸒⸒⸜( ˶'ᵕ'˶)⸝ ",
+        titleMap: settingButtons,
     },
 };
 //# sourceMappingURL=index.js.map
