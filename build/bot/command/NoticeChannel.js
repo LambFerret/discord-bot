@@ -31,10 +31,19 @@ const makeChannelSelectMenu = (guild) => {
     }).map(channel => channel);
     const options = channels.map(channel => {
         let description = "";
-        if (channel.parent)
-            description = "`" + channel.parent.name + "` 의 하위 채널";
+        if (channel.parent) {
+            let parentName = channel.parent.name;
+            if (parentName.length > 10) {
+                parentName = parentName.slice(0, 10) + "...";
+            }
+            description = "`" + parentName + "` 의 하위 채널";
+        }
         // 각 필드 값이 빈 문자열인지 확인하고, 빈 문자열이면 "-"로 대체
-        const label = channel.name === "" ? "-" : channel.name;
+        let channelName = channel.name;
+        if (channelName.length > 10) {
+            channelName = channelName.slice(0, 10) + "...";
+        }
+        const label = channel.name === "" ? "-" : channelName;
         const value = channel.id === "" ? "-" : channel.id;
         const descriptionFinal = description === "" ? "-" : description;
         return {

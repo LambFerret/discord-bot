@@ -201,8 +201,9 @@ class ExternalApi {
         })
             .catch((err) => {
             console.error("getChzzkCommunityNewPostInfo Error");
-            console.error(err);
-            return err.response.data;
+            const errorData = err?.response?.data;
+            console.error(errorData);
+            return errorData;
         });
         if (res.code !== 200) {
             // TODO 채팅창에 한번 말해준 후 detecting을 false로 바꿔준다.
@@ -253,8 +254,9 @@ class ExternalApi {
         })
             .catch((err) => {
             console.error("getAfreecaCommunityNewPostInfo Error");
-            console.error(err);
-            return err.response.data;
+            const errorData = err?.response?.data;
+            console.error(errorData);
+            return errorData;
         });
         // console.log(res);
         if (res.code === 9000) {
