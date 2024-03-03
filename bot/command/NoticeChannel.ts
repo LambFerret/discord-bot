@@ -34,20 +34,36 @@ const makeChannelSelectMenu = (guild: Guild): StringSelectMenuBuilder => {
         let description = "";
         if (channel.parent) {
             let parentName = channel.parent.name;
-            if (parentName.length > 10) {
-                parentName = parentName.slice(0, 10) + "...";
+            if (parentName.length > 15) {
+                parentName = parentName.slice(0, 15) + "...";
             }
             description = "`" + parentName + "` 의 하위 채널";
         }
         // 각 필드 값이 빈 문자열인지 확인하고, 빈 문자열이면 "-"로 대체
 
         let channelName = channel.name;
-        if (channelName.length > 10) {
-            channelName = channelName.slice(0, 10) + "...";
+        if (channelName.length > 15) {
+            channelName = channelName.slice(0, 15) + "...";
         }
         const label = channel.name === "" ? "-" : channelName;
         const value = channel.id === "" ? "-" : channel.id;
         const descriptionFinal = description === "" ? "-" : description;
+
+        if (label.length > 25) {
+            console.error(`label length is over 25: ${label} in server ${guild.name}`);
+            return null;
+        }
+        if (descriptionFinal.length > 25) {
+            console.error(`description length is over 25: ${descriptionFinal} in server ${guild.name}`);
+            return null;
+        }
+
+        if (value.length > 25) {
+            console.error(`value length is over 25: ${value} in server ${guild.name}`);
+            // skip this option
+            return null;
+        }
+
 
         return {
             label: label,
@@ -55,7 +71,7 @@ const makeChannelSelectMenu = (guild: Guild): StringSelectMenuBuilder => {
             description: descriptionFinal,
         };
 
-    });
+    }).filter(option => option !== null) as SelectMenuComponentOptionData[];
 
     const selectMenu = new StringSelectMenuBuilder()
         .setCustomId(CommandName.NoticeChannelDropdown)

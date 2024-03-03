@@ -181,8 +181,15 @@ class ExternalApi {
             part: 'snippet',
             id: channelID,
         } as any;
-        const items = (await youtube.search.list(param)).data.items;
-        if (!items) return undefined;
+        let items;
+        try {
+            items = (await youtube.search.list(param)).data.items;
+            if (!items) return undefined;
+        } catch (err) {
+            console.error("getYoutubeLiveInfo Error");
+            console.error(err);
+            return undefined;
+        }
         const dto = {
             id: items[0].snippet?.liveBroadcastContent,
             channelTitle: "",
@@ -271,7 +278,7 @@ class ExternalApi {
                 console.error(errorData);
                 return errorData;
             });
-            
+
 
         // console.log(res);
         if (res.code === 9000) {

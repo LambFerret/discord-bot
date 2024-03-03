@@ -168,9 +168,17 @@ class ExternalApi {
             part: 'snippet',
             id: channelID,
         };
-        const items = (await youtube.search.list(param)).data.items;
-        if (!items)
+        let items;
+        try {
+            items = (await youtube.search.list(param)).data.items;
+            if (!items)
+                return undefined;
+        }
+        catch (err) {
+            console.error("getYoutubeLiveInfo Error");
+            console.error(err);
             return undefined;
+        }
         const dto = {
             id: items[0].snippet?.liveBroadcastContent,
             channelTitle: "",
