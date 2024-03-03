@@ -401,7 +401,7 @@ class ServerRepository {
             }
             catch (err) {
                 if (err instanceof Error && !err.toString().includes('ENOENT')) {
-                    console.log(`Failed to read JSON from file: ${err}`);
+                    console.log(`Failed to read JSON from ${filePath} file: ${err}`);
                 }
                 throw err;
             }
