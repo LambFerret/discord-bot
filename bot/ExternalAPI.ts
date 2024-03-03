@@ -212,8 +212,9 @@ class ExternalApi {
             })
             .catch((err) => {
                 console.error("getChzzkCommunityNewPostInfo Error")
-                console.error(err)
-                return err.response.data;
+                const errorData = err?.response?.data;
+                console.error(errorData);
+                return errorData;
             });
 
         if (res.code !== 200) {
@@ -265,10 +266,12 @@ class ExternalApi {
                 return res.data;
             })
             .catch((err) => {
-                console.error("getAfreecaCommunityNewPostInfo Error")
-                console.error(err)
-                return err.response.data;
+                console.error("getAfreecaCommunityNewPostInfo Error");
+                const errorData = err?.response?.data;
+                console.error(errorData);
+                return errorData;
             });
+            
 
         // console.log(res);
         if (res.code === 9000) {
