@@ -4,8 +4,6 @@ const tslib_1 = require("tslib");
 const discord_js_1 = require("discord.js");
 const afreecaSetting_1 = require("../command/afreecaSetting");
 const detect_1 = require("../command/detect");
-const entranceChannel_1 = require("../command/entranceChannel");
-const entrancePermission_1 = require("../command/entrancePermission");
 const help_1 = require("../command/help");
 const initalize_1 = tslib_1.__importDefault(require("../command/initalize"));
 const NoticeChannel_1 = require("../command/NoticeChannel");
@@ -31,14 +29,14 @@ class SlashCommandService {
         this.setCommand(initalize_1.default);
         this.setCommand(register_1.register);
         this.setCommand(afreecaSetting_1.afreecaSetting);
-        this.setCommand(entranceChannel_1.entranceChannel);
-        this.setCommand(entrancePermission_1.entrancePermission);
+        // this.setCommand(entranceChannel);
+        // this.setCommand(entrancePermission);
         this.setCommand(NoticeChannel_1.noticeChannel);
         this.setCommand(setting_1.setting);
         // dropdown command
         this.setDropdownCommand(register_1.registerYoutube);
-        this.setDropdownCommand(entranceChannel_1.entranceChannelDropdown);
-        this.setDropdownCommand(entrancePermission_1.entrancePermissionDropdown);
+        // this.setDropdownCommand(entranceChannelDropdown);
+        // this.setDropdownCommand(entrancePermissionDropdown);
         this.setDropdownCommand(NoticeChannel_1.noticeChannelDropdown);
         // button command
         this.setDropdownCommand(detect_1.solveDetectButtons);

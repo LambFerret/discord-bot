@@ -185,9 +185,9 @@ class ExternalApi {
         try {
             items = (await youtube.search.list(param)).data.items;
             if (!items) return undefined;
-        } catch (err) {
+        } catch (err : any) {
             console.error("getYoutubeLiveInfo Error");
-            console.error(err);
+            console.error(err.errors[0]);
             return undefined;
         }
         const dto = {

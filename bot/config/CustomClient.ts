@@ -4,7 +4,7 @@ export class CustomClient extends Client {
     public commands: Collection<string, any>;
     constructor() {
         super({
-            intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMessageReactions],
+            intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.GuildMessageReactions],
             partials: [Partials.Message, Partials.Reaction, Partials.User],
             presence: {
                 activities: [{ name: '1.0.2v | /설명서 ', type: ActivityType.Listening }],

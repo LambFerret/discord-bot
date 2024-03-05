@@ -34,15 +34,15 @@ export default class SlashCommandService {
     this.setCommand(initialize);
     this.setCommand(register);
     this.setCommand(afreecaSetting);
-    this.setCommand(entranceChannel);
-    this.setCommand(entrancePermission);
+    // this.setCommand(entranceChannel);
+    // this.setCommand(entrancePermission);
     this.setCommand(noticeChannel);
     this.setCommand(setting);
 
     // dropdown command
     this.setDropdownCommand(registerYoutube);
-    this.setDropdownCommand(entranceChannelDropdown);
-    this.setDropdownCommand(entrancePermissionDropdown);
+    // this.setDropdownCommand(entranceChannelDropdown);
+    // this.setDropdownCommand(entrancePermissionDropdown);
     this.setDropdownCommand(noticeChannelDropdown);
 
     // button command

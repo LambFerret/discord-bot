@@ -176,7 +176,7 @@ class ExternalApi {
         }
         catch (err) {
             console.error("getYoutubeLiveInfo Error");
-            console.error(err);
+            console.error(err.errors[0]);
             return undefined;
         }
         const dto = {
