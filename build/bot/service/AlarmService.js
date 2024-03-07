@@ -56,7 +56,7 @@ class AlarmService {
         const liveInfo = await ExternalAPI_1.default.getChzzkLiveInfo(dto.id);
         if (!liveInfo)
             return;
-        if (!liveInfo && previousLiveInfo) {
+        if (!liveInfo.liveStatus && previousLiveInfo) {
             ServerRepository_1.default.updateStreamLive(guildId, DetectType_1.DetectPlatform.Chzzk, false);
             return;
         }
