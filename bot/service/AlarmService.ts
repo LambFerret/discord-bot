@@ -58,7 +58,7 @@ export default class AlarmService {
 
         if (!liveInfo) return;
 
-        if (!liveInfo && previousLiveInfo) {
+        if (!liveInfo.liveStatus && previousLiveInfo) {
             ServerRepository.updateStreamLive(guildId, DetectPlatform.Chzzk, false);
             return;
         }
