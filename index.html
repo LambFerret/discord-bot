@@ -34,7 +34,7 @@
         <tr>
             <td colspan="2">
                 <h1 style="color: white; font-size: 50px;">
-                    초쟌 만을 위한 공포게<br>임!
+                    희고 만을 위한 공포게<br>임!
                 </h1>
             </td>
         </tr>
@@ -56,7 +56,6 @@
     </table>
 </body>
 <script>
-
     // Get the elements by their IDs
     const blinkString1 = document.getElementById('blink-string1');
     const blinkString2 = document.getElementById('blink-string2');
@@ -83,17 +82,14 @@
 
     // Add a click event listener
     link.addEventListener("click", function (event) {
-        // Prevent the default action of navigating to a new page
-        event.preventDefault();
+       // Prevent the default action of navigating to a new page
+       event.preventDefault();
+        const popup = window.open('/chat', 'Popup', 'width=450,height=650,left=200,top=200');
 
-        // Your custom logic here, for example:
-        console.log("Link clicked!");
-        // Open a new tab and navigate to YouTube
-        window.open('https://www.youtube.com/watch?v=-pczFfMtWrc&pp=ygUW7KO866W066W0IOq3gOyXrOybjOyEnA%3D%3D', '_blank');
-
-        // Navigate the current window to /dummy
-        window.location.href = '/solve';
-
+        // Optional: focus the new window (brings it to the front)
+        if (popup && popup.focus) {
+            popup.focus();
+        }
     });
 </script>
 
