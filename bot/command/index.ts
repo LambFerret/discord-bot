@@ -61,11 +61,13 @@ const detectButtons: { [key in RegisterButtonName]: string } = {
 export enum SettingButtonName {
     new_post_everyone = "new_post_everyone",
     live_everyone = "live_everyone",
+    erase_previous_message = "erase_previous_message",
 }
 
 const settingButtons: { [key in SettingButtonName]: string } = {
     [SettingButtonName.new_post_everyone]: "새글 감지에 @everyone 추가",
     [SettingButtonName.live_everyone]: "방송 감지에 @everyone 추가",
+    [SettingButtonName.erase_previous_message]: "이전 메시지 삭제하기",
 }
 
 export const text: TextType = {

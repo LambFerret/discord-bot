@@ -32,7 +32,12 @@ export const solveSettingButtons: ButtonCommand = {
                 await interaction.update({ components: [initialButtons(info)] });
                 return;
             case SettingButtonName.live_everyone:
-                info.LiveIncludeEveryone = !info.LiveIncludeEveryone;
+                info.liveIncludeEveryone = !info.liveIncludeEveryone;
+                await ServerRepository.updateServerSettings(guildId, info);
+                await interaction.update({ components: [initialButtons(info)] });
+                return;
+            case SettingButtonName.erase_previous_message:
+                info.erasePreviousMessage = !info.erasePreviousMessage;
                 await ServerRepository.updateServerSettings(guildId, info);
                 await interaction.update({ components: [initialButtons(info)] });
                 return;
@@ -44,7 +49,8 @@ const initialButtons = (settings: Settings): ActionRowBuilder<ButtonBuilder> => 
     return new ActionRowBuilder<ButtonBuilder>()
         .addComponents(
             makeButton(SettingButtonName.new_post_everyone, settings.newPostIncludeEveryone),
-            makeButton(SettingButtonName.live_everyone, settings.LiveIncludeEveryone),
+            makeButton(SettingButtonName.live_everyone, settings.liveIncludeEveryone),
+            makeButton(SettingButtonName.erase_previous_message, settings.erasePreviousMessage)
         );
 }
 

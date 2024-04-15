@@ -4,6 +4,7 @@ export type ServerInfo = {
     createdDate: Date,
     OwnerId: string,
     detectChannel: string,
+    detectMessageId : string,
     postfix: string,
     status: string,
     entrance: Entrance,
@@ -74,5 +75,6 @@ export type LiveInfoDTO = {
 export type Settings = {
     afreecaNewPostOnlyAnnouncement: string,
     newPostIncludeEveryone: boolean,
-    LiveIncludeEveryone: boolean,
+    liveIncludeEveryone: boolean,
+    erasePreviousMessage: boolean,
 }

@@ -63,8 +63,8 @@ export default class DiscordBot {
     });
   }
 
-  test = async () => {
-
+  test = async (serverId: string) => {
+    // this.alarmService.test(serverId);
   }
 
   readyEachServer = async (server: ServerInfo) => {
@@ -75,9 +75,10 @@ export default class DiscordBot {
     console.log("register slash command");
     this.slashCommandService.registerSlashCommand(serverId);
 
-    // =-=-=-=-=-=- test =-=-=-=-=-=-=
     this.alarmService.makeCron(serverId);
     this.postService.makeCron(serverId);
+    // =-=-=-=-=-=- test =-=-=-=-=-=-=
+    this.test(serverId);
     // =-=-=-=-=-=- test =-=-=-=-=-=-=
     console.log("=============================");
   }
@@ -96,7 +97,7 @@ export default class DiscordBot {
 
     for (const guildId of guildsInBotCache) {
       if (!GuildsInDB.includes(guildId)) {
-        const exists = await ServerRepository.checkGuildExists(guildId); 
+        const exists = await ServerRepository.checkGuildExists(guildId);
         if (!exists) {
           const guild = this.client.guilds.cache.get(guildId);
           if (guild) await serverService.createServer(guild);
