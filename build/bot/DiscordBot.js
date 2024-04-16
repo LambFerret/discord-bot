@@ -54,16 +54,18 @@ class DiscordBot {
             this.readyEachServer(server);
         });
     };
-    test = async () => {
+    test = async (serverId) => {
+        // this.alarmService.test(serverId);
     };
     readyEachServer = async (server) => {
         let serverId = server.id;
         console.log(`==== init ${server.name} server ====`);
         console.log("register slash command");
         this.slashCommandService.registerSlashCommand(serverId);
-        // =-=-=-=-=-=- test =-=-=-=-=-=-=
         this.alarmService.makeCron(serverId);
         this.postService.makeCron(serverId);
+        // =-=-=-=-=-=- test =-=-=-=-=-=-=
+        this.test(serverId);
         // =-=-=-=-=-=- test =-=-=-=-=-=-=
         console.log("=============================");
     };

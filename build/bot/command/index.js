@@ -63,10 +63,12 @@ var SettingButtonName;
 (function (SettingButtonName) {
     SettingButtonName["new_post_everyone"] = "new_post_everyone";
     SettingButtonName["live_everyone"] = "live_everyone";
+    SettingButtonName["erase_previous_message"] = "erase_previous_message";
 })(SettingButtonName = exports.SettingButtonName || (exports.SettingButtonName = {}));
 const settingButtons = {
     [SettingButtonName.new_post_everyone]: "새글 감지에 @everyone 추가",
     [SettingButtonName.live_everyone]: "방송 감지에 @everyone 추가",
+    [SettingButtonName.erase_previous_message]: "이전 메시지 삭제하기",
 };
 exports.text = {
     ping: {

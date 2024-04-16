@@ -30,7 +30,12 @@ exports.solveSettingButtons = {
                 await interaction.update({ components: [initialButtons(info)] });
                 return;
             case _1.SettingButtonName.live_everyone:
-                info.LiveIncludeEveryone = !info.LiveIncludeEveryone;
+                info.liveIncludeEveryone = !info.liveIncludeEveryone;
+                await ServerRepository_1.default.updateServerSettings(guildId, info);
+                await interaction.update({ components: [initialButtons(info)] });
+                return;
+            case _1.SettingButtonName.erase_previous_message:
+                info.erasePreviousMessage = !info.erasePreviousMessage;
                 await ServerRepository_1.default.updateServerSettings(guildId, info);
                 await interaction.update({ components: [initialButtons(info)] });
                 return;
@@ -39,7 +44,7 @@ exports.solveSettingButtons = {
 };
 const initialButtons = (settings) => {
     return new discord_js_1.ActionRowBuilder()
-        .addComponents(makeButton(_1.SettingButtonName.new_post_everyone, settings.newPostIncludeEveryone), makeButton(_1.SettingButtonName.live_everyone, settings.LiveIncludeEveryone));
+        .addComponents(makeButton(_1.SettingButtonName.new_post_everyone, settings.newPostIncludeEveryone), makeButton(_1.SettingButtonName.live_everyone, settings.liveIncludeEveryone), makeButton(_1.SettingButtonName.erase_previous_message, settings.erasePreviousMessage));
 };
 function makeButton(name, setActive, isBack) {
     return new discord_js_1.ButtonBuilder()

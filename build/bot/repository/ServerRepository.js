@@ -35,6 +35,7 @@ class ServerRepository {
             createdDate: info.joinedAt,
             OwnerId: info.ownerId,
             detectChannel: "",
+            detectMessageId: "",
             postfix: '삐삐리뽀',
             status: 'INIT',
             entrance: entrance,
@@ -81,7 +82,8 @@ class ServerRepository {
             settings: {
                 afreecaNewPostOnlyAnnouncement: "",
                 newPostIncludeEveryone: false,
-                LiveIncludeEveryone: false,
+                liveIncludeEveryone: false,
+                erasePreviousMessage: true,
             }
         };
         await this.writeJsonAsFile(server);
@@ -335,6 +337,13 @@ class ServerRepository {
         this.log(`Update Postfix`, `${guildId} : ${postfix}`);
         const info = await this.readJsonFromFile(guildId);
         info.postfix = postfix;
+        await this.writeJsonAsFile(info);
+    };
+    getServerMessageId = async (guildId) => (await this.readJsonFromFile(guildId)).detectMessageId;
+    setServerMessageId = async (guildId, messageId) => {
+        this.log(`Set Server Message ID`, `${guildId} : ${messageId}`);
+        const info = await this.readJsonFromFile(guildId);
+        info.detectMessageId = messageId;
         await this.writeJsonAsFile(info);
     };
     writeJsonAsFile = async (info) => {

@@ -58,11 +58,25 @@ class AlarmService {
             return;
         if (!liveInfo.liveStatus && previousLiveInfo) {
             ServerRepository_1.default.updateStreamLive(guildId, DetectType_1.DetectPlatform.Chzzk, false);
+            const serverSetting = await ServerRepository_1.default.getServerSettings(guildId);
+            if (serverSetting.erasePreviousMessage) {
+                const messageId = await ServerRepository_1.default.getServerMessageId(guildId);
+                if (!messageId)
+                    return;
+                // delete message 
+                const channel = this.client.guilds.cache.get(guildId)?.channels.cache.get(await ServerRepository_1.default.getDetectChannel(guildId));
+                if (channel && channel.isTextBased()) {
+                    channel.messages.fetch(messageId).then(msg => msg.delete());
+                }
+            }
             return;
         }
         if (liveInfo.liveStatus && !previousLiveInfo) {
             ServerRepository_1.default.updateStreamLive(guildId, DetectType_1.DetectPlatform.Chzzk, true);
-            this.say(guildId, await (0, MessageFormat_1.chzzkLiveInfoMsg)(guildId, liveInfo));
+            const message = await this.say(guildId, await (0, MessageFormat_1.chzzkLiveInfoMsg)(guildId, liveInfo));
+            if (message && message.id) {
+                ServerRepository_1.default.setServerMessageId(guildId, message.id);
+            }
         }
     };
     sendAfreecaStreamInfo = async (guildId) => {
@@ -79,11 +93,25 @@ class AlarmService {
             return;
         if ((!liveInfo && previousLiveInfo) || (!liveInfo.isLive && previousLiveInfo)) {
             ServerRepository_1.default.updateStreamLive(guildId, DetectType_1.DetectPlatform.Afreeca, false);
+            const serverSetting = await ServerRepository_1.default.getServerSettings(guildId);
+            if (serverSetting.erasePreviousMessage) {
+                const messageId = await ServerRepository_1.default.getServerMessageId(guildId);
+                if (!messageId)
+                    return;
+                // delete message 
+                const channel = this.client.guilds.cache.get(guildId)?.channels.cache.get(await ServerRepository_1.default.getDetectChannel(guildId));
+                if (channel && channel.isTextBased()) {
+                    channel.messages.fetch(messageId).then(msg => msg.delete());
+                }
+            }
             return;
         }
         if (liveInfo.isLive && !previousLiveInfo) {
             ServerRepository_1.default.updateStreamLive(guildId, DetectType_1.DetectPlatform.Afreeca, true);
-            this.say(guildId, await (0, MessageFormat_1.afreecaLiveInfoMsg)(guildId, liveInfo));
+            const message = await this.say(guildId, await (0, MessageFormat_1.afreecaLiveInfoMsg)(guildId, liveInfo));
+            if (message && message.id) {
+                ServerRepository_1.default.setServerMessageId(guildId, message.id);
+            }
         }
     };
     sendTwitchStreamInfo = async (guildId) => {
@@ -100,11 +128,25 @@ class AlarmService {
             return;
         if (!liveInfo && previousLiveInfo) {
             ServerRepository_1.default.updateStreamLive(guildId, DetectType_1.DetectPlatform.Twitch, false);
+            const serverSetting = await ServerRepository_1.default.getServerSettings(guildId);
+            if (serverSetting.erasePreviousMessage) {
+                const messageId = await ServerRepository_1.default.getServerMessageId(guildId);
+                if (!messageId)
+                    return;
+                // delete message 
+                const channel = this.client.guilds.cache.get(guildId)?.channels.cache.get(await ServerRepository_1.default.getDetectChannel(guildId));
+                if (channel && channel.isTextBased()) {
+                    channel.messages.fetch(messageId).then(msg => msg.delete());
+                }
+            }
             return;
         }
         if (liveInfo.type === 'live' && !previousLiveInfo) {
             ServerRepository_1.default.updateStreamLive(guildId, DetectType_1.DetectPlatform.Twitch, true);
-            this.say(guildId, await (0, MessageFormat_1.twitchLiveInfoMsg)(guildId, liveInfo));
+            const message = await this.say(guildId, await (0, MessageFormat_1.twitchLiveInfoMsg)(guildId, liveInfo));
+            if (message && message.id) {
+                ServerRepository_1.default.setServerMessageId(guildId, message.id);
+            }
         }
     };
     sendYoutubeStreamInfo = async (guildId) => {
@@ -133,10 +175,23 @@ class AlarmService {
         const setting = await ServerRepository_1.default.getServerSettings(guildId);
         const channel = this.client.guilds.cache.get(guildId)?.channels.cache.get(channelID);
         if (channel && channel.isTextBased()) {
-            channel.send({ content: setting.LiveIncludeEveryone ? "@everyone" : "", embeds: [msg] });
+            return channel.send({ content: setting.liveIncludeEveryone ? "@everyone" : "", embeds: [msg] });
         }
         else {
             console.log(`ERROR IN ALARM | guildID - ${guildId}, channelID - ${channelID}, message - ${msg.data.title}`);
+        }
+    };
+    test = async (guildId) => {
+        const serverSetting = await ServerRepository_1.default.getServerSettings(guildId);
+        if (serverSetting.erasePreviousMessage) {
+            const messageId = await ServerRepository_1.default.getServerMessageId(guildId);
+            if (!messageId)
+                return;
+            // delete message 
+            const channel = this.client.guilds.cache.get(guildId)?.channels.cache.get(await ServerRepository_1.default.getDetectChannel(guildId));
+            if (channel && channel.isTextBased()) {
+                channel.messages.fetch(messageId).then(msg => msg.delete());
+            }
         }
     };
 }
