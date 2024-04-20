@@ -44,15 +44,18 @@ export const register: Command = {
         const id = interaction.options.get(optionsText[1].label)?.value as string;
         let embedMessage: EmbedBuilder;
         let isError: boolean = false;
-
+        let name: string = "";
         switch (platform) {
             case DetectPlatform.Chzzk:
                 const info = await api.getChzzkLiveInfo(id);
                 if (info === undefined) isError = true;
+                else name = info?.channelName;
                 break;
             case DetectPlatform.Afreeca:
                 const info2 = await api.getAfreecaLiveInfo(id);
                 if (info2 === undefined) isError = true;
+                else name = info2?.user_nick;
+
                 break;
             case DetectPlatform.Youtube:
                 solveYoutube(interaction, id);
@@ -60,6 +63,7 @@ export const register: Command = {
             case DetectPlatform.Twitch:
                 const info4 = await api.getTwitchLiveInfo(id);
                 if (info4 === undefined) isError = true;
+                else name = info4?.user_name;
                 break;
         }
 
@@ -79,8 +83,9 @@ export const register: Command = {
             )
         } else {
             ServerRepository.updateDetectID(interaction.guildId as string, platform, id);
+            const nameIHave = name ? `${name}` : id;
             embedMessage = await BotConfig.makeEmbed(
-                `${platformKoreanName} 에서 아이디 \`${id}\` 로 등록되었습니다!`,
+                `${platformKoreanName} 에서 \`${nameIHave}\` 님을 등록하였습니다!`,
                 " (ง •̀_•́)ง",
                 MessageColor.Confirm,
                 interaction.guildId as string

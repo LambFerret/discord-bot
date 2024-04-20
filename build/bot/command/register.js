@@ -36,16 +36,21 @@ exports.register = {
         const id = interaction.options.get(optionsText[1].label)?.value;
         let embedMessage;
         let isError = false;
+        let name = "";
         switch (platform) {
             case DetectType_1.DetectPlatform.Chzzk:
                 const info = await ExternalAPI_1.default.getChzzkLiveInfo(id);
                 if (info === undefined)
                     isError = true;
+                else
+                    name = info?.channelName;
                 break;
             case DetectType_1.DetectPlatform.Afreeca:
                 const info2 = await ExternalAPI_1.default.getAfreecaLiveInfo(id);
                 if (info2 === undefined)
                     isError = true;
+                else
+                    name = info2?.user_nick;
                 break;
             case DetectType_1.DetectPlatform.Youtube:
                 solveYoutube(interaction, id);
@@ -54,6 +59,8 @@ exports.register = {
                 const info4 = await ExternalAPI_1.default.getTwitchLiveInfo(id);
                 if (info4 === undefined)
                     isError = true;
+                else
+                    name = info4?.user_name;
                 break;
         }
         if (isError) {
@@ -68,7 +75,8 @@ exports.register = {
         }
         else {
             ServerRepository_1.default.updateDetectID(interaction.guildId, platform, id);
-            embedMessage = await BotConfig_1.default.makeEmbed(`${platformKoreanName} 에서 아이디 \`${id}\` 로 등록되었습니다!`, " (ง •̀_•́)ง", BotConfig_1.MessageColor.Confirm, interaction.guildId);
+            const nameIHave = name ? `${name}` : id;
+            embedMessage = await BotConfig_1.default.makeEmbed(`${platformKoreanName} 에서 \`${nameIHave}\` 님을 등록하였습니다!`, " (ง •̀_•́)ง", BotConfig_1.MessageColor.Confirm, interaction.guildId);
         }
         await interaction.reply({ embeds: [embedMessage] });
     }

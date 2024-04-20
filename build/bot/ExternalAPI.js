@@ -37,7 +37,7 @@ class ExternalApi {
             // TODO 채팅창에 한번 말해준 후 detecting을 false로 바꿔준다.
             return undefined;
         }
-        if (!res.message)
+        if (!res.content.channel)
             return undefined;
         const liveInfo = {
             channelId: res.content.channel.channelId,

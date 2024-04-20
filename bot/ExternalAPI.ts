@@ -47,7 +47,7 @@ class ExternalApi {
             return undefined;
         }
 
-        if (!res.message) return undefined;
+        if (!res.content.channel) return undefined;
         
 
         const liveInfo: LiveChzzkInfoType = {
