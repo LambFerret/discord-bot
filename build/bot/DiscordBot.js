@@ -71,15 +71,16 @@ class DiscordBot {
     };
     checkDBAndBotServerMatch = async () => {
         const guildsInBotCache = this.client.guilds.cache.map(guild => guild.id);
-        const GuildsInDB = await ServerService_1.default.getAllGuildId();
+        const GuildsInDB = await ServerService_1.default.getAllServers();
         // 데이터베이스에는 있지만 봇 캐시에 없는 서버 삭제
-        for (const guildId of GuildsInDB) {
-            if (!guildsInBotCache.includes(guildId)) {
-                await ServerService_1.default.deleteServer(guildId);
+        for (const guild of GuildsInDB) {
+            const guildIdInDB = guild.id;
+            if (!guildsInBotCache.includes(guildIdInDB)) {
+                await ServerService_1.default.deleteServer(guildIdInDB);
             }
         }
         for (const guildId of guildsInBotCache) {
-            if (!GuildsInDB.includes(guildId)) {
+            if (!GuildsInDB.find(server => server.id === guildId)) {
                 const exists = await ServerRepository_1.default.checkGuildExists(guildId);
                 if (!exists) {
                     const guild = this.client.guilds.cache.get(guildId);

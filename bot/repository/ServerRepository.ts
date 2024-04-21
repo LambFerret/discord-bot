@@ -381,16 +381,111 @@ class ServerRepository {
     }
 
     readJsonFromFile = async (id: string): Promise<ServerInfo> => {
+        const filePath = path.join(this.dbPath(), `${id}.json`);
         try {
-            const filePath = path.join(this.dbPath(), `${id}.json`);
             const data = await fs.readFile(filePath, 'utf-8');
             return JSON.parse(data) as ServerInfo;
         } catch (err) {
             if (err instanceof Error && !err.toString().includes('ENOENT')) {
                 console.log(`Failed to read JSON from file: ${err}`);
             }
+            if (err instanceof SyntaxError) {
+                // reset the file
+                console.log(`Resetting the file: ${id}.json`);
+                const serverName = this.extractName(await fs.readFile(filePath, 'utf-8'));
+                await this.deleteFileIfExist(id);
+                const info = await this.createNewServerWithJustId(id, serverName);
+                return info;
+            }
             throw err;
         }
+    }
+    extractName = (data: string) => {
+        const namePattern = /"name": "([^"]+)"/;
+        const match = data.match(namePattern);
+        if (match && match[1]) {
+            return match[1];
+        }
+        return "Unknown";
+    }
+
+    deleteFileIfExist = async (guildId: string) => {
+        const filePath = path.join(this.dbPath(), `${guildId}.json`);
+        if (fss.existsSync(filePath)) {
+            await fs.unlink(filePath);
+        }
+    }
+
+    createNewServerWithJustId = async (guildId: string, guildName: string) => {
+        this.log(`Create New Server`, `${guildId}`);
+
+        const entrance: Entrance = {
+            entranceChannelId: "",
+            quote: "토끼 클릭으로 입장해요!",
+            messageId: "",
+            emoji: "🐰",
+            role: ""
+        }
+        const server: ServerInfo = {
+            name: guildName,
+            id: guildId,
+            createdDate: new Date(),
+            OwnerId: "lost",
+            detectChannel: "",
+            detectMessageId: "",
+            postfix: '삐삐리뽀',
+            status: 'INIT',
+            entrance: entrance,
+            isDeleted: false,
+            broadcastInfo: {
+                AfreecaId: "",
+                TwitchId: "",
+                ChzzkId: "",
+                YoutubeId: "",
+            },
+            streamingStatus: {
+                isTwitchStreamLive: false,
+                isAfreecaStreamLive: false,
+                isChzzkStreamLive: false,
+                isYoutubeStreamLive: false,
+            },
+            lastCommunityPostIDs: {
+                twitchPostId: [],
+                afreecaPostId: [],
+                chzzkPostId: [],
+                youtubePostId: [],
+            },
+            serverDetectInfos: {
+                broadcastDetect: {
+                    twitch: false,
+                    afreeca: false,
+                    chzzk: false,
+                    youtube: false,
+                },
+                newPostDetect: {
+                    afreeca: false,
+                    chzzk: false,
+                    youtube: false,
+                },
+                ownerChatDetect: {
+                    afreeca: false,
+                    chzzk: false,
+                    youtube: false,
+                },
+                elseDetect: {
+                    naverCafe: false,
+                }
+            },
+            settings: {
+                afreecaNewPostOnlyAnnouncement: "",
+                newPostIncludeEveryone: false,
+                liveIncludeEveryone: false,
+                erasePreviousMessage: true,
+            }
+        }
+        await this.writeJsonAsFile(server);
+        return server;
+
     }
 
     archiveServerFile = async (guildId: string) => {
@@ -407,41 +502,20 @@ class ServerRepository {
 
     }
 
-    getAllServers = async () => {
+    getAllServers = async (): Promise<ServerInfo[]> => {
         const detectingServers: ServerInfo[] = [];
         for (const file of await fs.readdir(this.dbPath())) {
-            const filePath = path.join(this.dbPath(), file);
+            let info: ServerInfo;
             try {
-                const data = await fs.readFile(filePath, 'utf-8');
-                const info = JSON.parse(data) as ServerInfo;
-                detectingServers.push(info);
+                info = await this.readJsonFromFile(file.replace('.json', ''));
             } catch (err) {
-                if (err instanceof Error && !err.toString().includes('ENOENT')) {
-                    console.log(`Failed to read JSON from file: ${err}`);
-                }
-                throw err;
+                console.error(`Abort Application`);
+                process.exit(1);
             }
+            if (info) detectingServers.push(info);
         }
 
         return detectingServers;
-    }
-
-    getAllGuildId = async (): Promise<string[]> => {
-        const guilds: string[] = [];
-        for (const file of await fs.readdir(this.dbPath())) {
-            const filePath = path.join(this.dbPath(), file);
-            try {
-                const data = await fs.readFile(filePath, 'utf-8');
-                const info = JSON.parse(data) as ServerInfo;
-                guilds.push(info.id);
-            } catch (err) {
-                if (err instanceof Error && !err.toString().includes('ENOENT')) {
-                    console.log(`Failed to read JSON from ${filePath} file: ${err}`);
-                }
-                throw err;
-            }
-        }
-        return guilds;
     }
 
     checkGuildExists = async (guildId: string): Promise<boolean> => {

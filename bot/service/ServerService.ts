@@ -28,10 +28,6 @@ class ServerService {
         return await serverRepository.getDetectChannel(guildId)
     }
 
-    async getAllGuildId(): Promise<string[]> {
-        return await serverRepository.getAllGuildId()
-    }
-
     async getGuildPostfix(guildId: string): Promise<string> {
         return await serverRepository.getServerPostfix(guildId)
     }

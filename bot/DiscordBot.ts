@@ -86,17 +86,18 @@ export default class DiscordBot {
 
   checkDBAndBotServerMatch = async () => {
     const guildsInBotCache = this.client.guilds.cache.map(guild => guild.id);
-    const GuildsInDB = await serverService.getAllGuildId();
+    const GuildsInDB = await serverService.getAllServers();
 
     // 데이터베이스에는 있지만 봇 캐시에 없는 서버 삭제
-    for (const guildId of GuildsInDB) {
-      if (!guildsInBotCache.includes(guildId)) {
-        await serverService.deleteServer(guildId);
+    for (const guild of GuildsInDB) {
+      const guildIdInDB = guild.id;
+      if (!guildsInBotCache.includes(guildIdInDB)) {
+        await serverService.deleteServer(guildIdInDB);
       }
     }
 
     for (const guildId of guildsInBotCache) {
-      if (!GuildsInDB.includes(guildId)) {
+      if (!GuildsInDB.find(server => server.id === guildId)) {
         const exists = await ServerRepository.checkGuildExists(guildId);
         if (!exists) {
           const guild = this.client.guilds.cache.get(guildId);

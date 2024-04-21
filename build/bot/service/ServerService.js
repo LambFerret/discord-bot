@@ -21,9 +21,6 @@ class ServerService {
     async getDetectChannel(guildId) {
         return await ServerRepository_1.default.getDetectChannel(guildId);
     }
-    async getAllGuildId() {
-        return await ServerRepository_1.default.getAllGuildId();
-    }
     async getGuildPostfix(guildId) {
         return await ServerRepository_1.default.getServerPostfix(guildId);
     }
