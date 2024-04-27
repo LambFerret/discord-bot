@@ -435,7 +435,7 @@ class ServerRepository {
                 AfreecaId: "",
                 TwitchId: "",
                 ChzzkId: "",
-                YoutubeId: "ts",
+                YoutubeId: "",
             },
             streamingStatus: {
                 isTwitchStreamLive: false,
@@ -477,6 +477,7 @@ class ServerRepository {
                 erasePreviousMessage: true,
             }
         };
+        console.log(server);
         await this.db.insertOne(server);
         const c = await this.db.findOne({ id: guildId });
         console.log(c);

@@ -92,8 +92,13 @@ class MongoConnect {
         return this.serverModel;
     }
     async insertOne(data) {
-        const server = new this.serverModel(data);
-        await server.save();
+        try {
+            const server = new this.serverModel(data);
+            await server.save();
+        }
+        catch (e) {
+            console.error(e.message);
+        }
     }
     async findOne(query) {
         return await this.serverModel.findOne(query);

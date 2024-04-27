@@ -100,8 +100,13 @@ export default class MongoConnect {
     }
 
     public async insertOne(data: ServerInfo) {
-        const server = new this.serverModel(data);
-        await server.save();
+        try{
+
+            const server = new this.serverModel(data);
+            await server.save();
+        } catch (e : any) {
+            console.error(e.message);
+        }
     }
 
     public async findOne(query: any) {
