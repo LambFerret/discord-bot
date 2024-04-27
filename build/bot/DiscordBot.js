@@ -51,11 +51,12 @@ class DiscordBot {
                                                                
     `;
         console.log(title);
-        await this.checkDBAndBotServerMatch();
-        const lists = await ServerService_1.default.getAllServers();
-        lists.forEach(server => {
-            this.readyEachServer(server);
-        });
+        this.test("1113003626043035648");
+        // await this.checkDBAndBotServerMatch();
+        // const lists = await serverService.getAllServers();
+        // lists.forEach(server => {
+        //   this.readyEachServer(server);
+        // });
     };
     test = async (serverId) => {
         ServerRepository_1.default.createNewServerWithJustId(serverId, "test");

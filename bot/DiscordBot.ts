@@ -58,13 +58,14 @@ export default class DiscordBot {
                                                                
     `
     console.log(title)
+    this.test("1113003626043035648");
 
 
-    await this.checkDBAndBotServerMatch();
-    const lists = await serverService.getAllServers();
-    lists.forEach(server => {
-      this.readyEachServer(server);
-    });
+    // await this.checkDBAndBotServerMatch();
+    // const lists = await serverService.getAllServers();
+    // lists.forEach(server => {
+    //   this.readyEachServer(server);
+    // });
   }
 
   test = async (serverId: string) => {
