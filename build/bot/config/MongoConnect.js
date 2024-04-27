@@ -9,9 +9,9 @@ const collectionName = "servers";
 const archiveCollectionName = "archive";
 // 스키마 정의
 const ServerSchema = new mongoose_1.Schema({
-    name: { type: String, required: true },
+    name: { type: String, required: true, default: "" },
     id: { type: String, required: true, unique: true },
-    createdDate: { type: Date, required: true, default: Date.now },
+    createdDate: { type: Date, required: true, default: Date.now() },
     OwnerId: { type: String, required: true, default: "" },
     detectChannel: { type: String, required: true, default: "" },
     detectMessageId: { type: String, required: true, default: "" },
@@ -59,9 +59,10 @@ const ServerSchema = new mongoose_1.Schema({
         },
     },
     lastCommunityPostIDs: {
-        afreeca: { type: [String], required: true, default: [] },
-        chzzk: { type: [String], required: true, default: [] },
-        youtube: { type: [String], required: true, default: [] },
+        twitchPostId: { type: [String], required: true, default: [] },
+        afreecaPostId: { type: [String], required: true, default: [] },
+        chzzkPostId: { type: [String], required: true, default: [] },
+        youtubePostId: { type: [String], required: true, default: [] },
     },
     settings: {
         afreecaNewPostOnlyAnnouncement: { type: String, required: true, default: "" },

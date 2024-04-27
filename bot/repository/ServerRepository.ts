@@ -467,7 +467,7 @@ class ServerRepository {
                 AfreecaId: "",
                 TwitchId: "",
                 ChzzkId: "",
-                YoutubeId: "",
+                YoutubeId: "ts",
             },
             streamingStatus: {
                 isTwitchStreamLive: false,
