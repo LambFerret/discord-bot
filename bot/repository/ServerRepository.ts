@@ -387,8 +387,26 @@ class ServerRepository {
             console.error(`Failed to create server: ${err}`);
         }
     }
+    readRawJsonFromFile = async (fileName: string): Promise<ServerInfo> => {
+        const filePath = path.join(this.dbPath(),fileName);
+        try {
+            const data = await fs.readFile(filePath, 'utf-8');
+            return JSON.parse(data) as ServerInfo;
+        } catch (err) {
+            if (err instanceof Error && !err.toString().includes('ENOENT')) {
+                console.log(`Failed to read JSON from file: ${err}`);
+            }
+            if (err instanceof SyntaxError) {
+                // reset the file
+                console.log(`plz abort`);
+            }
+            throw err;
+        }
+    }
 
     readJsonFromFile = async (id: string): Promise<ServerInfo> => {
+        console.log(`Read JSON from file: ${id}`);
+        
         const filePath = path.join(this.dbPath(), `${id}.json`);
         try {
             const data = await fs.readFile(filePath, 'utf-8');
