@@ -402,7 +402,7 @@ class ServerRepository {
         for (const file of await promises_1.default.readdir(this.dbPath())) {
             let info;
             try {
-                info = await this.readJsonFromFile(file.replace('.json', ''));
+                info = await this.readJsonFromFile(file.split('-')[0]);
             }
             catch (err) {
                 console.error(`Abort Application`);
