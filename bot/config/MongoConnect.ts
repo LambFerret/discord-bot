@@ -75,10 +75,7 @@ export default class MongoConnect {
     private serverModel: mongoose.Model<IServer>;
     constructor() {
         // Mongoose를 사용하여 MongoDB에 연결
-        mongoose.connect(CONFIG.MONGO_URI as string, {
-            useNewUrlParser: true,
-            useUnifiedTopology: true
-        } as ConnectOptions);
+        mongoose.connect(CONFIG.MONGO_URI as string);
         this.serverModel = mongoose.model<IServer>(collectionName, ServerSchema);
 
     }
