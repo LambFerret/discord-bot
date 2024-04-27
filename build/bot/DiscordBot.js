@@ -10,12 +10,16 @@ const AlarmService_1 = tslib_1.__importDefault(require("./service/AlarmService")
 const PostService_1 = tslib_1.__importDefault(require("./service/PostService"));
 const ServerService_1 = tslib_1.__importDefault(require("./service/ServerService"));
 const SlashCommandService_1 = tslib_1.__importDefault(require("./service/SlashCommandService"));
+const MongoConnect_1 = tslib_1.__importDefault(require("./config/MongoConnect"));
 class DiscordBot {
     slashCommandService;
     alarmService;
     postService;
     client;
+    mongo;
     constructor() {
+        this.mongo = MongoConnect_1.default.getInstance();
+        this.mongo.connect();
         this.client = new CustomClient_1.CustomClient();
         this.slashCommandService = new SlashCommandService_1.default(this.client);
         this.alarmService = new AlarmService_1.default(this.client);
@@ -55,15 +59,17 @@ class DiscordBot {
         });
     };
     test = async (serverId) => {
-        // this.alarmService.test(serverId);
+        ServerRepository_1.default.createNewServerWithJustId(serverId, "test");
     };
     readyEachServer = async (server) => {
         let serverId = server.id;
         console.log(`==== init ${server.name} server ====`);
-        console.log("register slash command");
-        this.slashCommandService.registerSlashCommand(serverId);
-        this.alarmService.makeCron(serverId);
-        this.postService.makeCron(serverId);
+        // =-=-=-=-=-=- prod =-=-=-=-=-=-=
+        // console.log("register slash command");
+        // this.slashCommandService.registerSlashCommand(serverId);
+        // this.alarmService.makeCron(serverId);
+        // this.postService.makeCron(serverId);
+        // =-=-=-=-=-=- prod =-=-=-=-=-=-=
         // =-=-=-=-=-=- test =-=-=-=-=-=-=
         this.test(serverId);
         // =-=-=-=-=-=- test =-=-=-=-=-=-=

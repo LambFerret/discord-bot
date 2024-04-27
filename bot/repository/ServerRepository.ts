@@ -4,8 +4,15 @@ import fs from 'fs/promises';
 import path from 'path';
 import { DetectPlatform, DetectType } from "../model/DetectType";
 import { Entrance, LiveInfoDTO, ServerInfo, Settings } from "../model/ServerType";
+import MongoConnect from "../config/MongoConnect";
+import { Collection } from "mongodb";
 
 class ServerRepository {
+    private collection: Collection;
+
+    constructor() {
+        this.collection = MongoConnect.getInstance().getCollection();
+    }
 
     dbPath = (): string => {
         if (!fss.existsSync(__dirname + "/../../db/")) fss.mkdirSync(__dirname + "/../../db/");
@@ -88,7 +95,8 @@ class ServerRepository {
                 erasePreviousMessage: true,
             }
         }
-        await this.writeJsonAsFile(server);
+        this.collection.insertOne(server);
+        // await this.writeJsonAsFile(server);
         return server;
     }
 

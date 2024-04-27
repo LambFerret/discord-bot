@@ -5,7 +5,12 @@ const fss = tslib_1.__importStar(require("fs"));
 const promises_1 = tslib_1.__importDefault(require("fs/promises"));
 const path_1 = tslib_1.__importDefault(require("path"));
 const DetectType_1 = require("../model/DetectType");
+const MongoConnect_1 = tslib_1.__importDefault(require("../config/MongoConnect"));
 class ServerRepository {
+    collection;
+    constructor() {
+        this.collection = MongoConnect_1.default.getInstance().getCollection();
+    }
     dbPath = () => {
         if (!fss.existsSync(__dirname + "/../../db/"))
             fss.mkdirSync(__dirname + "/../../db/");
@@ -86,7 +91,8 @@ class ServerRepository {
                 erasePreviousMessage: true,
             }
         };
-        await this.writeJsonAsFile(server);
+        this.collection.insertOne(server);
+        // await this.writeJsonAsFile(server);
         return server;
     };
     deleteServer = async (guildId) => {

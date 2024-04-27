@@ -11,6 +11,7 @@ import AlarmService from './service/AlarmService';
 import PostService from './service/PostService';
 import serverService from './service/ServerService';
 import SlashCommandService from './service/SlashCommandService';
+import MongoConnect from "./config/MongoConnect";
 
 export default class DiscordBot {
 
@@ -18,13 +19,15 @@ export default class DiscordBot {
   alarmService: AlarmService;
   postService: PostService;
   client: Client;
+  mongo: MongoConnect;
 
   constructor() {
+    this.mongo = MongoConnect.getInstance();
+    this.mongo.connect();
     this.client = new CustomClient();
     this.slashCommandService = new SlashCommandService(this.client as CustomClient);
     this.alarmService = new AlarmService(this.client);
     this.postService = new PostService(this.client);
-
     this.addListeners(this.client);
   }
 
@@ -56,6 +59,8 @@ export default class DiscordBot {
                                                                
     `
     console.log(title)
+
+
     await this.checkDBAndBotServerMatch();
     const lists = await serverService.getAllServers();
     lists.forEach(server => {
@@ -64,7 +69,7 @@ export default class DiscordBot {
   }
 
   test = async (serverId: string) => {
-    // this.alarmService.test(serverId);
+    ServerRepository.createNewServerWithJustId(serverId, "test");
   }
 
   readyEachServer = async (server: ServerInfo) => {
@@ -72,11 +77,13 @@ export default class DiscordBot {
 
     console.log(`==== init ${server.name} server ====`);
 
-    console.log("register slash command");
-    this.slashCommandService.registerSlashCommand(serverId);
+    // =-=-=-=-=-=- prod =-=-=-=-=-=-=
+    // console.log("register slash command");
+    // this.slashCommandService.registerSlashCommand(serverId);
+    // this.alarmService.makeCron(serverId);
+    // this.postService.makeCron(serverId);
+    // =-=-=-=-=-=- prod =-=-=-=-=-=-=
 
-    this.alarmService.makeCron(serverId);
-    this.postService.makeCron(serverId);
     // =-=-=-=-=-=- test =-=-=-=-=-=-=
     this.test(serverId);
     // =-=-=-=-=-=- test =-=-=-=-=-=-=
