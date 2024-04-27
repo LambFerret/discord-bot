@@ -420,7 +420,7 @@ class ServerRepository {
         for (const file of await promises_1.default.readdir(this.dbPath())) {
             let info;
             try {
-                info = await this.readJsonFromFile(file.split('-')[0]);
+                info = await this.readRawJsonFromFile(file);
             }
             catch (err) {
                 console.error(`Abort Application`);

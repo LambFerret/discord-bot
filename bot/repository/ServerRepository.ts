@@ -449,7 +449,7 @@ class ServerRepository {
         for (const file of await fs.readdir(this.dbPath())) {
             let info: ServerInfo;
             try {
-                info = await this.readJsonFromFile(file.split('-')[0]);
+                info = await this.readRawJsonFromFile(file);
             } catch (err) {
                 console.error(`Abort Application`);
                 // process.exit(1);
