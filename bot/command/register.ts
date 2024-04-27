@@ -93,7 +93,6 @@ export const registerYoutube: DropdownCommand = {
     command: CommandName.RegisterYoutube,
     execute: async (interaction: StringSelectMenuInteraction) => {
         const selectedChannelId = interaction.values[0].split(":")[0];
-        console.log(selectedChannelId);
         const channelInfo = await api.searchYoutubeByChannelID(selectedChannelId);
 
         if (!channelInfo) {

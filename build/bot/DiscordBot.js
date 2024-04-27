@@ -50,27 +50,19 @@ class DiscordBot {
                                                                
     `;
         console.log(title);
-        this.test("1113003626043035648");
-        const guildsInBotCache = this.client.guilds.cache.map(guild => guild.id);
-        guildsInBotCache.forEach(server => {
-            this.readyEachServer(server);
+        this.client.guilds.cache.forEach(guild => {
+            this.readyEachServer(guild.id);
         });
-        // await this.checkDBAndBotServerMatch();
-        // const lists = await serverService.getAllServers();
-        // lists.forEach(server => {
-        //   this.readyEachServer(server);
-        // });
     };
     test = async (serverId) => {
-        // this.slashCommandService.registerSlashCommand(serverId);
     };
     readyEachServer = async (serverId) => {
         console.log(`==== init ${serverId} server ====`);
         // =-=-=-=-=-=- prod =-=-=-=-=-=-=
-        // console.log("register slash command");
+        console.log("register slash command");
         this.slashCommandService.registerSlashCommand(serverId);
-        // this.alarmService.makeCron(serverId);
-        // this.postService.makeCron(serverId);
+        this.alarmService.makeCron(serverId);
+        this.postService.makeCron(serverId);
         // =-=-=-=-=-=- prod =-=-=-=-=-=-=
         // =-=-=-=-=-=- test =-=-=-=-=-=-=
         // this.test(serverId);

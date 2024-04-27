@@ -80,7 +80,6 @@ exports.registerYoutube = {
     command: _1.CommandName.RegisterYoutube,
     execute: async (interaction) => {
         const selectedChannelId = interaction.values[0].split(":")[0];
-        console.log(selectedChannelId);
         const channelInfo = await ExternalAPI_1.default.searchYoutubeByChannelID(selectedChannelId);
         if (!channelInfo) {
             // TODO 없어요 ㅠ

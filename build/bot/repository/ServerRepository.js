@@ -296,23 +296,6 @@ class ServerRepository {
         this.log(`Set Server Message ID`, `${guildId} : ${messageId}`);
         await this.db.findOneAndUpdate({ id: guildId }, { $set: { detectMessageId: messageId } });
     };
-    readRawJsonFromFile = async (fileName) => {
-        const filePath = path_1.default.join(this.dbPath(), fileName);
-        try {
-            const data = await promises_1.default.readFile(filePath, 'utf-8');
-            return JSON.parse(data);
-        }
-        catch (err) {
-            if (err instanceof Error && !err.toString().includes('ENOENT')) {
-                console.log(`Failed to read JSON from file: ${err}`);
-            }
-            if (err instanceof SyntaxError) {
-                // reset the file
-                console.log(`plz abort`);
-            }
-            throw err;
-        }
-    };
     /*
         readJsonFromFile = async (id: string): Promise<ServerInfo> => {
             console.log(`Read JSON from file: ${id}`);
@@ -336,7 +319,6 @@ class ServerRepository {
     readJsonFromFile = async (id) => {
         try {
             const data = await this.db.findOne({ id: id });
-            console.log(data);
             return data;
         }
         catch (err) {
