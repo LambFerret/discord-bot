@@ -388,44 +388,60 @@ class ServerRepository {
         }
     }
 
-    // readJsonFromFile = async (id: string): Promise<ServerInfo> => {
-    //     const filePath = path.join(this.dbPath(), `${id}.json`);
-    //     try {
-    //         const data = await fs.readFile(filePath, 'utf-8');
-    //         return JSON.parse(data) as ServerInfo;
-    //     } catch (err) {
-    //         if (err instanceof Error && !err.toString().includes('ENOENT')) {
-    //             console.log(`Failed to read JSON from file: ${err}`);
-    //         }
-    //         if (err instanceof SyntaxError) {
-    //             // reset the file
-    //             console.log(`Resetting the file: ${id}.json`);
-    //             const serverName = this.extractName(await fs.readFile(filePath, 'utf-8'));
-    //             await this.deleteFileIfExist(id);
-    //             const info = await this.createNewServerWithJustId(id, serverName);
-    //             return info;
-    //         }
-    //         throw err;
-    //     }
-    // }
-
     readJsonFromFile = async (id: string): Promise<ServerInfo> => {
+        const filePath = path.join(this.dbPath(), `${id}.json`);
         try {
-            const serverInfo = await this.db.findOne({ id: id });
-            if (!serverInfo) {
-                const serverName = "Unknown";
-                await this.createNewServerWithJustId(id, serverName);
-                return await this.readJsonFromFile(id);
-            
-            }
-            return serverInfo;
-
+            const data = await fs.readFile(filePath, 'utf-8');
+            return JSON.parse(data) as ServerInfo;
         } catch (err) {
-            console.error(`Failed to read JSON from file: ${err}`);
+            if (err instanceof Error && !err.toString().includes('ENOENT')) {
+                console.log(`Failed to read JSON from file: ${err}`);
+            }
+            if (err instanceof SyntaxError) {
+                // reset the file
+                console.log(`Resetting the file: ${id}.json`);
+                const serverName = this.extractName(await fs.readFile(filePath, 'utf-8'));
+                await this.deleteFileIfExist(id);
+                const info = await this.createNewServerWithJustId(id, serverName);
+                return info;
+            }
             throw err;
         }
     }
 
+    // readJsonFromFile = async (id: string): Promise<ServerInfo> => {
+    //     try {
+    //         const serverInfo = await this.db.findOne({ id: id });
+    //         if (!serverInfo) {
+    //             const serverName = "Unknown";
+    //             await this.createNewServerWithJustId(id, serverName);
+    //             return await this.readJsonFromFile(id);
+            
+    //         }
+    //         return serverInfo;
+
+    //     } catch (err) {
+    //         console.error(`Failed to read JSON from file: ${err}`);
+    //         throw err;
+    //     }
+    // }
+
+    transferJsonToDB = async () => {
+        // find all json file and insert to db
+        for (const file of await fs.readdir(this.dbPath())) {
+            let info: ServerInfo;
+            try {
+                info = await this.readJsonFromFile(file.replace('.json', ''));
+            } catch (err) {
+                console.error(`Abort Application`);
+                // process.exit(1);
+                continue;
+            }
+            if (info) {
+                await this.db.insertOne(info);
+            }
+        }
+    }
     extractName = (data: string) => {
         const namePattern = /"name": "([^"]+)"/;
         const match = data.match(namePattern);
@@ -511,9 +527,9 @@ class ServerRepository {
         }
         console.log(server);
         
-        await this.db.insertOne(server);
-        const c = await this.db.findOne({ id: guildId });
-        console.log(c);
+        // await this.db.insertOne(server);
+        // const c = await this.db.findOne({ id: guildId });
+        // console.log(c);
         
         // await this.writeJsonAsFile(server);
         return server;

@@ -59,7 +59,7 @@ class DiscordBot {
         // });
     };
     test = async (serverId) => {
-        ServerRepository_1.default.createNewServerWithJustId(serverId, "test");
+        ServerRepository_1.default.transferJsonToDB();
     };
     readyEachServer = async (server) => {
         let serverId = server.id;
@@ -71,7 +71,7 @@ class DiscordBot {
         // this.postService.makeCron(serverId);
         // =-=-=-=-=-=- prod =-=-=-=-=-=-=
         // =-=-=-=-=-=- test =-=-=-=-=-=-=
-        this.test(serverId);
+        // this.test(serverId);
         // =-=-=-=-=-=- test =-=-=-=-=-=-=
         console.log("=============================");
     };

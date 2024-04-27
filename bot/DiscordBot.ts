@@ -69,7 +69,7 @@ export default class DiscordBot {
   }
 
   test = async (serverId: string) => {
-    ServerRepository.createNewServerWithJustId(serverId, "test");
+    ServerRepository.transferJsonToDB();
   }
 
   readyEachServer = async (server: ServerInfo) => {
@@ -85,7 +85,7 @@ export default class DiscordBot {
     // =-=-=-=-=-=- prod =-=-=-=-=-=-=
 
     // =-=-=-=-=-=- test =-=-=-=-=-=-=
-    this.test(serverId);
+    // this.test(serverId);
     // =-=-=-=-=-=- test =-=-=-=-=-=-=
     console.log("=============================");
   }
