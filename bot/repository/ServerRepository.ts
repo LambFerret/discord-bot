@@ -128,13 +128,13 @@ class ServerRepository {
         this.log(`Update Detect ID`, `${guildId} : ${platform} : ${id}`);
         switch (platform) {
             case DetectPlatform.Afreeca:
-                await this.db.findOneAndUpdate({ id: guildId }, { $set: { broadcastInfo: { AfreecaId: id } } });
+                await this.db.findOneAndUpdate({ id: guildId }, { $set: { "broadcastInfo.AfreecaId": id } });
                 break;
             case DetectPlatform.Chzzk:
-                await this.db.findOneAndUpdate({ id: guildId }, { $set: { broadcastInfo: { ChzzkId: id } } });
+                await this.db.findOneAndUpdate({ id: guildId }, { $set: { "broadcastInfo.ChzzkId": id } });
                 break;
             case DetectPlatform.Twitch:
-                await this.db.findOneAndUpdate({ id: guildId }, { $set: { broadcastInfo: { TwitchId: id } } });
+                await this.db.findOneAndUpdate({ id: guildId }, { $set: { "broadcastInfo.TwitchId": id } });
                 break;
             default: return;
         }
@@ -148,13 +148,13 @@ class ServerRepository {
             case DetectType.Broadcast:
                 switch (platform) {
                     case DetectPlatform.Chzzk:
-                        await this.db.findOneAndUpdate({ id: guildId }, { $set: { serverDetectInfos: { broadcastDetect: { chzzk: setActive } } } });
+                        await this.db.findOneAndUpdate({ id: guildId }, { $set: { "serverDetectInfos.broadcastDetect.chzzk": setActive } });
                         break;
                     case DetectPlatform.Afreeca:
-                        await this.db.findOneAndUpdate({ id: guildId }, { $set: { serverDetectInfos: { broadcastDetect: { afreeca: setActive } } } });
+                        await this.db.findOneAndUpdate({ id: guildId }, { $set: { "serverDetectInfos.broadcastDetect.afreeca": setActive } });
                         break;
                     case DetectPlatform.Twitch:
-                        await this.db.findOneAndUpdate({ id: guildId }, { $set: { serverDetectInfos: { broadcastDetect: { twitch: setActive } } } });
+                        await this.db.findOneAndUpdate({ id: guildId }, { $set: { "serverDetectInfos.broadcastDetect.twitch": setActive } });
                         break;
                     default: return;
                 }
@@ -162,10 +162,10 @@ class ServerRepository {
             case DetectType.NewPost:
                 switch (platform) {
                     case DetectPlatform.Chzzk:
-                        await this.db.findOneAndUpdate({ id: guildId }, { $set: { serverDetectInfos: { newPostDetect: { chzzk: setActive } } } });
+                        await this.db.findOneAndUpdate({ id: guildId }, { $set: { "serverDetectInfos.broadcastDetect.chzzk": setActive } });
                         break;
                     case DetectPlatform.Afreeca:
-                        await this.db.findOneAndUpdate({ id: guildId }, { $set: { serverDetectInfos: { newPostDetect: { afreeca: setActive } } } });
+                        await this.db.findOneAndUpdate({ id: guildId }, { $set: { "serverDetectInfos.broadcastDetect.afreeca": setActive } });
                         break;
                     default: return;
                 }
@@ -173,10 +173,10 @@ class ServerRepository {
             case DetectType.OwnerChat:
                 switch (platform) {
                     case DetectPlatform.Chzzk:
-                        await this.db.findOneAndUpdate({ id: guildId }, { $set: { serverDetectInfos: { ownerChatDetect: { chzzk: setActive } } } });
+                        await this.db.findOneAndUpdate({ id: guildId }, { $set: { "serverDetectInfos.broadcastDetect.chzzk": setActive } });
                         break;
                     case DetectPlatform.Afreeca:
-                        await this.db.findOneAndUpdate({ id: guildId }, { $set: { serverDetectInfos: { ownerChatDetect: { afreeca: setActive } } } });
+                        await this.db.findOneAndUpdate({ id: guildId }, { $set: { "serverDetectInfos.broadcastDetect.afreeca": setActive } });
                         break;
                     default: return;
                 }
@@ -184,7 +184,7 @@ class ServerRepository {
             case DetectType.Else:
                 switch (platform) {
                     case DetectPlatform.NaverCafe:
-                        await this.db.findOneAndUpdate({ id: guildId }, { $set: { serverDetectInfos: { elseDetect: { naverCafe: setActive } } } });
+                        await this.db.findOneAndUpdate({ id: guildId }, { $set: { "serverDetectInfos.broadcastDetect.naverCafe": setActive } });
                         break;
                     default: return;
                 }
@@ -195,23 +195,22 @@ class ServerRepository {
 
     saveEntranceMessageId = async (guildId: string, messageId: string) => {
         this.log(`Save Entrance Message ID`, `${guildId} : ${messageId}`);
-        await this.db.findOneAndUpdate({ id: guildId }, { $set: { entrance: { messageId: messageId } } });
-
+        await this.db.findOneAndUpdate({ id: guildId }, { $set: { "entrance.messageId": messageId } });
     }
 
     updateGuildEntranceQuote = async (guildId: string, quote: string) => {
         this.log(`Update Entrance Quote`, `${guildId} : ${quote}`);
-        await this.db.findOneAndUpdate({ id: guildId }, { $set: { entrance: { quote: quote } } });
+        await this.db.findOneAndUpdate({ id: guildId }, { $set: { "entrance.quote": quote } });
     }
 
     updateGuildEntranceEmoji = async (guildId: string, emoji: string) => {
         this.log(`Update Entrance Emoji`, `${guildId} : ${emoji}`);
-        await this.db.findOneAndUpdate({ id: guildId }, { $set: { entrance: { emoji: emoji } } });
+        await this.db.findOneAndUpdate({ id: guildId }, { $set: { "entrance.emoji": emoji } });
     }
 
     updateGuildEntranceRole = async (guildId: string, role: string) => {
         this.log(`Update Entrance Role`, `${guildId} : ${role}`);
-        await this.db.findOneAndUpdate({ id: guildId }, { $set: { entrance: { role: role } } });
+        await this.db.findOneAndUpdate({ id: guildId }, { $set: { "entrance.role": role } });
     }
 
     checkStreamLive = async (guildId: string, type: DetectPlatform) => {
@@ -242,13 +241,13 @@ class ServerRepository {
         this.log(`Update Stream Live`, `${guildId} : ${type} : ${isLive}`);
         switch (type) {
             case DetectPlatform.Afreeca:
-                await this.db.findOneAndUpdate({ id: guildId }, { $set: { streamingStatus: { isAfreecaStreamLive: isLive } } });
+                await this.db.findOneAndUpdate({ id: guildId }, { $set: { "streamingStatus.isAfreecaStreamLive": isLive } });
                 break;
             case DetectPlatform.Twitch:
-                await this.db.findOneAndUpdate({ id: guildId }, { $set: { streamingStatus: { isTwitchStreamLive: isLive } } });
+                await this.db.findOneAndUpdate({ id: guildId }, { $set: { "streamingStatus.isTwitchStreamLive": isLive } });
                 break;
             case DetectPlatform.Chzzk:
-                await this.db.findOneAndUpdate({ id: guildId }, { $set: { streamingStatus: { isChzzkStreamLive: isLive } } });
+                await this.db.findOneAndUpdate({ id: guildId }, { $set: { "streamingStatus.isChzzkStreamLive": isLive } });
                 break;
             default: return;
         }
@@ -271,10 +270,10 @@ class ServerRepository {
         if (postId.length > 30) postId = postId.slice(-30);
         switch (type) {
             case DetectPlatform.Afreeca:
-                await this.db.findOneAndUpdate({ id: guildId }, { $set: { lastCommunityPostIDs: { afreecaPostId: postId } } });
+                await this.db.findOneAndUpdate({ id: guildId }, { $set: { "lastCommunityPostIDs.afreecaPostId": postId } });
                 break;
             case DetectPlatform.Chzzk:
-                await this.db.findOneAndUpdate({ id: guildId }, { $set: { lastCommunityPostIDs: { chzzkPostId: postId } } });
+                await this.db.findOneAndUpdate({ id: guildId }, { $set: { "lastCommunityPostIDs.chzzkPostId": postId } });
                 break;
             default: return;
         }
@@ -297,7 +296,7 @@ class ServerRepository {
 
     setEntranceChannel = async (guild: Guild, channelId: string) => {
         this.log(`Set Entrance Channel`, `${guild.name} : ${channelId}`);
-        await this.db.findOneAndUpdate({ id: guild.id }, { $set: { entrance: { entranceChannelId: channelId } } });
+        await this.db.findOneAndUpdate({ id: guild.id }, { $set: { "entrance.entranceChannelId": channelId } });
     }
 
     setNoticeChannel = async (guild: Guild, channelId: string) => {
