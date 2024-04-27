@@ -23,7 +23,6 @@ export default class DiscordBot {
 
   constructor() {
     this.mongo = MongoConnect.getInstance();
-    this.mongo.connect();
     this.client = new CustomClient();
     this.slashCommandService = new SlashCommandService(this.client as CustomClient);
     this.alarmService = new AlarmService(this.client);

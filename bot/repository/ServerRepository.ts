@@ -8,10 +8,10 @@ import MongoConnect from "../config/MongoConnect";
 import { Collection } from "mongodb";
 
 class ServerRepository {
-    private db: Collection;
+    private db: MongoConnect;
 
     constructor() {
-        this.db = MongoConnect.getInstance().getCollection();
+        this.db = MongoConnect.getInstance();
     }
 
     dbPath = (): string => {
@@ -388,26 +388,44 @@ class ServerRepository {
         }
     }
 
+    // readJsonFromFile = async (id: string): Promise<ServerInfo> => {
+    //     const filePath = path.join(this.dbPath(), `${id}.json`);
+    //     try {
+    //         const data = await fs.readFile(filePath, 'utf-8');
+    //         return JSON.parse(data) as ServerInfo;
+    //     } catch (err) {
+    //         if (err instanceof Error && !err.toString().includes('ENOENT')) {
+    //             console.log(`Failed to read JSON from file: ${err}`);
+    //         }
+    //         if (err instanceof SyntaxError) {
+    //             // reset the file
+    //             console.log(`Resetting the file: ${id}.json`);
+    //             const serverName = this.extractName(await fs.readFile(filePath, 'utf-8'));
+    //             await this.deleteFileIfExist(id);
+    //             const info = await this.createNewServerWithJustId(id, serverName);
+    //             return info;
+    //         }
+    //         throw err;
+    //     }
+    // }
+
     readJsonFromFile = async (id: string): Promise<ServerInfo> => {
-        const filePath = path.join(this.dbPath(), `${id}.json`);
         try {
-            const data = await fs.readFile(filePath, 'utf-8');
-            return JSON.parse(data) as ServerInfo;
+            const serverInfo = await this.db.findOne({ id: id });
+            if (!serverInfo) {
+                const serverName = "Unknown";
+                await this.createNewServerWithJustId(id, serverName);
+                return await this.readJsonFromFile(id);
+            
+            }
+            return serverInfo;
+
         } catch (err) {
-            if (err instanceof Error && !err.toString().includes('ENOENT')) {
-                console.log(`Failed to read JSON from file: ${err}`);
-            }
-            if (err instanceof SyntaxError) {
-                // reset the file
-                console.log(`Resetting the file: ${id}.json`);
-                const serverName = this.extractName(await fs.readFile(filePath, 'utf-8'));
-                await this.deleteFileIfExist(id);
-                const info = await this.createNewServerWithJustId(id, serverName);
-                return info;
-            }
+            console.error(`Failed to read JSON from file: ${err}`);
             throw err;
         }
     }
+
     extractName = (data: string) => {
         const namePattern = /"name": "([^"]+)"/;
         const match = data.match(namePattern);
@@ -491,9 +509,10 @@ class ServerRepository {
                 erasePreviousMessage: true,
             }
         }
-        console.log(server);
-        
         await this.db.insertOne(server);
+        const c = await this.db.findOne({ id: guildId });
+        console.log(c);
+        
         // await this.writeJsonAsFile(server);
         return server;
 

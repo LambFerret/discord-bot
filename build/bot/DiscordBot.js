@@ -19,7 +19,6 @@ class DiscordBot {
     mongo;
     constructor() {
         this.mongo = MongoConnect_1.default.getInstance();
-        this.mongo.connect();
         this.client = new CustomClient_1.CustomClient();
         this.slashCommandService = new SlashCommandService_1.default(this.client);
         this.alarmService = new AlarmService_1.default(this.client);

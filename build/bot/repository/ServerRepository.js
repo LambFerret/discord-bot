@@ -9,7 +9,7 @@ const MongoConnect_1 = tslib_1.__importDefault(require("../config/MongoConnect")
 class ServerRepository {
     db;
     constructor() {
-        this.db = MongoConnect_1.default.getInstance().getCollection();
+        this.db = MongoConnect_1.default.getInstance();
     }
     dbPath = () => {
         if (!fss.existsSync(__dirname + "/../../db/"))
@@ -362,24 +362,38 @@ class ServerRepository {
             console.error(`Failed to create server: ${err}`);
         }
     };
+    // readJsonFromFile = async (id: string): Promise<ServerInfo> => {
+    //     const filePath = path.join(this.dbPath(), `${id}.json`);
+    //     try {
+    //         const data = await fs.readFile(filePath, 'utf-8');
+    //         return JSON.parse(data) as ServerInfo;
+    //     } catch (err) {
+    //         if (err instanceof Error && !err.toString().includes('ENOENT')) {
+    //             console.log(`Failed to read JSON from file: ${err}`);
+    //         }
+    //         if (err instanceof SyntaxError) {
+    //             // reset the file
+    //             console.log(`Resetting the file: ${id}.json`);
+    //             const serverName = this.extractName(await fs.readFile(filePath, 'utf-8'));
+    //             await this.deleteFileIfExist(id);
+    //             const info = await this.createNewServerWithJustId(id, serverName);
+    //             return info;
+    //         }
+    //         throw err;
+    //     }
+    // }
     readJsonFromFile = async (id) => {
-        const filePath = path_1.default.join(this.dbPath(), `${id}.json`);
         try {
-            const data = await promises_1.default.readFile(filePath, 'utf-8');
-            return JSON.parse(data);
+            const serverInfo = await this.db.findOne({ id: id });
+            if (!serverInfo) {
+                const serverName = "Unknown";
+                await this.createNewServerWithJustId(id, serverName);
+                return await this.readJsonFromFile(id);
+            }
+            return serverInfo;
         }
         catch (err) {
-            if (err instanceof Error && !err.toString().includes('ENOENT')) {
-                console.log(`Failed to read JSON from file: ${err}`);
-            }
-            if (err instanceof SyntaxError) {
-                // reset the file
-                console.log(`Resetting the file: ${id}.json`);
-                const serverName = this.extractName(await promises_1.default.readFile(filePath, 'utf-8'));
-                await this.deleteFileIfExist(id);
-                const info = await this.createNewServerWithJustId(id, serverName);
-                return info;
-            }
+            console.error(`Failed to read JSON from file: ${err}`);
             throw err;
         }
     };
@@ -463,8 +477,9 @@ class ServerRepository {
                 erasePreviousMessage: true,
             }
         };
-        console.log(server);
         await this.db.insertOne(server);
+        const c = await this.db.findOne({ id: guildId });
+        console.log(c);
         // await this.writeJsonAsFile(server);
         return server;
     };
