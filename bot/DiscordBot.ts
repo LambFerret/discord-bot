@@ -44,7 +44,7 @@ export default class DiscordBot {
     // DM to guild owner 
     const owner = await guild.fetchOwner();
     introduceBotWithDM(owner);
-    this.readyEachServer(server);
+    this.readyEachServer(server.id);
   }
 
   initServers = async () => {
@@ -59,7 +59,11 @@ export default class DiscordBot {
     `
     console.log(title)
     this.test("1113003626043035648");
-
+    const guildsInBotCache = this.client.guilds.cache.map(guild => guild.id);
+    guildsInBotCache.forEach(server => {
+      this.readyEachServer(server);
+    
+    })
 
     // await this.checkDBAndBotServerMatch();
     // const lists = await serverService.getAllServers();
@@ -69,14 +73,12 @@ export default class DiscordBot {
   }
 
   test = async (serverId: string) => {
-    this.slashCommandService.registerSlashCommand(serverId);
-    ServerRepository.transferJsonToDB();
+    // this.slashCommandService.registerSlashCommand(serverId);
   }
 
-  readyEachServer = async (server: ServerInfo) => {
-    let serverId = server.id;
+  readyEachServer = async (serverId: string) => {
 
-    console.log(`==== init ${server.name} server ====`);
+    console.log(`==== init ${serverId} server ====`);
 
     // =-=-=-=-=-=- prod =-=-=-=-=-=-=
     // console.log("register slash command");
@@ -93,6 +95,7 @@ export default class DiscordBot {
 
 
   checkDBAndBotServerMatch = async () => {
+    /*
     const guildsInBotCache = this.client.guilds.cache.map(guild => guild.id);
     const GuildsInDB = await serverService.getAllServers();
 
@@ -113,6 +116,7 @@ export default class DiscordBot {
         }
       }
     }
+    */
   }
 
   handleReactionAdd = async (reaction: MessageReaction | PartialMessageReaction, user: User | PartialUser) => {

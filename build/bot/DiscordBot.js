@@ -5,7 +5,6 @@ const discord_js_1 = require("discord.js");
 const Config_1 = require("./config/Config");
 const CustomClient_1 = require("./config/CustomClient");
 const MessageFormat_1 = require("./MessageFormat");
-const ServerRepository_1 = tslib_1.__importDefault(require("./repository/ServerRepository"));
 const AlarmService_1 = tslib_1.__importDefault(require("./service/AlarmService"));
 const PostService_1 = tslib_1.__importDefault(require("./service/PostService"));
 const ServerService_1 = tslib_1.__importDefault(require("./service/ServerService"));
@@ -38,7 +37,7 @@ class DiscordBot {
         // DM to guild owner 
         const owner = await guild.fetchOwner();
         (0, MessageFormat_1.introduceBotWithDM)(owner);
-        this.readyEachServer(server);
+        this.readyEachServer(server.id);
     };
     initServers = async () => {
         const title = `
@@ -52,6 +51,10 @@ class DiscordBot {
     `;
         console.log(title);
         this.test("1113003626043035648");
+        const guildsInBotCache = this.client.guilds.cache.map(guild => guild.id);
+        guildsInBotCache.forEach(server => {
+            this.readyEachServer(server);
+        });
         // await this.checkDBAndBotServerMatch();
         // const lists = await serverService.getAllServers();
         // lists.forEach(server => {
@@ -59,12 +62,10 @@ class DiscordBot {
         // });
     };
     test = async (serverId) => {
-        this.slashCommandService.registerSlashCommand(serverId);
-        ServerRepository_1.default.transferJsonToDB();
+        // this.slashCommandService.registerSlashCommand(serverId);
     };
-    readyEachServer = async (server) => {
-        let serverId = server.id;
-        console.log(`==== init ${server.name} server ====`);
+    readyEachServer = async (serverId) => {
+        console.log(`==== init ${serverId} server ====`);
         // =-=-=-=-=-=- prod =-=-=-=-=-=-=
         // console.log("register slash command");
         this.slashCommandService.registerSlashCommand(serverId);
@@ -77,25 +78,28 @@ class DiscordBot {
         console.log("=============================");
     };
     checkDBAndBotServerMatch = async () => {
+        /*
         const guildsInBotCache = this.client.guilds.cache.map(guild => guild.id);
-        const GuildsInDB = await ServerService_1.default.getAllServers();
+        const GuildsInDB = await serverService.getAllServers();
+    
         // 데이터베이스에는 있지만 봇 캐시에 없는 서버 삭제
         for (const guild of GuildsInDB) {
-            const guildIdInDB = guild.id;
-            if (!guildsInBotCache.includes(guildIdInDB)) {
-                await ServerService_1.default.deleteServer(guildIdInDB);
-            }
+          const guildIdInDB = guild.id;
+          if (!guildsInBotCache.includes(guildIdInDB)) {
+            await serverService.deleteServer(guildIdInDB);
+          }
         }
+    
         for (const guildId of guildsInBotCache) {
-            if (!GuildsInDB.find(server => server.id === guildId)) {
-                const exists = await ServerRepository_1.default.checkGuildExists(guildId);
-                if (!exists) {
-                    const guild = this.client.guilds.cache.get(guildId);
-                    if (guild)
-                        await ServerService_1.default.createServer(guild);
-                }
+          if (!GuildsInDB.find(server => server.id === guildId)) {
+            const exists = await ServerRepository.checkGuildExists(guildId);
+            if (!exists) {
+              const guild = this.client.guilds.cache.get(guildId);
+              if (guild) await serverService.createServer(guild);
             }
+          }
         }
+        */
     };
     handleReactionAdd = async (reaction, user) => {
         if (user.bot)

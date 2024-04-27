@@ -95,7 +95,11 @@ class MongoConnect {
         }
     }
     async findOne(query) {
-        return await this.serverModel.findOne();
+        const data = await this.serverModel.findOne(query);
+        if (data === null) {
+            console.error("No data found of the query: " + query);
+        }
+        return data;
     }
     async findOneAndUpdate(query, data) {
         return await this.serverModel.findOneAndUpdate(query, data);

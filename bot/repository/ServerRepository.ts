@@ -101,17 +101,18 @@ class ServerRepository {
     }
 
     getEntranceInfo = async (guildId: string) => {
-        const info = await this.readJsonFromDB(guildId);
+        const info = await this.readJsonFromFile(guildId);
         return info.entrance;
     }
 
     getDetectInfo = async (guildId: string) => {
-        const info = await this.readJsonFromDB(guildId);
+        const info = await this.readJsonFromFile(guildId);
         return info.serverDetectInfos;
     }
 
     getDetectID = async (guildId: string, platform: DetectPlatform) => {
-        const info = await this.readJsonFromDB(guildId);
+        const info = await this.db.findOne({ id: guildId });
+        if (!info || !info.broadcastInfo) return "";
         switch (platform) {
             case DetectPlatform.Afreeca:
                 return info.broadcastInfo.AfreecaId;
@@ -127,13 +128,13 @@ class ServerRepository {
         this.log(`Update Detect ID`, `${guildId} : ${platform} : ${id}`);
         switch (platform) {
             case DetectPlatform.Afreeca:
-                this.db.findOneAndUpdate({ id: guildId }, { $set: { broadcastInfo: { AfreecaId: id } } });
+                await this.db.findOneAndUpdate({ id: guildId }, { $set: { broadcastInfo: { AfreecaId: id } } });
                 break;
             case DetectPlatform.Chzzk:
-                this.db.findOneAndUpdate({ id: guildId }, { $set: { broadcastInfo: { ChzzkId: id } } });
+                await this.db.findOneAndUpdate({ id: guildId }, { $set: { broadcastInfo: { ChzzkId: id } } });
                 break;
             case DetectPlatform.Twitch:
-                this.db.findOneAndUpdate({ id: guildId }, { $set: { broadcastInfo: { TwitchId: id } } });
+                await this.db.findOneAndUpdate({ id: guildId }, { $set: { broadcastInfo: { TwitchId: id } } });
                 break;
             default: return;
         }
@@ -141,19 +142,19 @@ class ServerRepository {
 
     updateDetectInfo = async (guildId: string, channelId: string, type: DetectType, platform: DetectPlatform, setActive: boolean) => {
         this.log(`Update Detect Info`, `${guildId} : ${channelId} : ${type} : ${platform} : ${setActive}`);
-        const info = await this.readJsonFromDB(guildId);
+        const info = await this.readJsonFromFile(guildId);
         if (info.detectChannel === "") this.db.findOneAndUpdate({ id: guildId }, { $set: { detectChannel: channelId } });
         switch (type) {
             case DetectType.Broadcast:
                 switch (platform) {
                     case DetectPlatform.Chzzk:
-                        this.db.findOneAndUpdate({ id: guildId }, { $set: { serverDetectInfos: { broadcastDetect: { chzzk: setActive } } } });
+                        await this.db.findOneAndUpdate({ id: guildId }, { $set: { serverDetectInfos: { broadcastDetect: { chzzk: setActive } } } });
                         break;
                     case DetectPlatform.Afreeca:
-                        this.db.findOneAndUpdate({ id: guildId }, { $set: { serverDetectInfos: { broadcastDetect: { afreeca: setActive } } } });
+                        await this.db.findOneAndUpdate({ id: guildId }, { $set: { serverDetectInfos: { broadcastDetect: { afreeca: setActive } } } });
                         break;
                     case DetectPlatform.Twitch:
-                        this.db.findOneAndUpdate({ id: guildId }, { $set: { serverDetectInfos: { broadcastDetect: { twitch: setActive } } } });
+                        await this.db.findOneAndUpdate({ id: guildId }, { $set: { serverDetectInfos: { broadcastDetect: { twitch: setActive } } } });
                         break;
                     default: return;
                 }
@@ -161,10 +162,10 @@ class ServerRepository {
             case DetectType.NewPost:
                 switch (platform) {
                     case DetectPlatform.Chzzk:
-                        this.db.findOneAndUpdate({ id: guildId }, { $set: { serverDetectInfos: { newPostDetect: { chzzk: setActive } } } });
+                        await this.db.findOneAndUpdate({ id: guildId }, { $set: { serverDetectInfos: { newPostDetect: { chzzk: setActive } } } });
                         break;
                     case DetectPlatform.Afreeca:
-                        this.db.findOneAndUpdate({ id: guildId }, { $set: { serverDetectInfos: { newPostDetect: { afreeca: setActive } } } });
+                        await this.db.findOneAndUpdate({ id: guildId }, { $set: { serverDetectInfos: { newPostDetect: { afreeca: setActive } } } });
                         break;
                     default: return;
                 }
@@ -172,10 +173,10 @@ class ServerRepository {
             case DetectType.OwnerChat:
                 switch (platform) {
                     case DetectPlatform.Chzzk:
-                        this.db.findOneAndUpdate({ id: guildId }, { $set: { serverDetectInfos: { ownerChatDetect: { chzzk: setActive } } } });
+                        await this.db.findOneAndUpdate({ id: guildId }, { $set: { serverDetectInfos: { ownerChatDetect: { chzzk: setActive } } } });
                         break;
                     case DetectPlatform.Afreeca:
-                        this.db.findOneAndUpdate({ id: guildId }, { $set: { serverDetectInfos: { ownerChatDetect: { afreeca: setActive } } } });
+                        await this.db.findOneAndUpdate({ id: guildId }, { $set: { serverDetectInfos: { ownerChatDetect: { afreeca: setActive } } } });
                         break;
                     default: return;
                 }
@@ -183,7 +184,7 @@ class ServerRepository {
             case DetectType.Else:
                 switch (platform) {
                     case DetectPlatform.NaverCafe:
-                        this.db.findOneAndUpdate({ id: guildId }, { $set: { serverDetectInfos: { elseDetect: { naverCafe: setActive } } } });
+                        await this.db.findOneAndUpdate({ id: guildId }, { $set: { serverDetectInfos: { elseDetect: { naverCafe: setActive } } } });
                         break;
                     default: return;
                 }
@@ -194,38 +195,32 @@ class ServerRepository {
 
     saveEntranceMessageId = async (guildId: string, messageId: string) => {
         this.log(`Save Entrance Message ID`, `${guildId} : ${messageId}`);
-        const info = await this.readJsonFromFile(guildId);
-        info.entrance.messageId = messageId;
-        await this.writeJsonAsFile(info);
+        await this.db.findOneAndUpdate({ id: guildId }, { $set: { entrance: { messageId: messageId } } });
+
     }
 
     updateGuildEntranceQuote = async (guildId: string, quote: string) => {
         this.log(`Update Entrance Quote`, `${guildId} : ${quote}`);
-        const info = await this.readJsonFromFile(guildId);
-        info.entrance.quote = quote;
-        await this.writeJsonAsFile(info);
+        await this.db.findOneAndUpdate({ id: guildId }, { $set: { entrance: { quote: quote } } });
     }
 
     updateGuildEntranceEmoji = async (guildId: string, emoji: string) => {
         this.log(`Update Entrance Emoji`, `${guildId} : ${emoji}`);
-        const info = await this.readJsonFromFile(guildId);
-        info.entrance.emoji = emoji;
-        await this.writeJsonAsFile(info);
+        await this.db.findOneAndUpdate({ id: guildId }, { $set: { entrance: { emoji: emoji } } });
     }
 
     updateGuildEntranceRole = async (guildId: string, role: string) => {
         this.log(`Update Entrance Role`, `${guildId} : ${role}`);
-        const info = await this.readJsonFromFile(guildId);
-        info.entrance.role = role;
-        await this.writeJsonAsFile(info);
+        await this.db.findOneAndUpdate({ id: guildId }, { $set: { entrance: { role: role } } });
     }
 
     checkStreamLive = async (guildId: string, type: DetectPlatform) => {
-        const info = await this.readJsonFromFile(guildId);
         let liveDTO: LiveInfoDTO = {
             id: undefined,
             isLive: false,
         }
+        const info = await this.db.findOne({ id: guildId });
+        if (!info) return liveDTO;
         switch (type) {
             case DetectPlatform.Afreeca:
                 liveDTO.id = info.broadcastInfo.AfreecaId;
@@ -245,24 +240,23 @@ class ServerRepository {
 
     updateStreamLive = async (guildId: string, type: DetectPlatform, isLive: boolean) => {
         this.log(`Update Stream Live`, `${guildId} : ${type} : ${isLive}`);
-        const info = await this.readJsonFromFile(guildId);
         switch (type) {
             case DetectPlatform.Afreeca:
-                info.streamingStatus.isAfreecaStreamLive = isLive;
+                await this.db.findOneAndUpdate({ id: guildId }, { $set: { streamingStatus: { isAfreecaStreamLive: isLive } } });
                 break;
             case DetectPlatform.Twitch:
-                info.streamingStatus.isTwitchStreamLive = isLive;
+                await this.db.findOneAndUpdate({ id: guildId }, { $set: { streamingStatus: { isTwitchStreamLive: isLive } } });
                 break;
             case DetectPlatform.Chzzk:
-                info.streamingStatus.isChzzkStreamLive = isLive;
+                await this.db.findOneAndUpdate({ id: guildId }, { $set: { streamingStatus: { isChzzkStreamLive: isLive } } });
                 break;
             default: return;
         }
-        await this.writeJsonAsFile(info);
     }
 
     getNewPostByPlatform = async (guildId: string, type: DetectPlatform): Promise<string[]> => {
-        const info = await this.readJsonFromFile(guildId);
+        const info = await this.db.findOne({ id: guildId });
+        if (!info) return [];
         switch (type) {
             case DetectPlatform.Afreeca:
                 return info.lastCommunityPostIDs.afreecaPostId;
@@ -275,81 +269,58 @@ class ServerRepository {
     updateNewPostByPlatform = async (guildId: string, type: DetectPlatform, postId: string[]) => {
         this.log(`Update New Post`, `${guildId} : ${type} : ${postId}`);
         if (postId.length > 30) postId = postId.slice(-30);
-        const info = await this.readJsonFromFile(guildId);
         switch (type) {
             case DetectPlatform.Afreeca:
-                info.lastCommunityPostIDs.afreecaPostId = postId;
+                await this.db.findOneAndUpdate({ id: guildId }, { $set: { lastCommunityPostIDs: { afreecaPostId: postId } } });
                 break;
             case DetectPlatform.Chzzk:
-                info.lastCommunityPostIDs.chzzkPostId = postId;
+                await this.db.findOneAndUpdate({ id: guildId }, { $set: { lastCommunityPostIDs: { chzzkPostId: postId } } });
                 break;
             default: return;
         }
-        await this.writeJsonAsFile(info);
     }
 
     getServerSettings = async (guildId: string): Promise<Settings> => {
-        const info = await this.readJsonFromFile(guildId);
+        const info = await this.db.findOne({ id: guildId });
         return info.settings;
     }
 
     updateServerSettings = async (guildId: string, settings: Settings) => {
         this.log(`Update Server Settings`, `${guildId} : ${settings}`);
-        const info = await this.readJsonFromFile(guildId);
-        info.settings = settings;
-        await this.writeJsonAsFile(info);
+        await this.db.findOneAndUpdate({ id: guildId }, { $set: { settings: settings } });
     }
 
     updateDetectChannel = async (guildId: string, channelId: string) => {
         this.log(`Update Detect Channel`, `${guildId} : ${channelId}`);
-        const info = await this.readJsonFromFile(guildId);
-        info.detectChannel = channelId;
-        await this.writeJsonAsFile(info);
+        await this.db.findOneAndUpdate({ id: guildId }, { $set: { detectChannel: channelId } });
     }
 
     setEntranceChannel = async (guild: Guild, channelId: string) => {
         this.log(`Set Entrance Channel`, `${guild.name} : ${channelId}`);
-        const info = await this.readJsonFromFile(guild.id);
-        info.entrance.entranceChannelId = channelId;
-        await this.writeJsonAsFile(info);
+        await this.db.findOneAndUpdate({ id: guild.id }, { $set: { entrance: { entranceChannelId: channelId } } });
     }
 
     setNoticeChannel = async (guild: Guild, channelId: string) => {
         this.log(`Set Notice Channel`, `${guild.name} : ${channelId}`);
-        const info = await this.readJsonFromFile(guild.id);
-        info.detectChannel = channelId;
-        await this.writeJsonAsFile(info);
+        await this.db.findOneAndUpdate({ id: guild.id }, { $set: { detectChannel: channelId } });
     }
 
-    getDetectChannel = async (guildId: string): Promise<string> => (await this.readJsonFromFile(guildId)).detectChannel;
-    getServerPostfix = async (guildId: string): Promise<string> => (await this.readJsonFromFile(guildId)).postfix;
+    getDetectChannel = async (guildId: string): Promise<string> => (await this.db.findOne({ id: guildId })).detectChannel;
+    getServerPostfix = async (guildId: string): Promise<string> => (await this.db.findOne({ id: guildId })).postfix;
 
     updateGuildPostfix = async (guildId: string, postfix: string) => {
         this.log(`Update Postfix`, `${guildId} : ${postfix}`);
-        const info = await this.readJsonFromFile(guildId);
-        info.postfix = postfix;
-        await this.writeJsonAsFile(info);
+        await this.db.findOneAndUpdate({ id: guildId }, { $set: { postfix: postfix } });
     }
 
-    getServerMessageId = async (guildId: string): Promise<string> => (await this.readJsonFromFile(guildId)).detectMessageId;
+    getServerMessageId = async (guildId: string): Promise<string> => (await this.db.findOne({ id: guildId })).detectMessageId;
     setServerMessageId = async (guildId: string, messageId: string) => {
         this.log(`Set Server Message ID`, `${guildId} : ${messageId}`);
-        const info = await this.readJsonFromFile(guildId);
-        info.detectMessageId = messageId;
-        await this.writeJsonAsFile(info);
+        await this.db.findOneAndUpdate({ id: guildId }, { $set: { detectMessageId: messageId } });
     }
 
-    writeJsonAsFile = async (info: ServerInfo) => {
-        try {
-            // const filePath = path.join(this.dbPath(), `${info.id}.json`);
-            // await fs.writeFile(filePath, JSON.stringify(info, null, 2));
-            console.log(`I Just Pretend to .. : Server ${info.id} save successfully!`);
-        } catch (err) {
-            console.error(`Failed to create server: ${err}`);
-        }
-    }
     readRawJsonFromFile = async (fileName: string): Promise<ServerInfo> => {
-        const filePath = path.join(this.dbPath(),fileName);
+        const filePath = path.join(this.dbPath(), fileName);
         try {
             const data = await fs.readFile(filePath, 'utf-8');
             return JSON.parse(data) as ServerInfo;
@@ -364,60 +335,40 @@ class ServerRepository {
             throw err;
         }
     }
+    /*
+        readJsonFromFile = async (id: string): Promise<ServerInfo> => {
+            console.log(`Read JSON from file: ${id}`);
+            
+            const filePath = path.join(this.dbPath(), `${id}.json`);
+            try {
+                const data = await fs.readFile(filePath, 'utf-8');
+                return JSON.parse(data) as ServerInfo;
+            } catch (err) {
+                if (err instanceof Error && !err.toString().includes('ENOENT')) {
+                    console.log(`Failed to read JSON from file: ${err}`);
+                }
+                if (err instanceof SyntaxError) {
+                    // reset the file
+                    console.log(`plz abort`);
+                }
+                throw err;
+            }
+        }
+        */
 
     readJsonFromFile = async (id: string): Promise<ServerInfo> => {
-        console.log(`Read JSON from file: ${id}`);
-        
-        const filePath = path.join(this.dbPath(), `${id}.json`);
         try {
-            const data = await fs.readFile(filePath, 'utf-8');
-            return JSON.parse(data) as ServerInfo;
-        } catch (err) {
-            if (err instanceof Error && !err.toString().includes('ENOENT')) {
-                console.log(`Failed to read JSON from file: ${err}`);
-            }
-            if (err instanceof SyntaxError) {
-                // reset the file
-                console.log(`plz abort`);
-            }
-            throw err;
-        }
-    }
+            const data = await this.db.findOne({ id: id }) as ServerInfo;
+            console.log(data);
 
-    readJsonFromDB = async (id: string): Promise<ServerInfo> => {
-        try {
-            return await this.db.findOne({ id: id }) as ServerInfo;
+            return data;
         } catch (err) {
             console.error(`Failed to read JSON from file: ${err}`);
             throw err;
         }
     }
 
-    transferJsonToDB = async () => {
-        // find all json file and insert to db
-        for (const file of await fs.readdir(this.dbPath())) {
-            let info: ServerInfo;
-            try {
-                info = await this.readRawJsonFromFile(file);
-            } catch (err) {
-                continue;
-            }
-            if (info) {
-                await this.db.insertOne(info);
-            }
-        }
-    }
-
-    archiveServerFile = async (guildId: string) => {
-        const time = new Date();
-        const archivePath = path.join(__dirname + "/../../archive/");
-        if (!fss.existsSync(archivePath)) fss.mkdirSync(archivePath);
-        const filePath = path.join(this.dbPath(), `${guildId}.json`);
-        const archiveFilePath = path.join(archivePath, `${guildId}-${time.getFullYear()}-${time.getMonth()}-${time.getDate()}-${time.getHours()}-${time.getMinutes()}-${time.getSeconds()}.json`);
-        await fs.rename(filePath, archiveFilePath);
-    }
-
-    SaveDataInfoFile = async (guildId : string, data : any) => {
+    SaveDataInfoFile = async (guildId: string, data: any) => {
         const time = new Date();
         const filePath = path.join(__dirname + "/../../archive/");
         if (!fss.existsSync(filePath)) fss.mkdirSync(filePath);

@@ -102,8 +102,12 @@ export default class MongoConnect {
         }
     }
 
-    public async findOne(query: any) {
-        return await this.serverModel.findOne();
+    public async findOne(query: any): Promise<ServerInfo> {
+        const data = await this.serverModel.findOne(query);
+        if (data === null) {
+            console.error("No data found of the query: " + query);
+        }
+        return data as ServerInfo;
     }
 
     public async findOneAndUpdate(query: any, data: any) {
