@@ -76,7 +76,7 @@ class MongoConnect {
     serverModel;
     constructor() {
         // Mongoose를 사용하여 MongoDB에 연결
-        mongoose_1.default.connect(`${Config_1.CONFIG.MONGO_URI}/${databaseName}`, {
+        mongoose_1.default.connect(Config_1.CONFIG.MONGO_URI, {
             useNewUrlParser: true,
             useUnifiedTopology: true
         });
