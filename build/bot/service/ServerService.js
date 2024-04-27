@@ -7,7 +7,7 @@ class ServerService {
         return ServerRepository_1.default.createNewServer(info);
     }
     deleteServer(guildId) {
-        return ServerRepository_1.default.deleteServer(guildId);
+        return ServerRepository_1.default.deleteServerWithDB(guildId);
     }
     async getStreamLiveInfo(guildId, type) {
         return await ServerRepository_1.default.checkStreamLive(guildId, type);
@@ -42,8 +42,8 @@ class ServerService {
     async updateGuildEntranceRole(guildId, role) {
         ServerRepository_1.default.updateGuildEntranceRole(guildId, role);
     }
-    async getAllServers() {
-        return ServerRepository_1.default.getAllServers();
+    async isServerExist(guildId) {
+        return await ServerRepository_1.default.isServerExist(guildId);
     }
 }
 exports.default = new ServerService();

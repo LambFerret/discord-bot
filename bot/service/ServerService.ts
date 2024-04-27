@@ -9,7 +9,7 @@ class ServerService {
     }
 
     deleteServer(guildId: string) {
-        return serverRepository.deleteServer(guildId);
+        return serverRepository.deleteServerWithDB(guildId);
     }
 
     async getStreamLiveInfo(guildId: string, type: DetectPlatform) {
@@ -56,8 +56,8 @@ class ServerService {
         serverRepository.updateGuildEntranceRole(guildId, role)
     }
 
-    async getAllServers() {
-        return serverRepository.getAllServers();
+    async isServerExist(guildId: string): Promise<boolean> {
+        return await serverRepository.isServerExist(guildId)
     }
 }
 

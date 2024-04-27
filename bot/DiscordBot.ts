@@ -71,6 +71,11 @@ export default class DiscordBot {
 
     console.log(`==== init ${serverId} server ====`);
 
+    if (!(await serverService.isServerExist(serverId))) {
+      console.log("server not exist");
+      await this.createServer(this.client.guilds.cache.get(serverId) as Guild);
+    }
+
     // =-=-=-=-=-=- prod =-=-=-=-=-=-=
     console.log("register slash command");
     this.slashCommandService.registerSlashCommand(serverId);

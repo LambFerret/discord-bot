@@ -339,24 +339,6 @@ class ServerRepository {
             console.error(`Failed Save File : ${err}`);
         }
     };
-    updateServerStreamer = (guildId) => {
-    };
-    getAllServers = async () => {
-        const detectingServers = [];
-        for (const file of await promises_1.default.readdir(this.dbPath())) {
-            let info;
-            try {
-                info = await this.readJsonFromFile(file.replace('.json', ''));
-            }
-            catch (err) {
-                console.error(`Abort Application`);
-                process.exit(1);
-            }
-            if (info)
-                detectingServers.push(info);
-        }
-        return detectingServers;
-    };
     checkGuildExists = async (guildId) => {
         try {
             const filePath = path_1.default.join(this.dbPath(), `${guildId}.json`);
@@ -366,6 +348,10 @@ class ServerRepository {
         catch (err) {
             return false;
         }
+    };
+    isServerExist = async (guildId) => {
+        const data = await this.db.findOne({ id: guildId });
+        return data ? true : false;
     };
 }
 exports.default = new ServerRepository();

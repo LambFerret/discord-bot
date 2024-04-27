@@ -58,6 +58,10 @@ class DiscordBot {
     };
     readyEachServer = async (serverId) => {
         console.log(`==== init ${serverId} server ====`);
+        if (!(await ServerService_1.default.isServerExist(serverId))) {
+            console.log("server not exist");
+            await this.createServer(this.client.guilds.cache.get(serverId));
+        }
         // =-=-=-=-=-=- prod =-=-=-=-=-=-=
         console.log("register slash command");
         this.slashCommandService.registerSlashCommand(serverId);
