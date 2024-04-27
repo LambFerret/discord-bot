@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.introduceBotWithDM = exports.youtubeLiveInfoMsg = exports.chzzkLiveInfoMsg = exports.afreecaLiveInfoMsg = exports.twitchLiveInfoMsg = void 0;
+exports.introduceBotWithDM = exports.chzzkLiveInfoMsg = exports.afreecaLiveInfoMsg = exports.twitchLiveInfoMsg = void 0;
 const tslib_1 = require("tslib");
 const discord_js_1 = require("discord.js");
 const BotConfig_1 = tslib_1.__importStar(require("./BotConfig"));
@@ -25,14 +25,21 @@ const chzzkLiveInfoMsg = async (guildId, data) => {
     return embed;
 };
 exports.chzzkLiveInfoMsg = chzzkLiveInfoMsg;
-const youtubeLiveInfoMsg = async (guildId, data) => {
-    const embed = await BotConfig_1.default.makeEmbed(`${data.description} 유튜브 뱅온!`, data.channelTitle, BotConfig_1.MessageColor.Default, guildId);
-    embed
-        .setThumbnail(data.thumbnail);
-    // .setURL("https://www.youtube.com/" + data.description)
-    return embed;
-};
-exports.youtubeLiveInfoMsg = youtubeLiveInfoMsg;
+/*
+export const youtubeLiveInfoMsg = async (guildId: string, data: YoutubeChannelInfoType) => {
+
+  const embed = await BotConfig.makeEmbed(
+    `${data.description} 유튜브 뱅온!`,
+    data.channelTitle,
+    MessageColor.Default,
+    guildId
+  )
+  embed
+    .setThumbnail(data.thumbnail)
+  // .setURL("https://www.youtube.com/" + data.description)
+  return embed;
+}
+*/
 const introduceBotWithDM = async (member) => {
     const dm = await member.createDM();
     const title = "Hello! World! (✿◠‿◠)";

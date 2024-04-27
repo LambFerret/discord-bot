@@ -14,7 +14,6 @@ const optionsText = commandText.options;
 const choices = [
     { name: "치지직", value: DetectType_1.DetectPlatform.Chzzk },
     { name: "아프리카", value: DetectType_1.DetectPlatform.Afreeca },
-    { name: "유튜브", value: DetectType_1.DetectPlatform.Youtube },
     { name: "트위치", value: DetectType_1.DetectPlatform.Twitch }
 ];
 exports.register = {
@@ -52,9 +51,6 @@ exports.register = {
                 else
                     name = info2?.user_nick;
                 break;
-            case DetectType_1.DetectPlatform.Youtube:
-                solveYoutube(interaction, id);
-                return;
             case DetectType_1.DetectPlatform.Twitch:
                 const info4 = await ExternalAPI_1.default.getTwitchLiveInfo(id);
                 if (info4 === undefined)
@@ -70,7 +66,6 @@ exports.register = {
                 *예시*
                 - 치지직: \`bb382c2c0cc9fa7c86ab3b037fb5799c\`\n
                 - 아프리카: \`maruko86\`\n
-                - 유튜브: \`침투부\`\n
                 - 트위치: \`zilioner\`\n`, BotConfig_1.MessageColor.Error, interaction.guildId);
         }
         else {
@@ -113,7 +108,7 @@ exports.regiesterYoutubeConfirmButton = {
     execute: async (interaction) => {
         if (interaction.customId.split(":")[2] === "confirm") {
             const selectedChannelId = interaction.customId.split(":")[1];
-            ServerRepository_1.default.updateDetectID(interaction.guildId, DetectType_1.DetectPlatform.Youtube, selectedChannelId);
+            // ServerRepository.updateDetectID(interaction.guildId as string, DetectPlatform.Youtube, selectedChannelId);
             const embedMessage = await BotConfig_1.default.makeEmbed(`정상적으로 등록되었습니다!`, " (ง •̀_•́)ง", BotConfig_1.MessageColor.Confirm, interaction.guildId);
             await interaction.update({ embeds: [embedMessage], components: [], content: "" });
         }

@@ -51,10 +51,6 @@ export const solveDetectButtons: ButtonCommand = {
                 await ServerRepository.updateDetectInfo(guildId, interaction.channelId as string, DetectType.Broadcast, DetectPlatform.Afreeca, !info.broadcastDetect.afreeca);
                 await interaction.update({ components: [await broadcastButtons(guildId)] });
                 return;
-            case RegisterButtonName.broadcast_youtube:
-                await ServerRepository.updateDetectInfo(guildId, interaction.channelId as string, DetectType.Broadcast, DetectPlatform.Youtube, !info.broadcastDetect.youtube);
-                await interaction.update({ components: [await broadcastButtons(guildId)] });
-                return;
             case RegisterButtonName.broadcast_twitch:
                 await ServerRepository.updateDetectInfo(guildId, interaction.channelId as string, DetectType.Broadcast, DetectPlatform.Twitch, !info.broadcastDetect.twitch);
                 await interaction.update({ components: [await broadcastButtons(guildId)] });
@@ -67,20 +63,12 @@ export const solveDetectButtons: ButtonCommand = {
                 await ServerRepository.updateDetectInfo(guildId, interaction.channelId as string, DetectType.NewPost, DetectPlatform.Afreeca, !info.newPostDetect.afreeca);
                 await interaction.update({ components: [await newPostButtons(guildId)] });
                 return;
-            case RegisterButtonName.new_post_youtube:
-                await ServerRepository.updateDetectInfo(guildId, interaction.channelId as string, DetectType.NewPost, DetectPlatform.Youtube, !info.newPostDetect.youtube);
-                await interaction.update({ components: [await newPostButtons(guildId)] });
-                return;
             case RegisterButtonName.owner_chat_chzzk:
                 await ServerRepository.updateDetectInfo(guildId, interaction.channelId as string, DetectType.OwnerChat, DetectPlatform.Chzzk, !info.ownerChatDetect.chzzk);
                 await interaction.update({ components: [await ownerChatButtons(guildId)] });
                 return;
             case RegisterButtonName.owner_chat_afreeca:
                 await ServerRepository.updateDetectInfo(guildId, interaction.channelId as string, DetectType.OwnerChat, DetectPlatform.Afreeca, !info.ownerChatDetect.afreeca);
-                await interaction.update({ components: [await ownerChatButtons(guildId)] });
-                return;
-            case RegisterButtonName.owner_chat_youtube:
-                await ServerRepository.updateDetectInfo(guildId, interaction.channelId as string, DetectType.OwnerChat, DetectPlatform.Youtube, !info.ownerChatDetect.youtube);
                 await interaction.update({ components: [await ownerChatButtons(guildId)] });
                 return;
             case RegisterButtonName.else_naver_cafe:
@@ -109,7 +97,6 @@ const broadcastButtons = async (guildId: string): Promise<ActionRowBuilder<Butto
         .addComponents(
             makeButton(RegisterButtonName.broadcast_chzzk, info.broadcastDetect.chzzk),
             makeButton(RegisterButtonName.broadcast_afreeca, info.broadcastDetect.afreeca),
-            makeButton(RegisterButtonName.broadcast_youtube, info.broadcastDetect.youtube),
             makeButton(RegisterButtonName.broadcast_twitch, info.broadcastDetect.twitch),
             makeButton(RegisterButtonName.back, true, true),
         );
@@ -121,7 +108,6 @@ const newPostButtons = async (guildId: string): Promise<ActionRowBuilder<ButtonB
         .addComponents(
             makeButton(RegisterButtonName.new_post_chzzk, info.newPostDetect.chzzk),
             makeButton(RegisterButtonName.new_post_afreeca, info.newPostDetect.afreeca),
-            makeButton(RegisterButtonName.new_post_youtube, info.newPostDetect.youtube),
             makeButton(RegisterButtonName.back, true, true),
         );
 }
@@ -132,7 +118,6 @@ const ownerChatButtons = async (guildId: string): Promise<ActionRowBuilder<Butto
         .addComponents(
             makeButton(RegisterButtonName.owner_chat_chzzk, info.ownerChatDetect.chzzk),
             makeButton(RegisterButtonName.owner_chat_afreeca, info.ownerChatDetect.afreeca),
-            makeButton(RegisterButtonName.owner_chat_youtube, info.ownerChatDetect.youtube),
             makeButton(RegisterButtonName.back, true, true),
         );
 }

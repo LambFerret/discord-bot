@@ -40,7 +40,7 @@ export default class SlashCommandService {
     this.setCommand(setting);
 
     // dropdown command
-    this.setDropdownCommand(registerYoutube);
+    // this.setDropdownCommand(registerYoutube);
     // this.setDropdownCommand(entranceChannelDropdown);
     // this.setDropdownCommand(entrancePermissionDropdown);
     this.setDropdownCommand(noticeChannelDropdown);
@@ -48,7 +48,7 @@ export default class SlashCommandService {
     // button command
     this.setDropdownCommand(solveDetectButtons);
     this.setDropdownCommand(solveSettingButtons);
-    this.setDropdownCommand(regiesterYoutubeConfirmButton);
+    // this.setDropdownCommand(regiesterYoutubeConfirmButton);
 
     const commandJSON = this.getCommandsJSONFromClient(this.client);
     this.sendCommandsToClient(commandJSON, guildId);

@@ -2,7 +2,7 @@ import { EmbedBuilder } from "@discordjs/builders";
 import { Client } from "discord.js";
 import * as cron from "node-cron";
 import api from "../ExternalAPI";
-import { afreecaLiveInfoMsg, chzzkLiveInfoMsg, twitchLiveInfoMsg, youtubeLiveInfoMsg } from "../MessageFormat";
+import { afreecaLiveInfoMsg, chzzkLiveInfoMsg, twitchLiveInfoMsg } from "../MessageFormat";
 import { DetectPlatform } from "../model/DetectType";
 import ServerRepository from "../repository/ServerRepository";
 
@@ -32,9 +32,9 @@ export default class AlarmService {
         if (info.broadcastDetect.twitch) {
             await this.sendTwitchStreamInfo(guildId);
         }
-        if (info.broadcastDetect.youtube) {
-            await this.sendYoutubeStreamInfo(guildId);
-        }
+        // if (info.broadcastDetect.youtube) {
+        //     await this.sendYoutubeStreamInfo(guildId);
+        // }
     }
 
     makeCron = (guildId: string) => {
@@ -153,6 +153,7 @@ export default class AlarmService {
 
 
     sendYoutubeStreamInfo = async (guildId: string) => {
+        /*
         const dto = await ServerRepository.checkStreamLive(guildId, DetectPlatform.Youtube);
 
         if (dto.id === undefined) return;
@@ -173,6 +174,7 @@ export default class AlarmService {
             ServerRepository.updateStreamLive(guildId, DetectPlatform.Youtube, true);
             this.say(guildId, await youtubeLiveInfoMsg(guildId, liveInfo));
         }
+        */
     }
 
     say = async (guildId: string, msg: EmbedBuilder) => {

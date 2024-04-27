@@ -53,36 +53,30 @@ class ServerRepository {
                 AfreecaId: "",
                 TwitchId: "",
                 ChzzkId: "",
-                YoutubeId: "",
             },
             streamingStatus: {
                 isTwitchStreamLive: false,
                 isAfreecaStreamLive: false,
                 isChzzkStreamLive: false,
-                isYoutubeStreamLive: false,
             },
             lastCommunityPostIDs: {
                 twitchPostId: [],
                 afreecaPostId: [],
                 chzzkPostId: [],
-                youtubePostId: [],
             },
             serverDetectInfos: {
                 broadcastDetect: {
                     twitch: false,
                     afreeca: false,
                     chzzk: false,
-                    youtube: false,
                 },
                 newPostDetect: {
                     afreeca: false,
                     chzzk: false,
-                    youtube: false,
                 },
                 ownerChatDetect: {
                     afreeca: false,
                     chzzk: false,
-                    youtube: false,
                 },
                 elseDetect: {
                     naverCafe: false,
@@ -96,31 +90,28 @@ class ServerRepository {
             }
         }
         this.db.insertOne(server);
-        // await this.writeJsonAsFile(server);
         return server;
     }
 
-    deleteServer = async (guildId: string) => {
+    deleteServerWithDB = async (guildId: string) => {
         this.log(`Delete Server`, `${guildId}`);
-        const info = await this.readJsonFromFile(guildId);
-        info.isDeleted = true;
-        await this.writeJsonAsFile(info);
-        // and archive it
-        await this.archiveServerFile(guildId);
+        const data = await this.db.findOne({ id: guildId });
+        await this.SaveDataInfoFile(guildId, data);
+        await this.db.deleteOne({ id: guildId });
     }
 
     getEntranceInfo = async (guildId: string) => {
-        const info = await this.readJsonFromFile(guildId);
+        const info = await this.readJsonFromDB(guildId);
         return info.entrance;
     }
 
     getDetectInfo = async (guildId: string) => {
-        const info = await this.readJsonFromFile(guildId);
+        const info = await this.readJsonFromDB(guildId);
         return info.serverDetectInfos;
     }
 
     getDetectID = async (guildId: string, platform: DetectPlatform) => {
-        const info = await this.readJsonFromFile(guildId);
+        const info = await this.readJsonFromDB(guildId);
         switch (platform) {
             case DetectPlatform.Afreeca:
                 return info.broadcastInfo.AfreecaId;
@@ -128,51 +119,41 @@ class ServerRepository {
                 return info.broadcastInfo.ChzzkId;
             case DetectPlatform.Twitch:
                 return info.broadcastInfo.TwitchId;
-            case DetectPlatform.Youtube:
-                return info.broadcastInfo.YoutubeId;
             default: return "";
         }
     }
 
     updateDetectID = async (guildId: string, platform: DetectPlatform, id: string) => {
         this.log(`Update Detect ID`, `${guildId} : ${platform} : ${id}`);
-        const info = await this.readJsonFromFile(guildId);
         switch (platform) {
             case DetectPlatform.Afreeca:
-                info.broadcastInfo.AfreecaId = id;
+                this.db.findOneAndUpdate({ id: guildId }, { $set: { broadcastInfo: { AfreecaId: id } } });
                 break;
             case DetectPlatform.Chzzk:
-                info.broadcastInfo.ChzzkId = id;
+                this.db.findOneAndUpdate({ id: guildId }, { $set: { broadcastInfo: { ChzzkId: id } } });
                 break;
             case DetectPlatform.Twitch:
-                info.broadcastInfo.TwitchId = id;
-                break;
-            case DetectPlatform.Youtube:
-                info.broadcastInfo.YoutubeId = id;
+                this.db.findOneAndUpdate({ id: guildId }, { $set: { broadcastInfo: { TwitchId: id } } });
                 break;
             default: return;
         }
-        await this.writeJsonAsFile(info);
     }
 
     updateDetectInfo = async (guildId: string, channelId: string, type: DetectType, platform: DetectPlatform, setActive: boolean) => {
         this.log(`Update Detect Info`, `${guildId} : ${channelId} : ${type} : ${platform} : ${setActive}`);
-        const info = await this.readJsonFromFile(guildId);
-        if (info.detectChannel === "") info.detectChannel = channelId;
+        const info = await this.readJsonFromDB(guildId);
+        if (info.detectChannel === "") this.db.findOneAndUpdate({ id: guildId }, { $set: { detectChannel: channelId } });
         switch (type) {
             case DetectType.Broadcast:
                 switch (platform) {
                     case DetectPlatform.Chzzk:
-                        info.serverDetectInfos.broadcastDetect.chzzk = setActive;
+                        this.db.findOneAndUpdate({ id: guildId }, { $set: { serverDetectInfos: { broadcastDetect: { chzzk: setActive } } } });
                         break;
                     case DetectPlatform.Afreeca:
-                        info.serverDetectInfos.broadcastDetect.afreeca = setActive;
-                        break;
-                    case DetectPlatform.Youtube:
-                        info.serverDetectInfos.broadcastDetect.youtube = setActive;
+                        this.db.findOneAndUpdate({ id: guildId }, { $set: { serverDetectInfos: { broadcastDetect: { afreeca: setActive } } } });
                         break;
                     case DetectPlatform.Twitch:
-                        info.serverDetectInfos.broadcastDetect.twitch = setActive;
+                        this.db.findOneAndUpdate({ id: guildId }, { $set: { serverDetectInfos: { broadcastDetect: { twitch: setActive } } } });
                         break;
                     default: return;
                 }
@@ -180,13 +161,10 @@ class ServerRepository {
             case DetectType.NewPost:
                 switch (platform) {
                     case DetectPlatform.Chzzk:
-                        info.serverDetectInfos.newPostDetect.chzzk = setActive;
+                        this.db.findOneAndUpdate({ id: guildId }, { $set: { serverDetectInfos: { newPostDetect: { chzzk: setActive } } } });
                         break;
                     case DetectPlatform.Afreeca:
-                        info.serverDetectInfos.newPostDetect.afreeca = setActive;
-                        break;
-                    case DetectPlatform.Youtube:
-                        info.serverDetectInfos.newPostDetect.youtube = setActive;
+                        this.db.findOneAndUpdate({ id: guildId }, { $set: { serverDetectInfos: { newPostDetect: { afreeca: setActive } } } });
                         break;
                     default: return;
                 }
@@ -194,13 +172,10 @@ class ServerRepository {
             case DetectType.OwnerChat:
                 switch (platform) {
                     case DetectPlatform.Chzzk:
-                        info.serverDetectInfos.ownerChatDetect.chzzk = setActive;
+                        this.db.findOneAndUpdate({ id: guildId }, { $set: { serverDetectInfos: { ownerChatDetect: { chzzk: setActive } } } });
                         break;
                     case DetectPlatform.Afreeca:
-                        info.serverDetectInfos.ownerChatDetect.afreeca = setActive;
-                        break;
-                    case DetectPlatform.Youtube:
-                        info.serverDetectInfos.ownerChatDetect.youtube = setActive;
+                        this.db.findOneAndUpdate({ id: guildId }, { $set: { serverDetectInfos: { ownerChatDetect: { afreeca: setActive } } } });
                         break;
                     default: return;
                 }
@@ -208,15 +183,13 @@ class ServerRepository {
             case DetectType.Else:
                 switch (platform) {
                     case DetectPlatform.NaverCafe:
-                        info.serverDetectInfos.elseDetect.naverCafe = setActive;
+                        this.db.findOneAndUpdate({ id: guildId }, { $set: { serverDetectInfos: { elseDetect: { naverCafe: setActive } } } });
                         break;
                     default: return;
                 }
                 break;
             default: return;
         }
-        await this.writeJsonAsFile(info);
-
     }
 
     saveEntranceMessageId = async (guildId: string, messageId: string) => {
@@ -266,10 +239,6 @@ class ServerRepository {
                 liveDTO.id = info.broadcastInfo.ChzzkId;
                 liveDTO.isLive = info.streamingStatus.isChzzkStreamLive;
                 break;
-            case DetectPlatform.Youtube:
-                liveDTO.id = info.broadcastInfo.YoutubeId;
-                liveDTO.isLive = info.streamingStatus.isYoutubeStreamLive;
-                break;
         }
         return liveDTO;
     }
@@ -287,9 +256,6 @@ class ServerRepository {
             case DetectPlatform.Chzzk:
                 info.streamingStatus.isChzzkStreamLive = isLive;
                 break;
-            case DetectPlatform.Youtube:
-                info.streamingStatus.isYoutubeStreamLive = isLive;
-                break;
             default: return;
         }
         await this.writeJsonAsFile(info);
@@ -302,8 +268,6 @@ class ServerRepository {
                 return info.lastCommunityPostIDs.afreecaPostId;
             case DetectPlatform.Chzzk:
                 return info.lastCommunityPostIDs.chzzkPostId;
-            case DetectPlatform.Youtube:
-                return info.lastCommunityPostIDs.youtubePostId;
             default: return [];
         }
     }
@@ -318,9 +282,6 @@ class ServerRepository {
                 break;
             case DetectPlatform.Chzzk:
                 info.lastCommunityPostIDs.chzzkPostId = postId;
-                break;
-            case DetectPlatform.Youtube:
-                info.lastCommunityPostIDs.youtubePostId = postId;
                 break;
             default: return;
         }
@@ -380,9 +341,9 @@ class ServerRepository {
 
     writeJsonAsFile = async (info: ServerInfo) => {
         try {
-            const filePath = path.join(this.dbPath(), `${info.id}.json`);
-            await fs.writeFile(filePath, JSON.stringify(info, null, 2));
-            console.log(`Server ${info.id} save successfully!`);
+            // const filePath = path.join(this.dbPath(), `${info.id}.json`);
+            // await fs.writeFile(filePath, JSON.stringify(info, null, 2));
+            console.log(`I Just Pretend to .. : Server ${info.id} save successfully!`);
         } catch (err) {
             console.error(`Failed to create server: ${err}`);
         }
@@ -417,32 +378,20 @@ class ServerRepository {
             }
             if (err instanceof SyntaxError) {
                 // reset the file
-                console.log(`Resetting the file: ${id}.json`);
-                const serverName = this.extractName(await fs.readFile(filePath, 'utf-8'));
-                await this.deleteFileIfExist(id);
-                const info = await this.createNewServerWithJustId(id, serverName);
-                return info;
+                console.log(`plz abort`);
             }
             throw err;
         }
     }
 
-    // readJsonFromFile = async (id: string): Promise<ServerInfo> => {
-    //     try {
-    //         const serverInfo = await this.db.findOne({ id: id });
-    //         if (!serverInfo) {
-    //             const serverName = "Unknown";
-    //             await this.createNewServerWithJustId(id, serverName);
-    //             return await this.readJsonFromFile(id);
-            
-    //         }
-    //         return serverInfo;
-
-    //     } catch (err) {
-    //         console.error(`Failed to read JSON from file: ${err}`);
-    //         throw err;
-    //     }
-    // }
+    readJsonFromDB = async (id: string): Promise<ServerInfo> => {
+        try {
+            return await this.db.findOne({ id: id }) as ServerInfo;
+        } catch (err) {
+            console.error(`Failed to read JSON from file: ${err}`);
+            throw err;
+        }
+    }
 
     transferJsonToDB = async () => {
         // find all json file and insert to db
@@ -451,8 +400,6 @@ class ServerRepository {
             try {
                 info = await this.readRawJsonFromFile(file);
             } catch (err) {
-                console.error(`Abort Application`);
-                // process.exit(1);
                 continue;
             }
             if (info) {
@@ -460,108 +407,26 @@ class ServerRepository {
             }
         }
     }
-    extractName = (data: string) => {
-        const namePattern = /"name": "([^"]+)"/;
-        const match = data.match(namePattern);
-        if (match && match[1]) {
-            return match[1];
-        }
-        return "Unknown";
-    }
-
-    deleteFileIfExist = async (guildId: string) => {
-        const filePath = path.join(this.dbPath(), `${guildId}.json`);
-        if (fss.existsSync(filePath)) {
-            await fs.unlink(filePath);
-        }
-    }
-
-    createNewServerWithJustId = async (guildId: string, guildName: string) => {
-        this.log(`Create New Server`, `${guildId}`);
-
-        const entrance: Entrance = {
-            entranceChannelId: "",
-            quote: "토끼 클릭으로 입장해요!",
-            messageId: "",
-            emoji: "🐰",
-            role: ""
-        }
-        const server: ServerInfo = {
-            name: guildName,
-            id: guildId,
-            createdDate: new Date(),
-            OwnerId: "lost",
-            detectChannel: "",
-            detectMessageId: "",
-            postfix: '삐삐리뽀',
-            status: 'INIT',
-            entrance: entrance,
-            isDeleted: false,
-            broadcastInfo: {
-                AfreecaId: "",
-                TwitchId: "",
-                ChzzkId: "",
-                YoutubeId: "",
-            },
-            streamingStatus: {
-                isTwitchStreamLive: false,
-                isAfreecaStreamLive: false,
-                isChzzkStreamLive: false,
-                isYoutubeStreamLive: false,
-            },
-            lastCommunityPostIDs: {
-                twitchPostId: [],
-                afreecaPostId: [],
-                chzzkPostId: [],
-                youtubePostId: [],
-            },
-            serverDetectInfos: {
-                broadcastDetect: {
-                    twitch: false,
-                    afreeca: false,
-                    chzzk: false,
-                    youtube: false,
-                },
-                newPostDetect: {
-                    afreeca: false,
-                    chzzk: false,
-                    youtube: false,
-                },
-                ownerChatDetect: {
-                    afreeca: false,
-                    chzzk: false,
-                    youtube: false,
-                },
-                elseDetect: {
-                    naverCafe: false,
-                }
-            },
-            settings: {
-                afreecaNewPostOnlyAnnouncement: "",
-                newPostIncludeEveryone: false,
-                liveIncludeEveryone: false,
-                erasePreviousMessage: true,
-            }
-        }
-        console.log(server);
-        
-        // await this.db.insertOne(server);
-        // const c = await this.db.findOne({ id: guildId });
-        // console.log(c);
-        
-        // await this.writeJsonAsFile(server);
-        return server;
-
-    }
 
     archiveServerFile = async (guildId: string) => {
         const time = new Date();
-        const info = await this.readJsonFromFile(guildId);
         const archivePath = path.join(__dirname + "/../../archive/");
         if (!fss.existsSync(archivePath)) fss.mkdirSync(archivePath);
-        const filePath = path.join(this.dbPath(), `${info.id}.json`);
-        const archiveFilePath = path.join(archivePath, `${info.id}-${time.getFullYear()}-${time.getMonth()}-${time.getDate()}-${time.getHours()}-${time.getMinutes()}-${time.getSeconds()}.json`);
+        const filePath = path.join(this.dbPath(), `${guildId}.json`);
+        const archiveFilePath = path.join(archivePath, `${guildId}-${time.getFullYear()}-${time.getMonth()}-${time.getDate()}-${time.getHours()}-${time.getMinutes()}-${time.getSeconds()}.json`);
         await fs.rename(filePath, archiveFilePath);
+    }
+
+    SaveDataInfoFile = async (guildId : string, data : any) => {
+        const time = new Date();
+        const filePath = path.join(__dirname + "/../../archive/");
+        if (!fss.existsSync(filePath)) fss.mkdirSync(filePath);
+        const archiveFilePath = path.join(filePath, `${guildId}-${time.getFullYear()}-${time.getMonth()}-${time.getDate()}-${time.getHours()}-${time.getMinutes()}-${time.getSeconds()}.json`);
+        try {
+            await fs.writeFile(archiveFilePath, JSON.stringify(data, null, 2));
+        } catch (err) {
+            console.error(`Failed Save File : ${err}`);
+        }
     }
 
     updateServerStreamer = (guildId: string) => {

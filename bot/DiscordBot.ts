@@ -69,6 +69,7 @@ export default class DiscordBot {
   }
 
   test = async (serverId: string) => {
+    this.slashCommandService.registerSlashCommand(serverId);
     ServerRepository.transferJsonToDB();
   }
 
@@ -79,7 +80,7 @@ export default class DiscordBot {
 
     // =-=-=-=-=-=- prod =-=-=-=-=-=-=
     // console.log("register slash command");
-    // this.slashCommandService.registerSlashCommand(serverId);
+    this.slashCommandService.registerSlashCommand(serverId);
     // this.alarmService.makeCron(serverId);
     // this.postService.makeCron(serverId);
     // =-=-=-=-=-=- prod =-=-=-=-=-=-=

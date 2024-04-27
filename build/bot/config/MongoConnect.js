@@ -29,30 +29,25 @@ const ServerSchema = new mongoose_1.Schema({
         AfreecaId: { type: String, required: false, default: "" },
         TwitchId: { type: String, required: false, default: "" },
         ChzzkId: { type: String, required: false, default: "" },
-        YoutubeId: { type: String, required: false, default: "" },
     },
     streamingStatus: {
         isTwitchStreamLive: { type: Boolean, required: true, default: false },
         isAfreecaStreamLive: { type: Boolean, required: true, default: false },
         isChzzkStreamLive: { type: Boolean, required: true, default: false },
-        isYoutubeStreamLive: { type: Boolean, required: true, default: false },
     },
     serverDetectInfos: {
         broadcastDetect: {
             twitch: { type: Boolean, required: true, default: false },
             afreeca: { type: Boolean, required: true, default: false },
             chzzk: { type: Boolean, required: true, default: false },
-            youtube: { type: Boolean, required: true, default: false },
         },
         newPostDetect: {
             afreeca: { type: Boolean, required: true, default: false },
             chzzk: { type: Boolean, required: true, default: false },
-            youtube: { type: Boolean, required: true, default: false },
         },
         ownerChatDetect: {
             afreeca: { type: Boolean, required: true, default: false },
             chzzk: { type: Boolean, required: true, default: false },
-            youtube: { type: Boolean, required: true, default: false },
         },
         elseDetect: {
             naverCafe: { type: Boolean, required: true, default: false },
@@ -62,7 +57,6 @@ const ServerSchema = new mongoose_1.Schema({
         twitchPostId: { type: [String], required: false, default: [] },
         afreecaPostId: { type: [String], required: false, default: [] },
         chzzkPostId: { type: [String], required: false, default: [] },
-        youtubePostId: { type: [String], required: false, default: [] },
     },
     settings: {
         afreecaNewPostOnlyAnnouncement: { type: String, required: false, default: "" },
@@ -101,7 +95,13 @@ class MongoConnect {
         }
     }
     async findOne(query) {
-        return await this.serverModel.findOne(query);
+        return await this.serverModel.findOne();
+    }
+    async findOneAndUpdate(query, data) {
+        return await this.serverModel.findOneAndUpdate(query, data);
+    }
+    async deleteOne(query) {
+        return await this.serverModel.deleteOne(query);
     }
 }
 exports.default = MongoConnect;

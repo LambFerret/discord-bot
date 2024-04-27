@@ -26,9 +26,9 @@ export default class PostService {
         if (info.newPostDetect.afreeca) {
             await this.sendAfreecaStreamInfo(guildId);
         }
-        if (info.newPostDetect.youtube) {
+        // if (info.newPostDetect.youtube) {
             // await this.sendYoutubeBroadcastInfo(guildId);
-        }
+        // }
     }
 
     makeCron = (guildId: string) => {

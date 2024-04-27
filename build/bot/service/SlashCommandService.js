@@ -34,14 +34,14 @@ class SlashCommandService {
         this.setCommand(NoticeChannel_1.noticeChannel);
         this.setCommand(setting_1.setting);
         // dropdown command
-        this.setDropdownCommand(register_1.registerYoutube);
+        // this.setDropdownCommand(registerYoutube);
         // this.setDropdownCommand(entranceChannelDropdown);
         // this.setDropdownCommand(entrancePermissionDropdown);
         this.setDropdownCommand(NoticeChannel_1.noticeChannelDropdown);
         // button command
         this.setDropdownCommand(detect_1.solveDetectButtons);
         this.setDropdownCommand(setting_1.solveSettingButtons);
-        this.setDropdownCommand(register_1.regiesterYoutubeConfirmButton);
+        // this.setDropdownCommand(regiesterYoutubeConfirmButton);
         const commandJSON = this.getCommandsJSONFromClient(this.client);
         this.sendCommandsToClient(commandJSON, guildId);
     };

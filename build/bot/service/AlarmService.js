@@ -32,9 +32,9 @@ class AlarmService {
         if (info.broadcastDetect.twitch) {
             await this.sendTwitchStreamInfo(guildId);
         }
-        if (info.broadcastDetect.youtube) {
-            await this.sendYoutubeStreamInfo(guildId);
-        }
+        // if (info.broadcastDetect.youtube) {
+        //     await this.sendYoutubeStreamInfo(guildId);
+        // }
     };
     makeCron = (guildId) => {
         if (this.activeCronJobs[guildId]) {
@@ -150,25 +150,28 @@ class AlarmService {
         }
     };
     sendYoutubeStreamInfo = async (guildId) => {
-        const dto = await ServerRepository_1.default.checkStreamLive(guildId, DetectType_1.DetectPlatform.Youtube);
-        if (dto.id === undefined)
-            return;
-        if (dto.id === "")
-            return;
+        /*
+        const dto = await ServerRepository.checkStreamLive(guildId, DetectPlatform.Youtube);
+
+        if (dto.id === undefined) return;
+        if (dto.id === "") return;
         const previousLiveInfo = dto.isLive;
-        const liveInfo = await ExternalAPI_1.default.getYoutubeLiveInfo(dto.id);
-        if (!liveInfo)
-            return;
-        if (!liveInfo && !previousLiveInfo)
-            return;
+        const liveInfo = await api.getYoutubeLiveInfo(dto.id);
+
+        if (!liveInfo) return;
+
+        if (!liveInfo && !previousLiveInfo) return;
+
         if (liveInfo.id === "" && previousLiveInfo) {
-            ServerRepository_1.default.updateStreamLive(guildId, DetectType_1.DetectPlatform.Youtube, false);
+            ServerRepository.updateStreamLive(guildId, DetectPlatform.Youtube, false);
             return;
         }
+
         if (liveInfo.id !== "" && !previousLiveInfo) {
-            ServerRepository_1.default.updateStreamLive(guildId, DetectType_1.DetectPlatform.Youtube, true);
-            this.say(guildId, await (0, MessageFormat_1.youtubeLiveInfoMsg)(guildId, liveInfo));
+            ServerRepository.updateStreamLive(guildId, DetectPlatform.Youtube, true);
+            this.say(guildId, await youtubeLiveInfoMsg(guildId, liveInfo));
         }
+        */
     };
     say = async (guildId, msg) => {
         const channelID = await ServerRepository_1.default.getDetectChannel(guildId);

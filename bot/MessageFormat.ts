@@ -4,7 +4,6 @@ import BotConfig, { MessageColor } from './BotConfig';
 import { LiveAfreecaInfoType } from './model/LiveAfreecaInfoType';
 import { LiveChzzkInfoType } from './model/LiveChzzkInfoType';
 import { LiveStreamInfoType } from "./model/LiveStreamInfoType";
-import { YoutubeChannelInfoType } from './model/YoutubeChannelInfoType';
 
 export const twitchLiveInfoMsg = async (guildId: string, data: LiveStreamInfoType) => {
   const embed = await BotConfig.makeEmbed(
@@ -41,6 +40,7 @@ export const chzzkLiveInfoMsg = async (guildId: string, data: LiveChzzkInfoType)
   return embed;
 }
 
+/*
 export const youtubeLiveInfoMsg = async (guildId: string, data: YoutubeChannelInfoType) => {
 
   const embed = await BotConfig.makeEmbed(
@@ -54,6 +54,7 @@ export const youtubeLiveInfoMsg = async (guildId: string, data: YoutubeChannelIn
   // .setURL("https://www.youtube.com/" + data.description)
   return embed;
 }
+*/
 
 export const introduceBotWithDM = async (member: GuildMember) => {
   const dm = await member.createDM();

@@ -59,6 +59,7 @@ class DiscordBot {
         // });
     };
     test = async (serverId) => {
+        this.slashCommandService.registerSlashCommand(serverId);
         ServerRepository_1.default.transferJsonToDB();
     };
     readyEachServer = async (server) => {
@@ -66,7 +67,7 @@ class DiscordBot {
         console.log(`==== init ${server.name} server ====`);
         // =-=-=-=-=-=- prod =-=-=-=-=-=-=
         // console.log("register slash command");
-        // this.slashCommandService.registerSlashCommand(serverId);
+        this.slashCommandService.registerSlashCommand(serverId);
         // this.alarmService.makeCron(serverId);
         // this.postService.makeCron(serverId);
         // =-=-=-=-=-=- prod =-=-=-=-=-=-=

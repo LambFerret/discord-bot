@@ -27,9 +27,9 @@ class PostService {
         if (info.newPostDetect.afreeca) {
             await this.sendAfreecaStreamInfo(guildId);
         }
-        if (info.newPostDetect.youtube) {
-            // await this.sendYoutubeBroadcastInfo(guildId);
-        }
+        // if (info.newPostDetect.youtube) {
+        // await this.sendYoutubeBroadcastInfo(guildId);
+        // }
     };
     makeCron = (guildId) => {
         // make cron of checkPost() 
