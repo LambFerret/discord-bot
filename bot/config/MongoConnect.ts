@@ -22,7 +22,7 @@ export default class MongoConnect {
     }
 
     public getCollection() {
-        return this.client.db().collection(collectionName);
+        return this.client.db(databaseName).collection(collectionName);
     }
 
     public async connect(): Promise<void> {

@@ -7,9 +7,9 @@ const path_1 = tslib_1.__importDefault(require("path"));
 const DetectType_1 = require("../model/DetectType");
 const MongoConnect_1 = tslib_1.__importDefault(require("../config/MongoConnect"));
 class ServerRepository {
-    collection;
+    db;
     constructor() {
-        this.collection = MongoConnect_1.default.getInstance().getCollection();
+        this.db = MongoConnect_1.default.getInstance().getCollection();
     }
     dbPath = () => {
         if (!fss.existsSync(__dirname + "/../../db/"))
@@ -91,7 +91,7 @@ class ServerRepository {
                 erasePreviousMessage: true,
             }
         };
-        this.collection.insertOne(server);
+        this.db.insertOne(server);
         // await this.writeJsonAsFile(server);
         return server;
     };
@@ -463,7 +463,9 @@ class ServerRepository {
                 erasePreviousMessage: true,
             }
         };
-        await this.writeJsonAsFile(server);
+        console.log(server);
+        await this.db.insertOne(server);
+        // await this.writeJsonAsFile(server);
         return server;
     };
     archiveServerFile = async (guildId) => {

@@ -21,7 +21,7 @@ class MongoConnect {
         return MongoConnect.instance;
     }
     getCollection() {
-        return this.client.db().collection(collectionName);
+        return this.client.db(databaseName).collection(collectionName);
     }
     async connect() {
         await this.client.connect();

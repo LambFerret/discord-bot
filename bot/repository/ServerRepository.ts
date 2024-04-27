@@ -8,10 +8,10 @@ import MongoConnect from "../config/MongoConnect";
 import { Collection } from "mongodb";
 
 class ServerRepository {
-    private collection: Collection;
+    private db: Collection;
 
     constructor() {
-        this.collection = MongoConnect.getInstance().getCollection();
+        this.db = MongoConnect.getInstance().getCollection();
     }
 
     dbPath = (): string => {
@@ -95,7 +95,7 @@ class ServerRepository {
                 erasePreviousMessage: true,
             }
         }
-        this.collection.insertOne(server);
+        this.db.insertOne(server);
         // await this.writeJsonAsFile(server);
         return server;
     }
@@ -491,7 +491,10 @@ class ServerRepository {
                 erasePreviousMessage: true,
             }
         }
-        await this.writeJsonAsFile(server);
+        console.log(server);
+        
+        await this.db.insertOne(server);
+        // await this.writeJsonAsFile(server);
         return server;
 
     }
