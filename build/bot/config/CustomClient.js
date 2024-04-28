@@ -9,7 +9,7 @@ class CustomClient extends discord_js_1.Client {
             intents: [discord_js_1.GatewayIntentBits.Guilds, discord_js_1.GatewayIntentBits.GuildMessages, discord_js_1.GatewayIntentBits.GuildMessageReactions],
             partials: [discord_js_1.Partials.Message, discord_js_1.Partials.Reaction, discord_js_1.Partials.User],
             presence: {
-                activities: [{ name: '1.1.0v | /설명서 ', type: discord_js_1.ActivityType.Listening }],
+                activities: [{ name: '1.1.1v | /설명서 ', type: discord_js_1.ActivityType.Listening }],
                 status: 'online',
             }
         });

@@ -12,7 +12,7 @@ const initialize = {
         .setDescription(commandText.description)
         .setNameLocalization('ko', commandText.name),
     execute: async (interaction) => {
-        await ServerRepository_1.default.deleteServer(interaction.guildId);
+        await ServerRepository_1.default.deleteServerWithDB(interaction.guildId);
         await ServerRepository_1.default.createNewServer(interaction.guild);
         await interaction.reply({ content: '초기화' });
     }
