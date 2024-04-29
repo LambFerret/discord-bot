@@ -162,10 +162,10 @@ class ServerRepository {
             case DetectType.NewPost:
                 switch (platform) {
                     case DetectPlatform.Chzzk:
-                        await this.db.findOneAndUpdate({ id: guildId }, { $set: { "serverDetectInfos.broadcastDetect.chzzk": setActive } });
+                        await this.db.findOneAndUpdate({ id: guildId }, { $set: { "serverDetectInfos.newPostDetect.chzzk": setActive } });
                         break;
                     case DetectPlatform.Afreeca:
-                        await this.db.findOneAndUpdate({ id: guildId }, { $set: { "serverDetectInfos.broadcastDetect.afreeca": setActive } });
+                        await this.db.findOneAndUpdate({ id: guildId }, { $set: { "serverDetectInfos.newPostDetect.afreeca": setActive } });
                         break;
                     default: return;
                 }
@@ -173,10 +173,10 @@ class ServerRepository {
             case DetectType.OwnerChat:
                 switch (platform) {
                     case DetectPlatform.Chzzk:
-                        await this.db.findOneAndUpdate({ id: guildId }, { $set: { "serverDetectInfos.broadcastDetect.chzzk": setActive } });
+                        await this.db.findOneAndUpdate({ id: guildId }, { $set: { "serverDetectInfos.ownerChatDetect.chzzk": setActive } });
                         break;
                     case DetectPlatform.Afreeca:
-                        await this.db.findOneAndUpdate({ id: guildId }, { $set: { "serverDetectInfos.broadcastDetect.afreeca": setActive } });
+                        await this.db.findOneAndUpdate({ id: guildId }, { $set: { "serverDetectInfos.ownerChatDetect.afreeca": setActive } });
                         break;
                     default: return;
                 }
@@ -184,7 +184,7 @@ class ServerRepository {
             case DetectType.Else:
                 switch (platform) {
                     case DetectPlatform.NaverCafe:
-                        await this.db.findOneAndUpdate({ id: guildId }, { $set: { "serverDetectInfos.broadcastDetect.naverCafe": setActive } });
+                        await this.db.findOneAndUpdate({ id: guildId }, { $set: { "serverDetectInfos.elseDetect.naverCafe": setActive } });
                         break;
                     default: return;
                 }
