@@ -43,21 +43,20 @@ const makeChannelSelectMenu = (guild) => {
         if (channelName.length > 15) {
             channelName = channelName.slice(0, 15) + "...";
         }
-        const label = channel.name === "" ? "-" : channelName;
-        const value = channel.id === "" ? "-" : channel.id;
-        const descriptionFinal = description === "" ? "-" : description;
+        let label = channel.name === "" ? "-" : channelName;
+        let value = channel.id === "" ? "-" : channel.id;
+        let descriptionFinal = description === "" ? "-" : description;
         if (label.length > 25) {
             console.error(`label length is over 25: ${label} in server ${guild.name}`);
-            return null;
+            label = label.slice(0, 15) + "...";
         }
         if (descriptionFinal.length > 25) {
             console.error(`description length is over 25: ${descriptionFinal} in server ${guild.name}`);
-            return null;
+            descriptionFinal = descriptionFinal.slice(0, 15) + "...";
         }
         if (value.length > 25) {
             console.error(`value length is over 25: ${value} in server ${guild.name}`);
-            // skip this option
-            return null;
+            value = value.slice(0, 15) + "...";
         }
         return {
             label: label,
