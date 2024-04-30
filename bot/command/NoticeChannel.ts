@@ -55,7 +55,7 @@ const makeChannelSelectMenu = (guild: Guild): StringSelectMenuBuilder => {
         }
         if (descriptionFinal.length > 25) {
             console.error(`description length is over 25: ${descriptionFinal} in server ${guild.name}`);
-            descriptionFinal = descriptionFinal.slice(0, 15) + "...";
+            descriptionFinal = "-";
         }
 
         if (value.length > 25) {
