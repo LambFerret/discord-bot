@@ -41,6 +41,7 @@ class SlashCommandService {
         // button command
         this.setDropdownCommand(detect_1.solveDetectButtons);
         this.setDropdownCommand(setting_1.solveSettingButtons);
+        this.setDropdownCommand(NoticeChannel_1.solveNoticeChannelButtons);
         // this.setDropdownCommand(regiesterYoutubeConfirmButton);
         const commandJSON = this.getCommandsJSONFromClient(this.client);
         this.sendCommandsToClient(commandJSON, guildId);

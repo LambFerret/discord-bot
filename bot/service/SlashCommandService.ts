@@ -6,7 +6,7 @@ import { entranceChannel, entranceChannelDropdown } from "../command/entranceCha
 import { entrancePermission, entrancePermissionDropdown } from "../command/entrancePermission";
 import { help } from "../command/help";
 import initialize from "../command/initalize";
-import { noticeChannel, noticeChannelDropdown } from "../command/NoticeChannel";
+import { noticeChannel, noticeChannelDropdown, solveNoticeChannelButtons } from "../command/NoticeChannel";
 import ping from "../command/ping";
 import postfix from "../command/postfix";
 import { regiesterYoutubeConfirmButton, register, registerYoutube } from "../command/register";
@@ -48,6 +48,7 @@ export default class SlashCommandService {
     // button command
     this.setDropdownCommand(solveDetectButtons);
     this.setDropdownCommand(solveSettingButtons);
+    this.setDropdownCommand(solveNoticeChannelButtons);
     // this.setDropdownCommand(regiesterYoutubeConfirmButton);
 
     const commandJSON = this.getCommandsJSONFromClient(this.client);

@@ -19,6 +19,7 @@ export enum CommandName {
     Afreeca_Setting = "afreeca_setting",
     Setting = "setting",
     SettingButton = "settingButton",
+    NoticeChannelButton = "noticeChannelButton",
 }
 export enum RegisterButtonName {
     broadcast = "broadcast",
@@ -70,6 +71,16 @@ const settingButtons: { [key in SettingButtonName]: string } = {
     [SettingButtonName.erase_previous_message]: "이전 메시지 삭제하기",
 }
 
+export enum NoticeButtonName {
+    previous = "previous",
+    next = "next",
+}
+
+const noticeButtons: { [key in NoticeButtonName]: string } = {
+    [NoticeButtonName.previous]: "이전",
+    [NoticeButtonName.next]: "다음",
+}
+
 export const text: TextType = {
     ping: {
         id: CommandName.Ping,
@@ -104,7 +115,8 @@ export const text: TextType = {
     notice_channel: {
         id: CommandName.NoticeChannel,
         name: "알림채널등록",
-        description: "알림채널을 변경합니다!  ෆ⸒⸒⸜( ˶'ᵕ'˶)⸝ "
+        description: "알림채널을 변경합니다!  ෆ⸒⸒⸜( ˶'ᵕ'˶)⸝ ",
+        titleMap: noticeButtons,
     },
     notice_channel_dropdown: {
         id: CommandName.NoticeChannelDropdown,

@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.text = exports.SettingButtonName = exports.RegisterButtonName = exports.CommandName = void 0;
+exports.text = exports.NoticeButtonName = exports.SettingButtonName = exports.RegisterButtonName = exports.CommandName = void 0;
 var CommandName;
 (function (CommandName) {
     CommandName["Ping"] = "ping";
@@ -21,6 +21,7 @@ var CommandName;
     CommandName["Afreeca_Setting"] = "afreeca_setting";
     CommandName["Setting"] = "setting";
     CommandName["SettingButton"] = "settingButton";
+    CommandName["NoticeChannelButton"] = "noticeChannelButton";
 })(CommandName = exports.CommandName || (exports.CommandName = {}));
 var RegisterButtonName;
 (function (RegisterButtonName) {
@@ -70,6 +71,15 @@ const settingButtons = {
     [SettingButtonName.live_everyone]: "방송 감지에 @everyone 추가",
     [SettingButtonName.erase_previous_message]: "이전 메시지 삭제하기",
 };
+var NoticeButtonName;
+(function (NoticeButtonName) {
+    NoticeButtonName["previous"] = "previous";
+    NoticeButtonName["next"] = "next";
+})(NoticeButtonName = exports.NoticeButtonName || (exports.NoticeButtonName = {}));
+const noticeButtons = {
+    [NoticeButtonName.previous]: "이전",
+    [NoticeButtonName.next]: "다음",
+};
 exports.text = {
     ping: {
         id: CommandName.Ping,
@@ -104,7 +114,8 @@ exports.text = {
     notice_channel: {
         id: CommandName.NoticeChannel,
         name: "알림채널등록",
-        description: "알림채널을 변경합니다!  ෆ⸒⸒⸜( ˶'ᵕ'˶)⸝ "
+        description: "알림채널을 변경합니다!  ෆ⸒⸒⸜( ˶'ᵕ'˶)⸝ ",
+        titleMap: noticeButtons,
     },
     notice_channel_dropdown: {
         id: CommandName.NoticeChannelDropdown,

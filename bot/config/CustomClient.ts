@@ -7,7 +7,7 @@ export class CustomClient extends Client {
             intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.GuildMessageReactions],
             partials: [Partials.Message, Partials.Reaction, Partials.User],
             presence: {
-                activities: [{ name: '1.1.1v | /설명서 ', type: ActivityType.Listening }],
+                activities: [{ name: '1.1.2v | /설명서 ', type: ActivityType.Listening }],
                 status: 'online',
             }
         });

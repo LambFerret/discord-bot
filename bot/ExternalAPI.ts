@@ -38,7 +38,7 @@ class ExternalApi {
                 return res.data;
             })
             .catch((err) => {
-                console.error(err.code + ":" + err.message);
+                this.errorLog("getChzzkLiveInfo", err.code + ":" + err.message);
                 return err.response.data;
             });
 
@@ -73,8 +73,7 @@ class ExternalApi {
             },
         }).then(v => v.data.data[0] as LiveStreamInfoType)
             .catch(err => {
-                console.error("getTwitchLiveInfo Error")
-                console.error(err)
+                this.errorLog("getTwitchLiveInfo" , err.code + ":" + err.message);
                 return undefined
             });
         return result;
@@ -90,8 +89,7 @@ class ExternalApi {
                 return res.data;
             })
             .catch((err) => {
-                console.error("getAfreecaLiveInfo Error")
-                console.error(err)
+                this.errorLog("getAfreecaLiveInfo", err.code + ":" + err.message);
                 return err.response.data;
             });
 
@@ -189,8 +187,7 @@ class ExternalApi {
             items = (await youtube.search.list(param)).data.items;
             if (!items) return undefined;
         } catch (err : any) {
-            console.error("getYoutubeLiveInfo Error");
-            console.error(err.errors[0]);
+            this.errorLog("getYoutubeLiveInfo Error", err.errors[0]);
             return undefined;
         }
         const dto = {
@@ -221,9 +218,8 @@ class ExternalApi {
                 return res.data;
             })
             .catch((err) => {
-                console.error("getChzzkCommunityNewPostInfo Error")
                 const errorData = err?.response?.data;
-                console.error(errorData);
+                this.errorLog("getChzzkCommunityNewPostInfo", errorData);
                 return errorData;
             });
 
@@ -276,9 +272,8 @@ class ExternalApi {
                 return res.data;
             })
             .catch((err) => {
-                console.error("getAfreecaCommunityNewPostInfo Error");
                 const errorData = err?.response?.data;
-                console.error(errorData);
+                this.errorLog("getAfreecaCommunityNewPostInfo", errorData);
                 return errorData;
             });
 
@@ -306,6 +301,17 @@ class ExternalApi {
         });
 
         return postIDs;
+    }
+
+    errorLog = (methodName: string, content: string) => {
+        methodName = methodName + " ERROR ";
+        const totalLength = 30;
+        const nameLength = methodName.length;
+        const totalPadding = totalLength - nameLength;
+        const leftPadding = Math.floor(totalPadding / 2);
+        const rightPadding = totalPadding - leftPadding;
+        const paddedName = ' '.repeat(leftPadding) + methodName + ' '.repeat(rightPadding);
+        console.error(`${new Date().toISOString()} | [${paddedName}] - ${content}`);
     }
 }
 export default new ExternalApi();
