@@ -22,5 +22,6 @@
 
                                                       **자 이제 시작해볼까요?? 🤩**
 
-https://buttons.so/btn/?name=%EC%97%AC%EA%B8%B0%EB%A5%BC+%EB%88%8C%EB%9F%AC+%EC%A0%80%EB%A5%BC+%EC%84%9C%EB%B2%84%EC%97%90+%EC%B6%94%EA%B0%80%ED%95%98%EC%84%B8%EC%9A%94%21&link=https%3A%2F%2Fdiscord.com%2Foauth2%2Fauthorize%3Fclient_id%3D1215867260326117467%26permissions%3D2147624960%26scope%3Dbot&tab=0&darkMode=0&transparent=0&ftSize=18&ftFamily=Poppins&ftWeight=normal&ftStyle=&cText=%23FFFFFF&cBg=%23e16259&cHText=%23FFFFFF&cHBg=%23cf534a&bColor=%23000&bRadius=4&bSize=0&position=center&emoji=&boxYpos=2&boxXpos=1&boxBlur=0&boxSpread=0&boxColor=rgb%2815+15+15+%2F+10%25%29&px=8&py=6
+https://discord.com/oauth2/authorize?client_id=1215867260326117467&permissions=2147624960&scope=bot
+[https://buttons.so/btn/?name=%EC%97%AC%EA%B8%B0%EB%A5%BC+%EB%88%8C%EB%9F%AC+%EC%A0%80%EB%A5%BC+%EC%84%9C%EB%B2%84%EC%97%90+%EC%B6%94%EA%B0%80%ED%95%98%EC%84%B8%EC%9A%94%21&link=https%3A%2F%2Fdiscord.com%2Foauth2%2Fauthorize%3Fclient_id%3D1215867260326117467%26permissions%3D2147624960%26scope%3Dbot&tab=0&darkMode=0&transparent=0&ftSize=18&ftFamily=Poppins&ftWeight=normal&ftStyle=&cText=%23FFFFFF&cBg=%23e16259&cHText=%23FFFFFF&cHBg=%23cf534a&bColor=%23000&bRadius=4&bSize=0&position=center&emoji=&boxYpos=2&boxXpos=1&boxBlur=0&boxSpread=0&boxColor=rgb%2815+15+15+%2F+10%25%29&px=8&py=6](https://discord.com/oauth2/authorize?client_id=1215867260326117467&permissions=2147624960&scope=bot)
 
