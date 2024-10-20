@@ -46,14 +46,14 @@ const detectButtons: { [key in RegisterButtonName]: string } = {
     [RegisterButtonName.owner_chat]: "(공사중) 방장 채팅 감지",
     [RegisterButtonName.else]: "(공사중) 그외",
     [RegisterButtonName.broadcast_chzzk]: "치지직 방송 감지",
-    [RegisterButtonName.broadcast_afreeca]: "아프리카 방송 감지",
+    [RegisterButtonName.broadcast_afreeca]: "SOOP (숲) 방송 감지",
     [RegisterButtonName.broadcast_youtube]: "유튜브 방송 감지",
     [RegisterButtonName.broadcast_twitch]: "트위치 방송 감지",
     [RegisterButtonName.new_post_chzzk]: "치지직 새글 감지",
-    [RegisterButtonName.new_post_afreeca]: "아프리카 새글 감지",
+    [RegisterButtonName.new_post_afreeca]: "SOOP (숲) 새글 감지",
     [RegisterButtonName.new_post_youtube]: "유튜브 새글 감지",
     [RegisterButtonName.owner_chat_chzzk]: "치지직 방장 채팅 감지",
-    [RegisterButtonName.owner_chat_afreeca]: "아프리카 방장 채팅 감지",
+    [RegisterButtonName.owner_chat_afreeca]: "SOOP (숲) 방장 채팅 감지",
     [RegisterButtonName.owner_chat_youtube]: "유튜브 방장 채팅 감지",
     [RegisterButtonName.else_naver_cafe]: "(후추) 네이버카페 공지 감지",
     [RegisterButtonName.back]: "뒤로가기",
@@ -183,7 +183,7 @@ export const text: TextType = {
     },
     afreeca_setting: {
         id: CommandName.Afreeca_Setting,
-        name: "아프리카_설정",
+        name: "숲_설정",
         description: "감지하고 싶은 특정 게시판 ID번호 적어주세요! ෆ⸒⸒⸜( ˶'ᵕ'˶)⸝ ",
         options: [
             {

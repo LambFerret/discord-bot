@@ -18,7 +18,7 @@ export const twitchLiveInfoMsg = async (guildId: string, data: LiveStreamInfoTyp
 }
 export const afreecaLiveInfoMsg = async (guildId: string, data: LiveAfreecaInfoType) => {
   const embed = await BotConfig.makeEmbed(
-    `${data.user_nick} 아프리카 뱅온!`,
+    `${data.user_nick} SOOP (숲) 뱅온!`,
     data.broad_title,
     MessageColor.Default,
     guildId

@@ -3,7 +3,7 @@
  📦 방송
  ├─ 방송감지
  │  ├─ 치지직 chzzk ✅
- │  ├─ 아프리카 afreeca ✅
+ │  ├─ SOOP (숲) afreeca ✅
  │  ├─ 유튜브 youtube 
  │  └─ 트위치 twitch ✅
  ├─ 새글 감지

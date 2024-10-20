@@ -12,7 +12,7 @@ const twitchLiveInfoMsg = async (guildId, data) => {
 };
 exports.twitchLiveInfoMsg = twitchLiveInfoMsg;
 const afreecaLiveInfoMsg = async (guildId, data) => {
-    const embed = await BotConfig_1.default.makeEmbed(`${data.user_nick} 아프리카 뱅온!`, data.broad_title, BotConfig_1.MessageColor.Default, guildId);
+    const embed = await BotConfig_1.default.makeEmbed(`${data.user_nick} SOOP (숲) 뱅온!`, data.broad_title, BotConfig_1.MessageColor.Default, guildId);
     embed.setURL("https://play.afreecatv.com/" + data.user_id)
         .setThumbnail("https://liveimg.afreecatv.com/h/" + data.broad_no + ".webp");
     return embed;

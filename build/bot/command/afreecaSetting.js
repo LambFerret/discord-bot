@@ -24,7 +24,7 @@ exports.afreecaSetting = {
         const setting = await ServerRepository_1.default.getServerSettings(interaction.guildId);
         const streamerID = await ServerRepository_1.default.getDetectID(interaction.guildId, DetectType_1.DetectPlatform.Afreeca);
         if (streamerID === "") {
-            embedMessage = await BotConfig_1.default.makeEmbed(`아직 주인님의 아프리카 플랫폼 정보가 없어요!`, ` \`/등록\` 으로 주인님의 정보를 등록해주세요!`, BotConfig_1.MessageColor.Error, interaction.guildId);
+            embedMessage = await BotConfig_1.default.makeEmbed(`아직 주인님의 SOOP (숲) 플랫폼 정보가 없어요!`, ` \`/등록\` 으로 주인님의 정보를 등록해주세요!`, BotConfig_1.MessageColor.Error, interaction.guildId);
         }
         else if (value === "없음") {
             setting.afreecaNewPostOnlyAnnouncement = "";

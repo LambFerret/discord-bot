@@ -27,7 +27,7 @@ export const afreecaSetting: Command = {
 
         if (streamerID === "") {
             embedMessage = await BotConfig.makeEmbed(
-                `아직 주인님의 아프리카 플랫폼 정보가 없어요!`,
+                `아직 주인님의 SOOP (숲) 플랫폼 정보가 없어요!`,
                 ` \`/등록\` 으로 주인님의 정보를 등록해주세요!`,
                 MessageColor.Error,
                 interaction.guildId as string
